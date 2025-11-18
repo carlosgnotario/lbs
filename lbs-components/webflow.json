@@ -1,0 +1,17 @@
+{
+  "library": {
+    "name": "LBS Components",
+    "components": [
+      "./src/**/*.webflow.@(js|jsx|mjs|ts|tsx)"
+    ],
+    "description": "Components for LBS",
+    "id": "lbs-components"
+  },
+  "telemetry": {
+    "global": {
+      "allowTelemetry": true,
+      "lastPrompted": 1763399178136,
+      "version": "1.8.49"
+    }
+  }
+}

@@ -1,0 +1,12 @@
+body {
+	background: red;
+}
+
+.badge {
+	border-radius: 1em;
+	display: inline-block;
+	font-size: 14px;
+	line-height: 2;
+	padding: 0 1em;
+	outline: 1px solid red;
+}
