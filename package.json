@@ -12,7 +12,8 @@
     "git:push": "node scripts/git-push.js",
     "gp": "node scripts/git-push.js",
     "deploy": "npm run build && npm run git:push",
-    "pages:deploy": "npm run build && gh-pages -d dist"
+    "pages:deploy": "npm run build && gh-pages -d dist",
+    "deploy:fast": "npm run build && npm run git:push && echo '✅ Deployed! CSS available at: https://cdn.jsdelivr.net/gh/carlosgnotario/lbs@main/dist/app.css'"
   },
   "keywords": [],
   "author": "",
