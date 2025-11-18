@@ -17,7 +17,7 @@ try {
   execSync(`git commit -m "${message}"`, { stdio: 'inherit' });
   
   console.log('Pushing to GitHub...');
-  execSync('git push', { stdio: 'inherit' });
+  execSync('git push origin main', { stdio: 'inherit' });
   
   console.log('✅ Successfully pushed to GitHub!');
 } catch (error) {
