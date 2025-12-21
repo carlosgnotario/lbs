@@ -1,0 +1,19 @@
+{
+  // Live Server Configuration for Webflow Development
+  "liveServer.settings.Cors": true,
+  "liveServer.settings.root": "./dist",
+  "liveServer.settings.port": 5500,
+  "liveServer.settings.host": "localhost",
+  "liveServer.settings.ignoreFiles": [
+    ".vscode/**",
+    "**/*.scss",
+    "**/*.sass",
+    "node_modules/**"
+  ],
+  // Enable CORS headers for all origins (needed for Webflow Canvas)
+  "liveServer.settings.CustomBrowser": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
+  "liveServer.settings.donotShowInfoMsg": false,
+  "liveServer.settings.donotVerifyTags": false,
+  "liveServer.settings.fullReload": true
+}
+

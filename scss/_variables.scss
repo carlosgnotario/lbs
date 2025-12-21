@@ -1,0 +1,113 @@
+$background-1: var(--_colors---background-1);
+$background-2: var(--_colors---background-2);
+$background-dark-1: var(--_colors---background-dark-1);
+$background-dark-2: var(--_colors---background-dark-2);
+$text-1: var(--_colors---text-1);
+$text-2: var(--_colors---text-2);
+$text-dark-1: var(--_colors---text-dark-1);
+$border-1: var(--_colors---border-1);
+$pink: var(--_colors---pink);
+$yellow: var(--_colors---yellow);
+$half-way-orange: var(--_colors---half-way-orange);
+$orange: var(--_colors---orange);
+$gray: var(--_colors---gray);
+$blue: var(--_colors---blue);
+$black: var(--_colors---black);
+$teal: var(--_colors---teal);
+$violet: var(--_colors---violet);
+$baby-blue: var(--_colors---baby-blue);
+
+// Margin Variables
+$margin-l-100: var(--_sizes---margin-l-100);
+$margin-m-75: var(--_sizes---margin-m-75);
+$margin-s-30: var(--_sizes---margin-s-30);
+$margin-xs-18: var(--_sizes---margin-xs-18);
+
+// Radius Variables
+$radius-xl-80: var(--_sizes---radius-xl-80);
+$radius-l-40: var(--_sizes---radius-l-40);
+$radius-m-18: var(--_sizes---radius-m-18);
+$radius-s-10: var(--_sizes---radius-s-10);
+
+// Gap Variables
+$gap-xl-120: var(--_sizes---gap-xl-120);
+$gap-l-72: var(--_sizes---gap-l-72);
+$gap-m-60: var(--_sizes---gap-m-60);
+$gap-s-24: var(--_sizes---gap-s-24);
+
+// Padding Variables
+$padding-l-80: var(--_sizes---padding-l-80);
+$padding-m-45: var(--_sizes---padding-m-45);
+$padding-s-15: var(--_sizes---padding-s-15);
+
+// Text Size Variables
+$text-xl-26: var(--_sizes---text-xl-26);
+$text-l-19: var(--_sizes---text-l-19);
+$text-m-16: var(--_sizes---text-m-16);
+$text-s-13: var(--_sizes---text-s-13);
+
+// Heading Size Variables
+$heading-xl-60: var(--_sizes---heading-xl-60);
+$heading-l-44: var(--_sizes---heading-l-44);
+$heading-m-32: var(--_sizes---heading-m-32);
+$heading-s-22: var(--_sizes---heading-s-22);
+
+@mixin gradient-text($color-1, $color-2) {
+    background: linear-gradient(to right, $color-1, $color-2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1.1;
+}
+
+@mixin margin-arrow($height) {
+    &:after {
+        content: '⇊';
+        font-family: 'TASA Explorer', serif;
+        font-size: 18px;
+        color: $background-1;
+        position: absolute;
+        top: calc(100% + 10px);
+        width: 50%;
+        display: flex;
+        align-items: end;
+        justify-content: end;
+        height: calc($height - 20px);
+        left: 0;
+        padding-right: 10px;
+        line-height: 1;
+        text-align: right;
+        font-weight: 200;
+        opacity: 0.2;
+        border-right: 1px dashed white;
+        mix-blend-mode: difference;
+    }
+
+    &:before {
+        content: '';
+        position: absolute;
+        top: calc(100% + 10px);
+        height: calc($height - 10px);
+        width: 100%;
+        border-left: 1px dashed white;
+        border-right: 1px dashed white;
+        mix-blend-mode: difference;
+        opacity: 0.1;
+    }
+}
+
+@function ptr($px-value) {
+    @return #{$px-value / 16}rem;
+}
+
+// Breakpoints
+@mixin breakpoint($class) {
+    @if $class == landscape {
+        @media (min-aspect-ratio: 1) { @content; }
+    } @if $class == small {
+        @media (max-width: 767px) { @content; }
+    } @else if $class == medium {
+        @media (max-width: 991px) { @content; }
+    } @else {
+        @media (max-width: #{$class}px) { @content; }
+    }
+}

@@ -1,0 +1,16 @@
+body {
+    overflow-x: hidden;
+    scrollbar-gutter: stable;
+}
+
+.logo-roller-logos {
+    overflow: hidden;
+    place-self: center;
+    mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+    align-items: center;
+}
+
+.faq-item-a {
+    height: 0;
+    padding-bottom: 0;
+}

@@ -1,0 +1,92 @@
+@use 'variables' as *;
+
+.text {
+    &-orange { color: $orange; }
+    &-pink { color: $pink; }
+    &-yellow { color: $yellow; }
+    &-half-way-orange { color: $half-way-orange; }
+    &-orange { color: $orange; }
+    &-gray { color: $gray; }
+    &-blue { color: $blue; }
+    &-black { color: $black; }
+    &-teal { color: $teal; }
+    &-violet { color: $violet; }
+    &-baby-blue { color: $baby-blue; }
+    &-white { color: $background-1; }
+
+    &-gradient {
+        &-orange { @include gradient-text($orange, $yellow); }
+        &-purple { @include gradient-text(#52A6E0, #F379E7); }
+    }
+
+    // Sizes
+    &-s { font-size: $text-s-13; }
+    &-m { font-size: $text-m-16; }
+    &-l { font-size: $text-l-19; }
+    &-xl { font-size: $text-xl-26; }
+
+    // Headings
+    &-hs { font-size: $heading-s-22; }
+    &-hm { font-size: $heading-m-32; }
+    &-hl { font-size: $heading-l-44; }
+    &-hxl { font-size: $heading-xl-60; }
+}
+
+.bg {
+    &-2 { background-color: $background-2; &:is(.button):before { background-color: $background-2; } }
+    &-orange { background-color: $orange; &:is(.button):before { background-color: $orange; } }
+    &-pink { background-color: $pink; &:is(.button):before { background-color: $pink; } }
+    &-yellow { background-color: $yellow; &:is(.button):before { background-color: $yellow; } }
+    &-half-way-orange { background-color: $half-way-orange; &:is(.button):before { background-color: $half-way-orange; } }
+    &-orange { background-color: $orange; &:is(.button):before { background-color: $orange; } }
+    &-gray { background-color: $gray; &:is(.button):before { background-color: $gray; } }
+    &-blue { background-color: $blue; &:is(.button):before { background-color: $blue; } }
+    &-black { background-color: $black; &:is(.button):before { background-color: $black; } }
+    &-teal { background-color: $teal; &:is(.button):before { background-color: $teal; } }
+    &-violet { background-color: $violet; &:is(.button):before { background-color: $violet; } }
+    &-baby-blue { background-color: $baby-blue; &:is(.button):before { background-color: $baby-blue; } }
+    &-white { background-color: $background-1; &:is(.button):before { background-color: $background-1; } }
+
+    &-gradient {
+        &-yellow { background: linear-gradient(to right, #FFB700, $yellow); &:is(.button):before { background: linear-gradient(to right, #FFB700, $yellow); } }
+        &-purple { background: linear-gradient(to right, #52A6E0, #F379E7); &:is(.button):before { background: linear-gradient(to right, #52A6E0, #F379E7); } }
+        &-gray-vertical { background: linear-gradient(to bottom, $background-2, $background-1); &:is(.button):before { background: linear-gradient(to bottom, $background-2, $background-1); } }
+    }
+}
+
+.mb {
+    &-0 { margin-bottom: 0; }
+    &-xs { margin-bottom: $margin-xs-18; }
+    &-s { margin-bottom: $margin-s-30; }
+    &-m { margin-bottom: $margin-m-75; }
+    &-l { margin-bottom: $margin-l-100; }
+}
+
+.pv {
+    &-s { padding-top: $padding-s-15; padding-bottom: $padding-s-15; }
+    &-m { padding-top: $padding-m-45; padding-bottom: $padding-m-45; }
+    &-l { padding-top: $padding-l-80; padding-bottom: $padding-l-80; }
+}
+
+.ph {
+    &-s { padding-left: $padding-s-15; padding-right: $padding-s-15; }
+    &-m { padding-left: $padding-m-45; padding-right: $padding-m-45; }
+    &-l { padding-left: $padding-l-80; padding-right: $padding-l-80; }
+}
+
+.radius {
+    &-xl { border-radius: $radius-xl-80; }
+    &-l { border-radius: $radius-l-40; }
+    &-m { border-radius: $radius-m-18; }
+    &-s { border-radius: $radius-s-10; }
+}
+
+.marginless {
+    * {
+        margin: 0;
+    }
+}
+
+.shadow {
+    box-shadow: 0 0.01rem 2rem 0 rgba(0, 0, 0, 0.05);
+}
