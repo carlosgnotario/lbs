@@ -1,0 +1,54 @@
+@use 'variables' as *;
+
+#two-apps {
+    position: relative;
+    &:before {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: ptr(414);
+        top: 0;
+        left: 0;
+        background-color: $background-1;
+        z-index: 0;
+    }
+
+    .app-hero {
+        grid-area: 1/1;
+        padding: 0 ptr(30);
+        z-index: 1;
+    }
+    
+    .text-l { width: ptr(800); }
+
+    .app-info {
+        grid-area: 1/1;
+        place-self: start;
+        margin-top: ptr(661);
+        margin-left: ptr(160);
+        width: ptr(177);
+        font-size: 11px;
+        text-align: right;
+        justify-content: flex-end;
+
+        img {
+            margin-right: -10px;
+        }
+    }
+
+    .app {
+        width: ptr(456);
+    }
+}
+
+#benefits {
+    .media-heading {
+        width: ptr(920);
+    }
+}
+
+#trusted {
+    img {
+        opacity: 0.6;
+    }
+}

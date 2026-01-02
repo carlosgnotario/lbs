@@ -44,6 +44,27 @@
             letter-spacing: 0.1em;
             opacity: 0.5;
         }
+
+        .legend {
+            position: absolute;
+            top: calc(100% + 16px);
+            pointer-events: none;
+            left: 0;
+            opacity: 0;
+            transform: translateY(10px);
+            width: 100%;
+            color: rgba(white, 0.5);
+            min-height: 20px;
+            border-radius: 6px;
+            border: 1px solid rgba(white, 0.1);
+            padding: 5px;
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+
+        &:hover .legend {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
     
     .spacer {

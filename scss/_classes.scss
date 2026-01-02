@@ -30,6 +30,11 @@
     &-hm { font-size: $heading-m-32; }
     &-hl { font-size: $heading-l-44; }
     &-hxl { font-size: $heading-xl-60; }
+
+    // Alignment
+    &-center { text-align: center; }
+    &-right { text-align: right; }
+    &-left { text-align: left; }
 }
 
 .bg {
@@ -54,8 +59,26 @@
     }
 }
 
+.overlay {
+    &-orange {
+        position: relative;
+        &:before { 
+            content:"";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #FF6F09;
+            z-index: 1;
+            mix-blend-mode: hard-light;
+        }
+    }
+}
+
 .mb {
     &-0 { margin-bottom: 0; }
+    &-xxs { margin-bottom: $margin-xxs-12; }
     &-xs { margin-bottom: $margin-xs-18; }
     &-s { margin-bottom: $margin-s-30; }
     &-m { margin-bottom: $margin-m-75; }
@@ -89,4 +112,12 @@
 
 .shadow {
     box-shadow: 0 0.01rem 2rem 0 rgba(0, 0, 0, 0.05);
+}
+
+.slot {
+    // Alignment
+    &.center, &.right, &.left {
+        justify-content: center;
+        justify-items: center;
+    }
 }

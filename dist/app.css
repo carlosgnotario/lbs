@@ -38,6 +38,25 @@
   letter-spacing: 0.1em;
   opacity: 0.5;
 }
+.wf-design-mode .custom-styles:has(> div:nth-of-type(2):not(.w-condition-invisible)) .legend {
+  position: absolute;
+  top: calc(100% + 16px);
+  pointer-events: none;
+  left: 0;
+  opacity: 0;
+  transform: translateY(10px);
+  width: 100%;
+  color: rgba(255, 255, 255, 0.5);
+  min-height: 20px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 5px;
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+.wf-design-mode .custom-styles:has(> div:nth-of-type(2):not(.w-condition-invisible)):hover .legend {
+  opacity: 1;
+  transform: translateY(0);
+}
 .wf-design-mode .spacer {
   font-family: "TASA Explorer", serif;
   background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.05) 2%, black 2%, black 50%, rgba(255, 255, 255, 0.05) 50%, rgba(255, 255, 255, 0.05) 52%, black 52%, black);
@@ -149,6 +168,15 @@
 .text-hxl {
   font-size: var(--_sizes---heading-xl-60);
 }
+.text-center {
+  text-align: center;
+}
+.text-right {
+  text-align: right;
+}
+.text-left {
+  text-align: left;
+}
 
 .bg-2 {
   background-color: var(--_colors---background-2);
@@ -247,8 +275,26 @@
   background: linear-gradient(to bottom, var(--_colors---background-2), var(--_colors---background-1));
 }
 
+.overlay-orange {
+  position: relative;
+}
+.overlay-orange:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #FF6F09;
+  z-index: 1;
+  mix-blend-mode: hard-light;
+}
+
 .mb-0 {
   margin-bottom: 0;
+}
+.mb-xxs {
+  margin-bottom: var(--_sizes---margin-xxs-12);
 }
 .mb-xs {
   margin-bottom: var(--_sizes---margin-xs-18);
@@ -308,6 +354,57 @@
 
 .shadow {
   box-shadow: 0 0.01rem 2rem 0 rgba(0, 0, 0, 0.05);
+}
+
+.slot.center, .slot.right, .slot.left {
+  justify-content: center;
+  justify-items: center;
+}
+
+#two-apps {
+  position: relative;
+}
+#two-apps:before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 25.875rem;
+  top: 0;
+  left: 0;
+  background-color: var(--_colors---background-1);
+  z-index: 0;
+}
+#two-apps .app-hero {
+  grid-area: 1/1;
+  padding: 0 1.875rem;
+  z-index: 1;
+}
+#two-apps .text-l {
+  width: 50rem;
+}
+#two-apps .app-info {
+  grid-area: 1/1;
+  place-self: start;
+  margin-top: 41.3125rem;
+  margin-left: 10rem;
+  width: 11.0625rem;
+  font-size: 11px;
+  text-align: right;
+  justify-content: flex-end;
+}
+#two-apps .app-info img {
+  margin-right: -10px;
+}
+#two-apps .app {
+  width: 28.5rem;
+}
+
+#benefits .media-heading {
+  width: 57.5rem;
+}
+
+#trusted img {
+  opacity: 0.6;
 }
 
 html {
@@ -373,6 +470,25 @@ html.wf-design-mode .wf-design-mode .custom-styles:has(> div:nth-of-type(2):not(
   font-weight: 400;
   letter-spacing: 0.1em;
   opacity: 0.5;
+}
+html.wf-design-mode .wf-design-mode .custom-styles:has(> div:nth-of-type(2):not(.w-condition-invisible)) .legend {
+  position: absolute;
+  top: calc(100% + 16px);
+  pointer-events: none;
+  left: 0;
+  opacity: 0;
+  transform: translateY(10px);
+  width: 100%;
+  color: rgba(255, 255, 255, 0.5);
+  min-height: 20px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 5px;
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+html.wf-design-mode .wf-design-mode .custom-styles:has(> div:nth-of-type(2):not(.w-condition-invisible)):hover .legend {
+  opacity: 1;
+  transform: translateY(0);
 }
 html.wf-design-mode .wf-design-mode .spacer {
   font-family: "TASA Explorer", serif;
@@ -481,6 +597,9 @@ html:not(.wf-design-mode) .logo-roller-logos {
 html:not(.wf-design-mode) .faq-item-a {
   height: 0;
   padding-bottom: 0;
+}
+html:not(.wf-design-mode) .custom-styles {
+  display: none !important;
 }
 
 a {

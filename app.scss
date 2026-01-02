@@ -2,6 +2,7 @@
 @use 'scss/helpers' as *;
 @use 'scss/modules' as *;
 @use 'scss/classes' as *;
+@use 'scss/components' as *;
 
 html {
     --fontSize: min(calc(1680 / 1290 * 16px), calc(100vw / 1290 * 16));    
