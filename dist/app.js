@@ -1,4 +1,1094 @@
 (() => {
+  // node_modules/lenis/dist/lenis.mjs
+  var version = "1.3.17";
+  function clamp(min, input, max) {
+    return Math.max(min, Math.min(input, max));
+  }
+  function lerp(x, y, t) {
+    return (1 - t) * x + t * y;
+  }
+  function damp(x, y, lambda, deltaTime) {
+    return lerp(x, y, 1 - Math.exp(-lambda * deltaTime));
+  }
+  function modulo(n, d) {
+    return (n % d + d) % d;
+  }
+  var Animate = class {
+    isRunning = false;
+    value = 0;
+    from = 0;
+    to = 0;
+    currentTime = 0;
+    // These are instanciated in the fromTo method
+    lerp;
+    duration;
+    easing;
+    onUpdate;
+    /**
+     * Advance the animation by the given delta time
+     *
+     * @param deltaTime - The time in seconds to advance the animation
+     */
+    advance(deltaTime) {
+      if (!this.isRunning) return;
+      let completed = false;
+      if (this.duration && this.easing) {
+        this.currentTime += deltaTime;
+        const linearProgress = clamp(0, this.currentTime / this.duration, 1);
+        completed = linearProgress >= 1;
+        const easedProgress = completed ? 1 : this.easing(linearProgress);
+        this.value = this.from + (this.to - this.from) * easedProgress;
+      } else if (this.lerp) {
+        this.value = damp(this.value, this.to, this.lerp * 60, deltaTime);
+        if (Math.round(this.value) === this.to) {
+          this.value = this.to;
+          completed = true;
+        }
+      } else {
+        this.value = this.to;
+        completed = true;
+      }
+      if (completed) {
+        this.stop();
+      }
+      this.onUpdate?.(this.value, completed);
+    }
+    /** Stop the animation */
+    stop() {
+      this.isRunning = false;
+    }
+    /**
+     * Set up the animation from a starting value to an ending value
+     * with optional parameters for lerping, duration, easing, and onUpdate callback
+     *
+     * @param from - The starting value
+     * @param to - The ending value
+     * @param options - Options for the animation
+     */
+    fromTo(from, to, { lerp: lerp2, duration, easing, onStart, onUpdate }) {
+      this.from = this.value = from;
+      this.to = to;
+      this.lerp = lerp2;
+      this.duration = duration;
+      this.easing = easing;
+      this.currentTime = 0;
+      this.isRunning = true;
+      onStart?.();
+      this.onUpdate = onUpdate;
+    }
+  };
+  function debounce(callback, delay) {
+    let timer;
+    return function(...args) {
+      let context3 = this;
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        timer = void 0;
+        callback.apply(context3, args);
+      }, delay);
+    };
+  }
+  var Dimensions = class {
+    constructor(wrapper, content, { autoResize = true, debounce: debounceValue = 250 } = {}) {
+      this.wrapper = wrapper;
+      this.content = content;
+      if (autoResize) {
+        this.debouncedResize = debounce(this.resize, debounceValue);
+        if (this.wrapper instanceof Window) {
+          window.addEventListener("resize", this.debouncedResize, false);
+        } else {
+          this.wrapperResizeObserver = new ResizeObserver(this.debouncedResize);
+          this.wrapperResizeObserver.observe(this.wrapper);
+        }
+        this.contentResizeObserver = new ResizeObserver(this.debouncedResize);
+        this.contentResizeObserver.observe(this.content);
+      }
+      this.resize();
+    }
+    width = 0;
+    height = 0;
+    scrollHeight = 0;
+    scrollWidth = 0;
+    // These are instanciated in the constructor as they need information from the options
+    debouncedResize;
+    wrapperResizeObserver;
+    contentResizeObserver;
+    destroy() {
+      this.wrapperResizeObserver?.disconnect();
+      this.contentResizeObserver?.disconnect();
+      if (this.wrapper === window && this.debouncedResize) {
+        window.removeEventListener("resize", this.debouncedResize, false);
+      }
+    }
+    resize = () => {
+      this.onWrapperResize();
+      this.onContentResize();
+    };
+    onWrapperResize = () => {
+      if (this.wrapper instanceof Window) {
+        this.width = window.innerWidth;
+        this.height = window.innerHeight;
+      } else {
+        this.width = this.wrapper.clientWidth;
+        this.height = this.wrapper.clientHeight;
+      }
+    };
+    onContentResize = () => {
+      if (this.wrapper instanceof Window) {
+        this.scrollHeight = this.content.scrollHeight;
+        this.scrollWidth = this.content.scrollWidth;
+      } else {
+        this.scrollHeight = this.wrapper.scrollHeight;
+        this.scrollWidth = this.wrapper.scrollWidth;
+      }
+    };
+    get limit() {
+      return {
+        x: this.scrollWidth - this.width,
+        y: this.scrollHeight - this.height
+      };
+    }
+  };
+  var Emitter = class {
+    events = {};
+    /**
+     * Emit an event with the given data
+     * @param event Event name
+     * @param args Data to pass to the event handlers
+     */
+    emit(event, ...args) {
+      let callbacks = this.events[event] || [];
+      for (let i = 0, length = callbacks.length; i < length; i++) {
+        callbacks[i]?.(...args);
+      }
+    }
+    /**
+     * Add a callback to the event
+     * @param event Event name
+     * @param cb Callback function
+     * @returns Unsubscribe function
+     */
+    on(event, cb) {
+      this.events[event]?.push(cb) || (this.events[event] = [cb]);
+      return () => {
+        this.events[event] = this.events[event]?.filter((i) => cb !== i);
+      };
+    }
+    /**
+     * Remove a callback from the event
+     * @param event Event name
+     * @param callback Callback function
+     */
+    off(event, callback) {
+      this.events[event] = this.events[event]?.filter((i) => callback !== i);
+    }
+    /**
+     * Remove all event listeners and clean up
+     */
+    destroy() {
+      this.events = {};
+    }
+  };
+  var LINE_HEIGHT = 100 / 6;
+  var listenerOptions = { passive: false };
+  var VirtualScroll = class {
+    constructor(element, options = { wheelMultiplier: 1, touchMultiplier: 1 }) {
+      this.element = element;
+      this.options = options;
+      window.addEventListener("resize", this.onWindowResize, false);
+      this.onWindowResize();
+      this.element.addEventListener("wheel", this.onWheel, listenerOptions);
+      this.element.addEventListener(
+        "touchstart",
+        this.onTouchStart,
+        listenerOptions
+      );
+      this.element.addEventListener(
+        "touchmove",
+        this.onTouchMove,
+        listenerOptions
+      );
+      this.element.addEventListener("touchend", this.onTouchEnd, listenerOptions);
+    }
+    touchStart = {
+      x: 0,
+      y: 0
+    };
+    lastDelta = {
+      x: 0,
+      y: 0
+    };
+    window = {
+      width: 0,
+      height: 0
+    };
+    emitter = new Emitter();
+    /**
+     * Add an event listener for the given event and callback
+     *
+     * @param event Event name
+     * @param callback Callback function
+     */
+    on(event, callback) {
+      return this.emitter.on(event, callback);
+    }
+    /** Remove all event listeners and clean up */
+    destroy() {
+      this.emitter.destroy();
+      window.removeEventListener("resize", this.onWindowResize, false);
+      this.element.removeEventListener("wheel", this.onWheel, listenerOptions);
+      this.element.removeEventListener(
+        "touchstart",
+        this.onTouchStart,
+        listenerOptions
+      );
+      this.element.removeEventListener(
+        "touchmove",
+        this.onTouchMove,
+        listenerOptions
+      );
+      this.element.removeEventListener(
+        "touchend",
+        this.onTouchEnd,
+        listenerOptions
+      );
+    }
+    /**
+     * Event handler for 'touchstart' event
+     *
+     * @param event Touch event
+     */
+    onTouchStart = (event) => {
+      const { clientX, clientY } = event.targetTouches ? event.targetTouches[0] : event;
+      this.touchStart.x = clientX;
+      this.touchStart.y = clientY;
+      this.lastDelta = {
+        x: 0,
+        y: 0
+      };
+      this.emitter.emit("scroll", {
+        deltaX: 0,
+        deltaY: 0,
+        event
+      });
+    };
+    /** Event handler for 'touchmove' event */
+    onTouchMove = (event) => {
+      const { clientX, clientY } = event.targetTouches ? event.targetTouches[0] : event;
+      const deltaX = -(clientX - this.touchStart.x) * this.options.touchMultiplier;
+      const deltaY = -(clientY - this.touchStart.y) * this.options.touchMultiplier;
+      this.touchStart.x = clientX;
+      this.touchStart.y = clientY;
+      this.lastDelta = {
+        x: deltaX,
+        y: deltaY
+      };
+      this.emitter.emit("scroll", {
+        deltaX,
+        deltaY,
+        event
+      });
+    };
+    onTouchEnd = (event) => {
+      this.emitter.emit("scroll", {
+        deltaX: this.lastDelta.x,
+        deltaY: this.lastDelta.y,
+        event
+      });
+    };
+    /** Event handler for 'wheel' event */
+    onWheel = (event) => {
+      let { deltaX, deltaY, deltaMode } = event;
+      const multiplierX = deltaMode === 1 ? LINE_HEIGHT : deltaMode === 2 ? this.window.width : 1;
+      const multiplierY = deltaMode === 1 ? LINE_HEIGHT : deltaMode === 2 ? this.window.height : 1;
+      deltaX *= multiplierX;
+      deltaY *= multiplierY;
+      deltaX *= this.options.wheelMultiplier;
+      deltaY *= this.options.wheelMultiplier;
+      this.emitter.emit("scroll", { deltaX, deltaY, event });
+    };
+    onWindowResize = () => {
+      this.window = {
+        width: window.innerWidth,
+        height: window.innerHeight
+      };
+    };
+  };
+  var defaultEasing = (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t));
+  var Lenis = class {
+    _isScrolling = false;
+    // true when scroll is animating
+    _isStopped = false;
+    // true if user should not be able to scroll - enable/disable programmatically
+    _isLocked = false;
+    // same as isStopped but enabled/disabled when scroll reaches target
+    _preventNextNativeScrollEvent = false;
+    _resetVelocityTimeout = null;
+    _rafId = null;
+    /**
+     * Whether or not the user is touching the screen
+     */
+    isTouching;
+    /**
+     * The time in ms since the lenis instance was created
+     */
+    time = 0;
+    /**
+     * User data that will be forwarded through the scroll event
+     *
+     * @example
+     * lenis.scrollTo(100, {
+     *   userData: {
+     *     foo: 'bar'
+     *   }
+     * })
+     */
+    userData = {};
+    /**
+     * The last velocity of the scroll
+     */
+    lastVelocity = 0;
+    /**
+     * The current velocity of the scroll
+     */
+    velocity = 0;
+    /**
+     * The direction of the scroll
+     */
+    direction = 0;
+    /**
+     * The options passed to the lenis instance
+     */
+    options;
+    /**
+     * The target scroll value
+     */
+    targetScroll;
+    /**
+     * The animated scroll value
+     */
+    animatedScroll;
+    // These are instanciated here as they don't need information from the options
+    animate = new Animate();
+    emitter = new Emitter();
+    // These are instanciated in the constructor as they need information from the options
+    dimensions;
+    // This is not private because it's used in the Snap class
+    virtualScroll;
+    constructor({
+      wrapper = window,
+      content = document.documentElement,
+      eventsTarget = wrapper,
+      smoothWheel = true,
+      syncTouch = false,
+      syncTouchLerp = 0.075,
+      touchInertiaExponent = 1.7,
+      duration,
+      // in seconds
+      easing,
+      lerp: lerp2 = 0.1,
+      infinite = false,
+      orientation = "vertical",
+      // vertical, horizontal
+      gestureOrientation = orientation === "horizontal" ? "both" : "vertical",
+      // vertical, horizontal, both
+      touchMultiplier = 1,
+      wheelMultiplier = 1,
+      autoResize = true,
+      prevent,
+      virtualScroll,
+      overscroll = true,
+      autoRaf = false,
+      anchors = false,
+      autoToggle = false,
+      // https://caniuse.com/?search=transition-behavior
+      allowNestedScroll = false,
+      // @ts-ignore: this will be deprecated in the future
+      __experimental__naiveDimensions = false,
+      naiveDimensions = __experimental__naiveDimensions,
+      stopInertiaOnNavigate = false
+    } = {}) {
+      window.lenisVersion = version;
+      if (!wrapper || wrapper === document.documentElement) {
+        wrapper = window;
+      }
+      if (typeof duration === "number" && typeof easing !== "function") {
+        easing = defaultEasing;
+      } else if (typeof easing === "function" && typeof duration !== "number") {
+        duration = 1;
+      }
+      this.options = {
+        wrapper,
+        content,
+        eventsTarget,
+        smoothWheel,
+        syncTouch,
+        syncTouchLerp,
+        touchInertiaExponent,
+        duration,
+        easing,
+        lerp: lerp2,
+        infinite,
+        gestureOrientation,
+        orientation,
+        touchMultiplier,
+        wheelMultiplier,
+        autoResize,
+        prevent,
+        virtualScroll,
+        overscroll,
+        autoRaf,
+        anchors,
+        autoToggle,
+        allowNestedScroll,
+        naiveDimensions,
+        stopInertiaOnNavigate
+      };
+      this.dimensions = new Dimensions(wrapper, content, { autoResize });
+      this.updateClassName();
+      this.targetScroll = this.animatedScroll = this.actualScroll;
+      this.options.wrapper.addEventListener("scroll", this.onNativeScroll, false);
+      this.options.wrapper.addEventListener("scrollend", this.onScrollEnd, {
+        capture: true
+      });
+      if (this.options.anchors || this.options.stopInertiaOnNavigate) {
+        this.options.wrapper.addEventListener(
+          "click",
+          this.onClick,
+          false
+        );
+      }
+      this.options.wrapper.addEventListener(
+        "pointerdown",
+        this.onPointerDown,
+        false
+      );
+      this.virtualScroll = new VirtualScroll(eventsTarget, {
+        touchMultiplier,
+        wheelMultiplier
+      });
+      this.virtualScroll.on("scroll", this.onVirtualScroll);
+      if (this.options.autoToggle) {
+        this.checkOverflow();
+        this.rootElement.addEventListener("transitionend", this.onTransitionEnd, {
+          passive: true
+        });
+      }
+      if (this.options.autoRaf) {
+        this._rafId = requestAnimationFrame(this.raf);
+      }
+    }
+    /**
+     * Destroy the lenis instance, remove all event listeners and clean up the class name
+     */
+    destroy() {
+      this.emitter.destroy();
+      this.options.wrapper.removeEventListener(
+        "scroll",
+        this.onNativeScroll,
+        false
+      );
+      this.options.wrapper.removeEventListener("scrollend", this.onScrollEnd, {
+        capture: true
+      });
+      this.options.wrapper.removeEventListener(
+        "pointerdown",
+        this.onPointerDown,
+        false
+      );
+      if (this.options.anchors || this.options.stopInertiaOnNavigate) {
+        this.options.wrapper.removeEventListener(
+          "click",
+          this.onClick,
+          false
+        );
+      }
+      this.virtualScroll.destroy();
+      this.dimensions.destroy();
+      this.cleanUpClassName();
+      if (this._rafId) {
+        cancelAnimationFrame(this._rafId);
+      }
+    }
+    on(event, callback) {
+      return this.emitter.on(event, callback);
+    }
+    off(event, callback) {
+      return this.emitter.off(event, callback);
+    }
+    onScrollEnd = (e) => {
+      if (!(e instanceof CustomEvent)) {
+        if (this.isScrolling === "smooth" || this.isScrolling === false) {
+          e.stopPropagation();
+        }
+      }
+    };
+    dispatchScrollendEvent = () => {
+      this.options.wrapper.dispatchEvent(
+        new CustomEvent("scrollend", {
+          bubbles: this.options.wrapper === window,
+          // cancelable: false,
+          detail: {
+            lenisScrollEnd: true
+          }
+        })
+      );
+    };
+    get overflow() {
+      const property = this.isHorizontal ? "overflow-x" : "overflow-y";
+      return getComputedStyle(this.rootElement)[property];
+    }
+    checkOverflow() {
+      if (["hidden", "clip"].includes(this.overflow)) {
+        this.internalStop();
+      } else {
+        this.internalStart();
+      }
+    }
+    onTransitionEnd = (event) => {
+      if (event.propertyName.includes("overflow")) {
+        this.checkOverflow();
+      }
+    };
+    setScroll(scroll) {
+      if (this.isHorizontal) {
+        this.options.wrapper.scrollTo({ left: scroll, behavior: "instant" });
+      } else {
+        this.options.wrapper.scrollTo({ top: scroll, behavior: "instant" });
+      }
+    }
+    onClick = (event) => {
+      const path = event.composedPath();
+      const anchorElements = path.filter(
+        (node) => node instanceof HTMLAnchorElement && node.getAttribute("href")
+      );
+      if (this.options.anchors) {
+        const anchor = anchorElements.find(
+          (node) => node.getAttribute("href")?.includes("#")
+        );
+        if (anchor) {
+          const href = anchor.getAttribute("href");
+          if (href) {
+            const options = typeof this.options.anchors === "object" && this.options.anchors ? this.options.anchors : void 0;
+            const target = `#${href.split("#")[1]}`;
+            this.scrollTo(target, options);
+          }
+        }
+      }
+      if (this.options.stopInertiaOnNavigate) {
+        const internalLink = anchorElements.find(
+          (node) => node.host === window.location.host
+        );
+        if (internalLink) {
+          this.reset();
+        }
+      }
+    };
+    onPointerDown = (event) => {
+      if (event.button === 1) {
+        this.reset();
+      }
+    };
+    onVirtualScroll = (data) => {
+      if (typeof this.options.virtualScroll === "function" && this.options.virtualScroll(data) === false)
+        return;
+      const { deltaX, deltaY, event } = data;
+      this.emitter.emit("virtual-scroll", { deltaX, deltaY, event });
+      if (event.ctrlKey) return;
+      if (event.lenisStopPropagation) return;
+      const isTouch = event.type.includes("touch");
+      const isWheel = event.type.includes("wheel");
+      this.isTouching = event.type === "touchstart" || event.type === "touchmove";
+      const isClickOrTap = deltaX === 0 && deltaY === 0;
+      const isTapToStop = this.options.syncTouch && isTouch && event.type === "touchstart" && isClickOrTap && !this.isStopped && !this.isLocked;
+      if (isTapToStop) {
+        this.reset();
+        return;
+      }
+      const isUnknownGesture = this.options.gestureOrientation === "vertical" && deltaY === 0 || this.options.gestureOrientation === "horizontal" && deltaX === 0;
+      if (isClickOrTap || isUnknownGesture) {
+        return;
+      }
+      let composedPath = event.composedPath();
+      composedPath = composedPath.slice(0, composedPath.indexOf(this.rootElement));
+      const prevent = this.options.prevent;
+      if (!!composedPath.find(
+        (node) => node instanceof HTMLElement && (typeof prevent === "function" && prevent?.(node) || node.hasAttribute?.("data-lenis-prevent") || isTouch && node.hasAttribute?.("data-lenis-prevent-touch") || isWheel && node.hasAttribute?.("data-lenis-prevent-wheel") || this.options.allowNestedScroll && this.checkNestedScroll(node, { deltaX, deltaY }))
+      ))
+        return;
+      if (this.isStopped || this.isLocked) {
+        if (event.cancelable) {
+          event.preventDefault();
+        }
+        return;
+      }
+      const isSmooth = this.options.syncTouch && isTouch || this.options.smoothWheel && isWheel;
+      if (!isSmooth) {
+        this.isScrolling = "native";
+        this.animate.stop();
+        event.lenisStopPropagation = true;
+        return;
+      }
+      let delta = deltaY;
+      if (this.options.gestureOrientation === "both") {
+        delta = Math.abs(deltaY) > Math.abs(deltaX) ? deltaY : deltaX;
+      } else if (this.options.gestureOrientation === "horizontal") {
+        delta = deltaX;
+      }
+      if (!this.options.overscroll || this.options.infinite || this.options.wrapper !== window && this.limit > 0 && (this.animatedScroll > 0 && this.animatedScroll < this.limit || this.animatedScroll === 0 && deltaY > 0 || this.animatedScroll === this.limit && deltaY < 0)) {
+        event.lenisStopPropagation = true;
+      }
+      if (event.cancelable) {
+        event.preventDefault();
+      }
+      const isSyncTouch = isTouch && this.options.syncTouch;
+      const isTouchEnd = isTouch && event.type === "touchend";
+      const hasTouchInertia = isTouchEnd;
+      if (hasTouchInertia) {
+        delta = Math.sign(this.velocity) * Math.pow(Math.abs(this.velocity), this.options.touchInertiaExponent);
+      }
+      this.scrollTo(this.targetScroll + delta, {
+        programmatic: false,
+        ...isSyncTouch ? {
+          lerp: hasTouchInertia ? this.options.syncTouchLerp : 1
+        } : {
+          lerp: this.options.lerp,
+          duration: this.options.duration,
+          easing: this.options.easing
+        }
+      });
+    };
+    /**
+     * Force lenis to recalculate the dimensions
+     */
+    resize() {
+      this.dimensions.resize();
+      this.animatedScroll = this.targetScroll = this.actualScroll;
+      this.emit();
+    }
+    emit() {
+      this.emitter.emit("scroll", this);
+    }
+    onNativeScroll = () => {
+      if (this._resetVelocityTimeout !== null) {
+        clearTimeout(this._resetVelocityTimeout);
+        this._resetVelocityTimeout = null;
+      }
+      if (this._preventNextNativeScrollEvent) {
+        this._preventNextNativeScrollEvent = false;
+        return;
+      }
+      if (this.isScrolling === false || this.isScrolling === "native") {
+        const lastScroll = this.animatedScroll;
+        this.animatedScroll = this.targetScroll = this.actualScroll;
+        this.lastVelocity = this.velocity;
+        this.velocity = this.animatedScroll - lastScroll;
+        this.direction = Math.sign(
+          this.animatedScroll - lastScroll
+        );
+        if (!this.isStopped) {
+          this.isScrolling = "native";
+        }
+        this.emit();
+        if (this.velocity !== 0) {
+          this._resetVelocityTimeout = setTimeout(() => {
+            this.lastVelocity = this.velocity;
+            this.velocity = 0;
+            this.isScrolling = false;
+            this.emit();
+          }, 400);
+        }
+      }
+    };
+    reset() {
+      this.isLocked = false;
+      this.isScrolling = false;
+      this.animatedScroll = this.targetScroll = this.actualScroll;
+      this.lastVelocity = this.velocity = 0;
+      this.animate.stop();
+    }
+    /**
+     * Start lenis scroll after it has been stopped
+     */
+    start() {
+      if (!this.isStopped) return;
+      if (this.options.autoToggle) {
+        this.rootElement.style.removeProperty("overflow");
+        return;
+      }
+      this.internalStart();
+    }
+    internalStart() {
+      if (!this.isStopped) return;
+      this.reset();
+      this.isStopped = false;
+      this.emit();
+    }
+    /**
+     * Stop lenis scroll
+     */
+    stop() {
+      if (this.isStopped) return;
+      if (this.options.autoToggle) {
+        this.rootElement.style.setProperty("overflow", "clip");
+        return;
+      }
+      this.internalStop();
+    }
+    internalStop() {
+      if (this.isStopped) return;
+      this.reset();
+      this.isStopped = true;
+      this.emit();
+    }
+    /**
+     * RequestAnimationFrame for lenis
+     *
+     * @param time The time in ms from an external clock like `requestAnimationFrame` or Tempus
+     */
+    raf = (time) => {
+      const deltaTime = time - (this.time || time);
+      this.time = time;
+      this.animate.advance(deltaTime * 1e-3);
+      if (this.options.autoRaf) {
+        this._rafId = requestAnimationFrame(this.raf);
+      }
+    };
+    /**
+     * Scroll to a target value
+     *
+     * @param target The target value to scroll to
+     * @param options The options for the scroll
+     *
+     * @example
+     * lenis.scrollTo(100, {
+     *   offset: 100,
+     *   duration: 1,
+     *   easing: (t) => 1 - Math.cos((t * Math.PI) / 2),
+     *   lerp: 0.1,
+     *   onStart: () => {
+     *     console.log('onStart')
+     *   },
+     *   onComplete: () => {
+     *     console.log('onComplete')
+     *   },
+     * })
+     */
+    scrollTo(target, {
+      offset = 0,
+      immediate = false,
+      lock = false,
+      programmatic = true,
+      // called from outside of the class
+      lerp: lerp2 = programmatic ? this.options.lerp : void 0,
+      duration = programmatic ? this.options.duration : void 0,
+      easing = programmatic ? this.options.easing : void 0,
+      onStart,
+      onComplete,
+      force = false,
+      // scroll even if stopped
+      userData
+    } = {}) {
+      if ((this.isStopped || this.isLocked) && !force) return;
+      if (typeof target === "string" && ["top", "left", "start", "#"].includes(target)) {
+        target = 0;
+      } else if (typeof target === "string" && ["bottom", "right", "end"].includes(target)) {
+        target = this.limit;
+      } else {
+        let node;
+        if (typeof target === "string") {
+          node = document.querySelector(target);
+          if (!node) {
+            if (target === "#top") {
+              target = 0;
+            } else {
+              console.warn("Lenis: Target not found", target);
+            }
+          }
+        } else if (target instanceof HTMLElement && target?.nodeType) {
+          node = target;
+        }
+        if (node) {
+          if (this.options.wrapper !== window) {
+            const wrapperRect = this.rootElement.getBoundingClientRect();
+            offset -= this.isHorizontal ? wrapperRect.left : wrapperRect.top;
+          }
+          const rect = node.getBoundingClientRect();
+          target = (this.isHorizontal ? rect.left : rect.top) + this.animatedScroll;
+        }
+      }
+      if (typeof target !== "number") return;
+      target += offset;
+      target = Math.round(target);
+      if (this.options.infinite) {
+        if (programmatic) {
+          this.targetScroll = this.animatedScroll = this.scroll;
+          const distance = target - this.animatedScroll;
+          if (distance > this.limit / 2) {
+            target = target - this.limit;
+          } else if (distance < -this.limit / 2) {
+            target = target + this.limit;
+          }
+        }
+      } else {
+        target = clamp(0, target, this.limit);
+      }
+      if (target === this.targetScroll) {
+        onStart?.(this);
+        onComplete?.(this);
+        return;
+      }
+      this.userData = userData ?? {};
+      if (immediate) {
+        this.animatedScroll = this.targetScroll = target;
+        this.setScroll(this.scroll);
+        this.reset();
+        this.preventNextNativeScrollEvent();
+        this.emit();
+        onComplete?.(this);
+        this.userData = {};
+        requestAnimationFrame(() => {
+          this.dispatchScrollendEvent();
+        });
+        return;
+      }
+      if (!programmatic) {
+        this.targetScroll = target;
+      }
+      if (typeof duration === "number" && typeof easing !== "function") {
+        easing = defaultEasing;
+      } else if (typeof easing === "function" && typeof duration !== "number") {
+        duration = 1;
+      }
+      this.animate.fromTo(this.animatedScroll, target, {
+        duration,
+        easing,
+        lerp: lerp2,
+        onStart: () => {
+          if (lock) this.isLocked = true;
+          this.isScrolling = "smooth";
+          onStart?.(this);
+        },
+        onUpdate: (value, completed) => {
+          this.isScrolling = "smooth";
+          this.lastVelocity = this.velocity;
+          this.velocity = value - this.animatedScroll;
+          this.direction = Math.sign(this.velocity);
+          this.animatedScroll = value;
+          this.setScroll(this.scroll);
+          if (programmatic) {
+            this.targetScroll = value;
+          }
+          if (!completed) this.emit();
+          if (completed) {
+            this.reset();
+            this.emit();
+            onComplete?.(this);
+            this.userData = {};
+            requestAnimationFrame(() => {
+              this.dispatchScrollendEvent();
+            });
+            this.preventNextNativeScrollEvent();
+          }
+        }
+      });
+    }
+    preventNextNativeScrollEvent() {
+      this._preventNextNativeScrollEvent = true;
+      requestAnimationFrame(() => {
+        this._preventNextNativeScrollEvent = false;
+      });
+    }
+    checkNestedScroll(node, { deltaX, deltaY }) {
+      const time = Date.now();
+      const cache = node._lenis ??= {};
+      let hasOverflowX, hasOverflowY, isScrollableX, isScrollableY, scrollWidth, scrollHeight, clientWidth, clientHeight;
+      const gestureOrientation = this.options.gestureOrientation;
+      if (time - (cache.time ?? 0) > 2e3) {
+        cache.time = Date.now();
+        const computedStyle = window.getComputedStyle(node);
+        cache.computedStyle = computedStyle;
+        const overflowXString = computedStyle.overflowX;
+        const overflowYString = computedStyle.overflowY;
+        hasOverflowX = ["auto", "overlay", "scroll"].includes(overflowXString);
+        hasOverflowY = ["auto", "overlay", "scroll"].includes(overflowYString);
+        cache.hasOverflowX = hasOverflowX;
+        cache.hasOverflowY = hasOverflowY;
+        if (!hasOverflowX && !hasOverflowY) return false;
+        if (gestureOrientation === "vertical" && !hasOverflowY) return false;
+        if (gestureOrientation === "horizontal" && !hasOverflowX) return false;
+        scrollWidth = node.scrollWidth;
+        scrollHeight = node.scrollHeight;
+        clientWidth = node.clientWidth;
+        clientHeight = node.clientHeight;
+        isScrollableX = scrollWidth > clientWidth;
+        isScrollableY = scrollHeight > clientHeight;
+        cache.isScrollableX = isScrollableX;
+        cache.isScrollableY = isScrollableY;
+        cache.scrollWidth = scrollWidth;
+        cache.scrollHeight = scrollHeight;
+        cache.clientWidth = clientWidth;
+        cache.clientHeight = clientHeight;
+      } else {
+        isScrollableX = cache.isScrollableX;
+        isScrollableY = cache.isScrollableY;
+        hasOverflowX = cache.hasOverflowX;
+        hasOverflowY = cache.hasOverflowY;
+        scrollWidth = cache.scrollWidth;
+        scrollHeight = cache.scrollHeight;
+        clientWidth = cache.clientWidth;
+        clientHeight = cache.clientHeight;
+      }
+      if (!hasOverflowX && !hasOverflowY || !isScrollableX && !isScrollableY) {
+        return false;
+      }
+      if (gestureOrientation === "vertical" && (!hasOverflowY || !isScrollableY))
+        return false;
+      if (gestureOrientation === "horizontal" && (!hasOverflowX || !isScrollableX))
+        return false;
+      let orientation;
+      if (gestureOrientation === "horizontal") {
+        orientation = "x";
+      } else if (gestureOrientation === "vertical") {
+        orientation = "y";
+      } else {
+        const isScrollingX = deltaX !== 0;
+        const isScrollingY = deltaY !== 0;
+        if (isScrollingX && hasOverflowX && isScrollableX) {
+          orientation = "x";
+        }
+        if (isScrollingY && hasOverflowY && isScrollableY) {
+          orientation = "y";
+        }
+      }
+      if (!orientation) return false;
+      let scroll, maxScroll, delta, hasOverflow, isScrollable;
+      if (orientation === "x") {
+        scroll = node.scrollLeft;
+        maxScroll = scrollWidth - clientWidth;
+        delta = deltaX;
+        hasOverflow = hasOverflowX;
+        isScrollable = isScrollableX;
+      } else if (orientation === "y") {
+        scroll = node.scrollTop;
+        maxScroll = scrollHeight - clientHeight;
+        delta = deltaY;
+        hasOverflow = hasOverflowY;
+        isScrollable = isScrollableY;
+      } else {
+        return false;
+      }
+      const willScroll = delta > 0 ? scroll < maxScroll : scroll > 0;
+      return willScroll && hasOverflow && isScrollable;
+    }
+    /**
+     * The root element on which lenis is instanced
+     */
+    get rootElement() {
+      return this.options.wrapper === window ? document.documentElement : this.options.wrapper;
+    }
+    /**
+     * The limit which is the maximum scroll value
+     */
+    get limit() {
+      if (this.options.naiveDimensions) {
+        if (this.isHorizontal) {
+          return this.rootElement.scrollWidth - this.rootElement.clientWidth;
+        } else {
+          return this.rootElement.scrollHeight - this.rootElement.clientHeight;
+        }
+      } else {
+        return this.dimensions.limit[this.isHorizontal ? "x" : "y"];
+      }
+    }
+    /**
+     * Whether or not the scroll is horizontal
+     */
+    get isHorizontal() {
+      return this.options.orientation === "horizontal";
+    }
+    /**
+     * The actual scroll value
+     */
+    get actualScroll() {
+      const wrapper = this.options.wrapper;
+      return this.isHorizontal ? wrapper.scrollX ?? wrapper.scrollLeft : wrapper.scrollY ?? wrapper.scrollTop;
+    }
+    /**
+     * The current scroll value
+     */
+    get scroll() {
+      return this.options.infinite ? modulo(this.animatedScroll, this.limit) : this.animatedScroll;
+    }
+    /**
+     * The progress of the scroll relative to the limit
+     */
+    get progress() {
+      return this.limit === 0 ? 1 : this.scroll / this.limit;
+    }
+    /**
+     * Current scroll state
+     */
+    get isScrolling() {
+      return this._isScrolling;
+    }
+    set isScrolling(value) {
+      if (this._isScrolling !== value) {
+        this._isScrolling = value;
+        this.updateClassName();
+      }
+    }
+    /**
+     * Check if lenis is stopped
+     */
+    get isStopped() {
+      return this._isStopped;
+    }
+    set isStopped(value) {
+      if (this._isStopped !== value) {
+        this._isStopped = value;
+        this.updateClassName();
+      }
+    }
+    /**
+     * Check if lenis is locked
+     */
+    get isLocked() {
+      return this._isLocked;
+    }
+    set isLocked(value) {
+      if (this._isLocked !== value) {
+        this._isLocked = value;
+        this.updateClassName();
+      }
+    }
+    /**
+     * Check if lenis is smooth scrolling
+     */
+    get isSmooth() {
+      return this.isScrolling === "smooth";
+    }
+    /**
+     * The class name applied to the wrapper element
+     */
+    get className() {
+      let className = "lenis";
+      if (this.options.autoToggle) className += " lenis-autoToggle";
+      if (this.isStopped) className += " lenis-stopped";
+      if (this.isLocked) className += " lenis-locked";
+      if (this.isScrolling) className += " lenis-scrolling";
+      if (this.isScrolling === "smooth") className += " lenis-smooth";
+      return className;
+    }
+    updateClassName() {
+      this.cleanUpClassName();
+      this.rootElement.className = `${this.rootElement.className} ${this.className}`.trim();
+    }
+    cleanUpClassName() {
+      this.rootElement.className = this.rootElement.className.replace(/lenis(-\w+)?/g, "").trim();
+    }
+  };
+
   // node_modules/gsap/gsap-core.js
   function _assertThisInitialized(self) {
     if (self === void 0) {
@@ -503,7 +1593,7 @@
   var getUnit = function getUnit2(value, v) {
     return !_isString(value) || !(v = _unitExp.exec(value)) ? "" : v[1];
   };
-  var clamp = function clamp2(min, max, value) {
+  var clamp2 = function clamp3(min, max, value) {
     return _conditionalReturn(value, function(v) {
       return _clamp(min, max, v);
     });
@@ -3017,7 +4107,7 @@
       snap,
       normalize,
       getUnit,
-      clamp,
+      clamp: clamp2,
       splitColor,
       toArray,
       selector,
@@ -4682,11 +5772,12 @@
       });
     }
     sizing() {
-      this.totalWidth = this.logos[this.logos.length - 1].offsetWidth + this.logos[this.logos.length - 1].offsetLeft + parseInt(getComputedStyle(this.element).gap) - this.element.offsetLeft;
+      this.totalWidth = this.logos[this.logos.length - 1].offsetWidth + this.logos[this.logos.length - 1].offsetLeft + (parseInt(getComputedStyle(this.element).gap) || 0) - this.element.offsetLeft;
       this.logos.forEach((logo) => {
         logo.startingWidth = logo.offsetWidth;
         logo.startingX = logo.offsetLeft - this.element.offsetLeft;
         logo.loop = 0;
+        console.log(logo.startingWidth, logo.startingX, logo.loop);
       });
       let widestLogoWidth = 0;
       this.logos.forEach((logo) => {
@@ -4699,6 +5790,7 @@
       });
     }
     update() {
+      console.log(this.logos);
       this.ticker = () => {
         this.position -= 1;
         this.logos.forEach((logo, index) => {
@@ -4723,6 +5815,9 @@
       this.elements();
       this.build();
       this.place();
+      this.sizing();
+      this.animate();
+      window.addEventListener("resize", this.sizing.bind(this));
     }
     elements() {
       this.bg = document.createElement("div");
@@ -4750,14 +5845,22 @@
         const gVar = Math.random() * 140 - 30;
         const bVar = Math.random() * 10;
         gsapWithCSS.set(hex, {
-          xPercent: col * (93.3 - 6.7) + (row % 2 ? 0 : (93.3 - 6.7) / 2) - 50,
+          xPercent: col * (93.3 - 6.7) - 6.7 + (93.3 - 6.7) / (row % 2 ? -4 : 4),
           yPercent: row * 75,
           backgroundColor: `rgb(${Math.max(0, Math.min(255, rgb[0] + rVar))}, ${Math.max(0, Math.min(255, rgb[1] + gVar))}, ${Math.max(0, Math.min(255, rgb[2] + bVar))})`
         });
       });
-      gsapWithCSS.set(this.bg, {
-        height: this.hexes[0].getBoundingClientRect().height + this.hexes[0].getBoundingClientRect().height * 3 * 0.75
+    }
+    sizing() {
+      gsapWithCSS.set(this.hexes, {
+        width: this.bgWrapper.offsetHeight / 2
       });
+      gsapWithCSS.set(this.bg, {
+        height: this.hexes[0].getBoundingClientRect().height + this.hexes[0].getBoundingClientRect().height * 3 * 0.75,
+        width: this.hexes[0].getBoundingClientRect().width * 8 * 0.866
+      });
+    }
+    animate() {
       const tl = gsapWithCSS.timeline();
       tl.from(this.hexes, {
         opacity: 0,
@@ -4775,7 +5878,6 @@
               duration: "random(0.5, 5)",
               delay: "random(0, 2)",
               repeat: -1
-              // new random on each rep
             });
           }
         },
@@ -4790,6 +5892,895 @@
         duration: "random(0.5, 5)",
         delay: "random(0, 2)"
       });
+    }
+  };
+
+  // js/MovingHex.js
+  var MovingHex = class {
+    constructor(element) {
+      this.element = element;
+      this.create();
+      this.position();
+      this.animate();
+    }
+    create() {
+      const hexQ = 48;
+      this.hexWrapper = [document.createElement("div"), document.createElement("div")];
+      this.hexWrapper.forEach((wrapper) => {
+        wrapper.classList.add("hex-wrapper");
+        this.element.appendChild(wrapper);
+      });
+      gsapWithCSS.set(this.hexWrapper[1], {
+        scaleX: -1,
+        y: "-6rem"
+      });
+      for (let i = 0; i < hexQ; i++) {
+        const hexController = document.createElement("div");
+        hexController.classList.add("hex-controller");
+        const hex = document.createElement("div");
+        hex.classList.add("hex");
+        hexController.appendChild(hex);
+        if (i < 24) {
+          this.hexWrapper[0].appendChild(hexController);
+        } else {
+          this.hexWrapper[1].appendChild(hexController);
+        }
+      }
+      this.hexWrapper.forEach((wrapper) => {
+        wrapper.controllers = wrapper.querySelectorAll(".hex-controller");
+      });
+    }
+    position() {
+      this.hexWrapper.forEach((wrapper) => {
+        wrapper.controllers.forEach((controller, index) => {
+          const col = index % 4;
+          const row = Math.floor(index / 4);
+          gsapWithCSS.set(controller, {
+            xPercent: ((col - 1) * (93.3 - 6.7) - 6.7 + (93.3 - 6.7) / (row % 2 ? -4 : 4)) * 1.1,
+            yPercent: row * 75 * 1.1
+          });
+        });
+      });
+    }
+    animate() {
+      this.hexWrapper.forEach((wrapper) => {
+        wrapper.controllers.forEach((controller, index) => {
+          const hex = controller.querySelector(".hex");
+          const duration = 3;
+          gsapWithCSS.to(hex, {
+            xPercent: (93.3 - 6.7) * 1.09,
+            ease: "none",
+            duration,
+            repeat: -1
+          });
+          if (index % 4 === 0) {
+            gsapWithCSS.from(hex, {
+              autoAlpha: 0,
+              rotate: -180,
+              duration: duration - 1,
+              ease: "elastic.out(1, 0.9)",
+              repeat: -1,
+              scale: 0,
+              repeatDelay: duration - 2
+            });
+          }
+          if (index % 4 === 1) {
+            gsapWithCSS.to(hex, {
+              scale: 0.7,
+              duration,
+              ease: "none",
+              repeat: -1
+            });
+          }
+          if (index % 4 === 2) {
+            gsapWithCSS.fromTo(hex, {
+              scale: 0.7
+            }, {
+              duration,
+              ease: "none",
+              repeat: -1,
+              scale: 0.3
+            });
+          }
+          if (index % 4 === 3) {
+            gsapWithCSS.fromTo(hex, {
+              autoAlpha: 1,
+              scale: 0.3
+            }, {
+              autoAlpha: 0,
+              duration,
+              ease: "none",
+              repeat: -1,
+              scale: 0,
+              rotate: 180
+            });
+          }
+        });
+      });
+    }
+  };
+
+  // node_modules/gsap/utils/paths.js
+  var _svgPathExp = /[achlmqstvz]|(-?\d*\.?\d*(?:e[\-+]?\d+)?)[0-9]/ig;
+  var _scientific = /[\+\-]?\d*\.?\d+e[\+\-]?\d+/ig;
+  var _DEG2RAD2 = Math.PI / 180;
+  var _RAD2DEG2 = 180 / Math.PI;
+  var _sin2 = Math.sin;
+  var _cos2 = Math.cos;
+  var _abs = Math.abs;
+  var _sqrt2 = Math.sqrt;
+  var _isNumber3 = function _isNumber4(value) {
+    return typeof value === "number";
+  };
+  var _roundingNum = 1e5;
+  var _round3 = function _round4(value) {
+    return Math.round(value * _roundingNum) / _roundingNum || 0;
+  };
+  function transformRawPath(rawPath, a, b, c, d, tx, ty) {
+    var j = rawPath.length, segment, l, i, x, y;
+    while (--j > -1) {
+      segment = rawPath[j];
+      l = segment.length;
+      for (i = 0; i < l; i += 2) {
+        x = segment[i];
+        y = segment[i + 1];
+        segment[i] = x * a + y * c + tx;
+        segment[i + 1] = x * b + y * d + ty;
+      }
+    }
+    rawPath._dirty = 1;
+    return rawPath;
+  }
+  function arcToSegment(lastX, lastY, rx, ry, angle, largeArcFlag, sweepFlag, x, y) {
+    if (lastX === x && lastY === y) {
+      return;
+    }
+    rx = _abs(rx);
+    ry = _abs(ry);
+    var angleRad = angle % 360 * _DEG2RAD2, cosAngle = _cos2(angleRad), sinAngle = _sin2(angleRad), PI = Math.PI, TWOPI = PI * 2, dx2 = (lastX - x) / 2, dy2 = (lastY - y) / 2, x1 = cosAngle * dx2 + sinAngle * dy2, y1 = -sinAngle * dx2 + cosAngle * dy2, x1_sq = x1 * x1, y1_sq = y1 * y1, radiiCheck = x1_sq / (rx * rx) + y1_sq / (ry * ry);
+    if (radiiCheck > 1) {
+      rx = _sqrt2(radiiCheck) * rx;
+      ry = _sqrt2(radiiCheck) * ry;
+    }
+    var rx_sq = rx * rx, ry_sq = ry * ry, sq = (rx_sq * ry_sq - rx_sq * y1_sq - ry_sq * x1_sq) / (rx_sq * y1_sq + ry_sq * x1_sq);
+    if (sq < 0) {
+      sq = 0;
+    }
+    var coef = (largeArcFlag === sweepFlag ? -1 : 1) * _sqrt2(sq), cx1 = coef * (rx * y1 / ry), cy1 = coef * -(ry * x1 / rx), sx2 = (lastX + x) / 2, sy2 = (lastY + y) / 2, cx = sx2 + (cosAngle * cx1 - sinAngle * cy1), cy = sy2 + (sinAngle * cx1 + cosAngle * cy1), ux = (x1 - cx1) / rx, uy = (y1 - cy1) / ry, vx = (-x1 - cx1) / rx, vy = (-y1 - cy1) / ry, temp = ux * ux + uy * uy, angleStart = (uy < 0 ? -1 : 1) * Math.acos(ux / _sqrt2(temp)), angleExtent = (ux * vy - uy * vx < 0 ? -1 : 1) * Math.acos((ux * vx + uy * vy) / _sqrt2(temp * (vx * vx + vy * vy)));
+    isNaN(angleExtent) && (angleExtent = PI);
+    if (!sweepFlag && angleExtent > 0) {
+      angleExtent -= TWOPI;
+    } else if (sweepFlag && angleExtent < 0) {
+      angleExtent += TWOPI;
+    }
+    angleStart %= TWOPI;
+    angleExtent %= TWOPI;
+    var segments = Math.ceil(_abs(angleExtent) / (TWOPI / 4)), rawPath = [], angleIncrement = angleExtent / segments, controlLength = 4 / 3 * _sin2(angleIncrement / 2) / (1 + _cos2(angleIncrement / 2)), ma = cosAngle * rx, mb = sinAngle * rx, mc = sinAngle * -ry, md = cosAngle * ry, i;
+    for (i = 0; i < segments; i++) {
+      angle = angleStart + i * angleIncrement;
+      x1 = _cos2(angle);
+      y1 = _sin2(angle);
+      ux = _cos2(angle += angleIncrement);
+      uy = _sin2(angle);
+      rawPath.push(x1 - controlLength * y1, y1 + controlLength * x1, ux + controlLength * uy, uy - controlLength * ux, ux, uy);
+    }
+    for (i = 0; i < rawPath.length; i += 2) {
+      x1 = rawPath[i];
+      y1 = rawPath[i + 1];
+      rawPath[i] = x1 * ma + y1 * mc + cx;
+      rawPath[i + 1] = x1 * mb + y1 * md + cy;
+    }
+    rawPath[i - 2] = x;
+    rawPath[i - 1] = y;
+    return rawPath;
+  }
+  function stringToRawPath(d) {
+    var a = (d + "").replace(_scientific, function(m) {
+      var n = +m;
+      return n < 1e-4 && n > -1e-4 ? 0 : n;
+    }).match(_svgPathExp) || [], path = [], relativeX = 0, relativeY = 0, twoThirds = 2 / 3, elements = a.length, points = 0, errorMessage = "ERROR: malformed path: " + d, i, j, x, y, command, isRelative, segment, startX, startY, difX, difY, beziers, prevCommand, flag1, flag2, line = function line2(sx, sy, ex, ey) {
+      difX = (ex - sx) / 3;
+      difY = (ey - sy) / 3;
+      segment.push(sx + difX, sy + difY, ex - difX, ey - difY, ex, ey);
+    };
+    if (!d || !isNaN(a[0]) || isNaN(a[1])) {
+      console.log(errorMessage);
+      return path;
+    }
+    for (i = 0; i < elements; i++) {
+      prevCommand = command;
+      if (isNaN(a[i])) {
+        command = a[i].toUpperCase();
+        isRelative = command !== a[i];
+      } else {
+        i--;
+      }
+      x = +a[i + 1];
+      y = +a[i + 2];
+      if (isRelative) {
+        x += relativeX;
+        y += relativeY;
+      }
+      if (!i) {
+        startX = x;
+        startY = y;
+      }
+      if (command === "M") {
+        if (segment) {
+          if (segment.length < 8) {
+            path.length -= 1;
+          } else {
+            points += segment.length;
+          }
+        }
+        relativeX = startX = x;
+        relativeY = startY = y;
+        segment = [x, y];
+        path.push(segment);
+        i += 2;
+        command = "L";
+      } else if (command === "C") {
+        if (!segment) {
+          segment = [0, 0];
+        }
+        if (!isRelative) {
+          relativeX = relativeY = 0;
+        }
+        segment.push(x, y, relativeX + a[i + 3] * 1, relativeY + a[i + 4] * 1, relativeX += a[i + 5] * 1, relativeY += a[i + 6] * 1);
+        i += 6;
+      } else if (command === "S") {
+        difX = relativeX;
+        difY = relativeY;
+        if (prevCommand === "C" || prevCommand === "S") {
+          difX += relativeX - segment[segment.length - 4];
+          difY += relativeY - segment[segment.length - 3];
+        }
+        if (!isRelative) {
+          relativeX = relativeY = 0;
+        }
+        segment.push(difX, difY, x, y, relativeX += a[i + 3] * 1, relativeY += a[i + 4] * 1);
+        i += 4;
+      } else if (command === "Q") {
+        difX = relativeX + (x - relativeX) * twoThirds;
+        difY = relativeY + (y - relativeY) * twoThirds;
+        if (!isRelative) {
+          relativeX = relativeY = 0;
+        }
+        relativeX += a[i + 3] * 1;
+        relativeY += a[i + 4] * 1;
+        segment.push(difX, difY, relativeX + (x - relativeX) * twoThirds, relativeY + (y - relativeY) * twoThirds, relativeX, relativeY);
+        i += 4;
+      } else if (command === "T") {
+        difX = relativeX - segment[segment.length - 4];
+        difY = relativeY - segment[segment.length - 3];
+        segment.push(relativeX + difX, relativeY + difY, x + (relativeX + difX * 1.5 - x) * twoThirds, y + (relativeY + difY * 1.5 - y) * twoThirds, relativeX = x, relativeY = y);
+        i += 2;
+      } else if (command === "H") {
+        line(relativeX, relativeY, relativeX = x, relativeY);
+        i += 1;
+      } else if (command === "V") {
+        line(relativeX, relativeY, relativeX, relativeY = x + (isRelative ? relativeY - relativeX : 0));
+        i += 1;
+      } else if (command === "L" || command === "Z") {
+        if (command === "Z") {
+          x = startX;
+          y = startY;
+          segment.closed = true;
+        }
+        if (command === "L" || _abs(relativeX - x) > 0.5 || _abs(relativeY - y) > 0.5) {
+          line(relativeX, relativeY, x, y);
+          if (command === "L") {
+            i += 2;
+          }
+        }
+        relativeX = x;
+        relativeY = y;
+      } else if (command === "A") {
+        flag1 = a[i + 4];
+        flag2 = a[i + 5];
+        difX = a[i + 6];
+        difY = a[i + 7];
+        j = 7;
+        if (flag1.length > 1) {
+          if (flag1.length < 3) {
+            difY = difX;
+            difX = flag2;
+            j--;
+          } else {
+            difY = flag2;
+            difX = flag1.substr(2);
+            j -= 2;
+          }
+          flag2 = flag1.charAt(1);
+          flag1 = flag1.charAt(0);
+        }
+        beziers = arcToSegment(relativeX, relativeY, +a[i + 1], +a[i + 2], +a[i + 3], +flag1, +flag2, (isRelative ? relativeX : 0) + difX * 1, (isRelative ? relativeY : 0) + difY * 1);
+        i += j;
+        if (beziers) {
+          for (j = 0; j < beziers.length; j++) {
+            segment.push(beziers[j]);
+          }
+        }
+        relativeX = segment[segment.length - 2];
+        relativeY = segment[segment.length - 1];
+      } else {
+        console.log(errorMessage);
+      }
+    }
+    i = segment.length;
+    if (i < 6) {
+      path.pop();
+      i = 0;
+    } else if (segment[0] === segment[i - 2] && segment[1] === segment[i - 1]) {
+      segment.closed = true;
+    }
+    path.totalPoints = points + i;
+    return path;
+  }
+  function rawPathToString(rawPath) {
+    if (_isNumber3(rawPath[0])) {
+      rawPath = [rawPath];
+    }
+    var result = "", l = rawPath.length, sl, s, i, segment;
+    for (s = 0; s < l; s++) {
+      segment = rawPath[s];
+      result += "M" + _round3(segment[0]) + "," + _round3(segment[1]) + " C";
+      sl = segment.length;
+      for (i = 2; i < sl; i++) {
+        result += _round3(segment[i++]) + "," + _round3(segment[i++]) + " " + _round3(segment[i++]) + "," + _round3(segment[i++]) + " " + _round3(segment[i++]) + "," + _round3(segment[i]) + " ";
+      }
+      if (segment.closed) {
+        result += "z";
+      }
+    }
+    return result;
+  }
+
+  // node_modules/gsap/CustomEase.js
+  var gsap3;
+  var _coreInitted3;
+  var _getGSAP = function _getGSAP2() {
+    return gsap3 || typeof window !== "undefined" && (gsap3 = window.gsap) && gsap3.registerPlugin && gsap3;
+  };
+  var _initCore3 = function _initCore4() {
+    gsap3 = _getGSAP();
+    if (gsap3) {
+      gsap3.registerEase("_CE", CustomEase.create);
+      _coreInitted3 = 1;
+    } else {
+      console.warn("Please gsap.registerPlugin(CustomEase)");
+    }
+  };
+  var _bigNum3 = 1e20;
+  var _round5 = function _round6(value) {
+    return ~~(value * 1e3 + (value < 0 ? -0.5 : 0.5)) / 1e3;
+  };
+  var _bonusValidated = 1;
+  var _numExp2 = /[-+=.]*\d+[.e\-+]*\d*[e\-+]*\d*/gi;
+  var _needsParsingExp = /[cLlsSaAhHvVtTqQ]/g;
+  var _findMinimum = function _findMinimum2(values) {
+    var l = values.length, min = _bigNum3, i;
+    for (i = 1; i < l; i += 6) {
+      +values[i] < min && (min = +values[i]);
+    }
+    return min;
+  };
+  var _normalize = function _normalize2(values, height, originY) {
+    if (!originY && originY !== 0) {
+      originY = Math.max(+values[values.length - 1], +values[1]);
+    }
+    var tx = +values[0] * -1, ty = -originY, l = values.length, sx = 1 / (+values[l - 2] + tx), sy = -height || (Math.abs(+values[l - 1] - +values[1]) < 0.01 * (+values[l - 2] - +values[0]) ? _findMinimum(values) + ty : +values[l - 1] + ty), i;
+    if (sy) {
+      sy = 1 / sy;
+    } else {
+      sy = -sx;
+    }
+    for (i = 0; i < l; i += 2) {
+      values[i] = (+values[i] + tx) * sx;
+      values[i + 1] = (+values[i + 1] + ty) * sy;
+    }
+  };
+  var _bezierToPoints = function _bezierToPoints2(x1, y1, x2, y2, x3, y3, x4, y4, threshold, points, index) {
+    var x12 = (x1 + x2) / 2, y12 = (y1 + y2) / 2, x23 = (x2 + x3) / 2, y23 = (y2 + y3) / 2, x34 = (x3 + x4) / 2, y34 = (y3 + y4) / 2, x123 = (x12 + x23) / 2, y123 = (y12 + y23) / 2, x234 = (x23 + x34) / 2, y234 = (y23 + y34) / 2, x1234 = (x123 + x234) / 2, y1234 = (y123 + y234) / 2, dx = x4 - x1, dy = y4 - y1, d2 = Math.abs((x2 - x4) * dy - (y2 - y4) * dx), d3 = Math.abs((x3 - x4) * dy - (y3 - y4) * dx), length;
+    if (!points) {
+      points = [{
+        x: x1,
+        y: y1
+      }, {
+        x: x4,
+        y: y4
+      }];
+      index = 1;
+    }
+    points.splice(index || points.length - 1, 0, {
+      x: x1234,
+      y: y1234
+    });
+    if ((d2 + d3) * (d2 + d3) > threshold * (dx * dx + dy * dy)) {
+      length = points.length;
+      _bezierToPoints2(x1, y1, x12, y12, x123, y123, x1234, y1234, threshold, points, index);
+      _bezierToPoints2(x1234, y1234, x234, y234, x34, y34, x4, y4, threshold, points, index + 1 + (points.length - length));
+    }
+    return points;
+  };
+  var CustomEase = /* @__PURE__ */ function() {
+    function CustomEase2(id, data, config3) {
+      _coreInitted3 || _initCore3();
+      this.id = id;
+      _bonusValidated && this.setData(data, config3);
+    }
+    var _proto = CustomEase2.prototype;
+    _proto.setData = function setData(data, config3) {
+      config3 = config3 || {};
+      data = data || "0,0,1,1";
+      var values = data.match(_numExp2), closest = 1, points = [], lookup = [], precision = config3.precision || 1, fast = precision <= 1, l, a1, a2, i, inc, j, point, prevPoint, p;
+      this.data = data;
+      if (_needsParsingExp.test(data) || ~data.indexOf("M") && data.indexOf("C") < 0) {
+        values = stringToRawPath(data)[0];
+      }
+      l = values.length;
+      if (l === 4) {
+        values.unshift(0, 0);
+        values.push(1, 1);
+        l = 8;
+      } else if ((l - 2) % 6) {
+        throw "Invalid CustomEase";
+      }
+      if (+values[0] !== 0 || +values[l - 2] !== 1) {
+        _normalize(values, config3.height, config3.originY);
+      }
+      this.segment = values;
+      for (i = 2; i < l; i += 6) {
+        a1 = {
+          x: +values[i - 2],
+          y: +values[i - 1]
+        };
+        a2 = {
+          x: +values[i + 4],
+          y: +values[i + 5]
+        };
+        points.push(a1, a2);
+        _bezierToPoints(a1.x, a1.y, +values[i], +values[i + 1], +values[i + 2], +values[i + 3], a2.x, a2.y, 1 / (precision * 2e5), points, points.length - 1);
+      }
+      l = points.length;
+      for (i = 0; i < l; i++) {
+        point = points[i];
+        prevPoint = points[i - 1] || point;
+        if ((point.x > prevPoint.x || prevPoint.y !== point.y && prevPoint.x === point.x || point === prevPoint) && point.x <= 1) {
+          prevPoint.cx = point.x - prevPoint.x;
+          prevPoint.cy = point.y - prevPoint.y;
+          prevPoint.n = point;
+          prevPoint.nx = point.x;
+          if (fast && i > 1 && Math.abs(prevPoint.cy / prevPoint.cx - points[i - 2].cy / points[i - 2].cx) > 2) {
+            fast = 0;
+          }
+          if (prevPoint.cx < closest) {
+            if (!prevPoint.cx) {
+              prevPoint.cx = 1e-3;
+              if (i === l - 1) {
+                prevPoint.x -= 1e-3;
+                closest = Math.min(closest, 1e-3);
+                fast = 0;
+              }
+            } else {
+              closest = prevPoint.cx;
+            }
+          }
+        } else {
+          points.splice(i--, 1);
+          l--;
+        }
+      }
+      l = 1 / closest + 1 | 0;
+      inc = 1 / l;
+      j = 0;
+      point = points[0];
+      if (fast) {
+        for (i = 0; i < l; i++) {
+          p = i * inc;
+          if (point.nx < p) {
+            point = points[++j];
+          }
+          a1 = point.y + (p - point.x) / point.cx * point.cy;
+          lookup[i] = {
+            x: p,
+            cx: inc,
+            y: a1,
+            cy: 0,
+            nx: 9
+          };
+          if (i) {
+            lookup[i - 1].cy = a1 - lookup[i - 1].y;
+          }
+        }
+        j = points[points.length - 1];
+        lookup[l - 1].cy = j.y - a1;
+        lookup[l - 1].cx = j.x - lookup[lookup.length - 1].x;
+      } else {
+        for (i = 0; i < l; i++) {
+          if (point.nx < i * inc) {
+            point = points[++j];
+          }
+          lookup[i] = point;
+        }
+        if (j < points.length - 1) {
+          lookup[i - 1] = points[points.length - 2];
+        }
+      }
+      this.ease = function(p2) {
+        var point2 = lookup[p2 * l | 0] || lookup[l - 1];
+        if (point2.nx < p2) {
+          point2 = point2.n;
+        }
+        return point2.y + (p2 - point2.x) / point2.cx * point2.cy;
+      };
+      this.ease.custom = this;
+      this.id && gsap3 && gsap3.registerEase(this.id, this.ease);
+      return this;
+    };
+    _proto.getSVGData = function getSVGData(config3) {
+      return CustomEase2.getSVGData(this, config3);
+    };
+    CustomEase2.create = function create(id, data, config3) {
+      return new CustomEase2(id, data, config3).ease;
+    };
+    CustomEase2.register = function register(core) {
+      gsap3 = core;
+      _initCore3();
+    };
+    CustomEase2.get = function get(id) {
+      return gsap3.parseEase(id);
+    };
+    CustomEase2.getSVGData = function getSVGData(ease, config3) {
+      config3 = config3 || {};
+      var width = config3.width || 100, height = config3.height || 100, x = config3.x || 0, y = (config3.y || 0) + height, e = gsap3.utils.toArray(config3.path)[0], a, slope, i, inc, tx, ty, precision, threshold, prevX, prevY;
+      if (config3.invert) {
+        height = -height;
+        y = 0;
+      }
+      if (typeof ease === "string") {
+        ease = gsap3.parseEase(ease);
+      }
+      if (ease.custom) {
+        ease = ease.custom;
+      }
+      if (ease instanceof CustomEase2) {
+        a = rawPathToString(transformRawPath([ease.segment], width, 0, 0, -height, x, y));
+      } else {
+        a = [x, y];
+        precision = Math.max(5, (config3.precision || 1) * 200);
+        inc = 1 / precision;
+        precision += 2;
+        threshold = 5 / precision;
+        prevX = _round5(x + inc * width);
+        prevY = _round5(y + ease(inc) * -height);
+        slope = (prevY - y) / (prevX - x);
+        for (i = 2; i < precision; i++) {
+          tx = _round5(x + i * inc * width);
+          ty = _round5(y + ease(i * inc) * -height);
+          if (Math.abs((ty - prevY) / (tx - prevX) - slope) > threshold || i === precision - 1) {
+            a.push(prevX, prevY);
+            slope = (ty - prevY) / (tx - prevX);
+          }
+          prevX = tx;
+          prevY = ty;
+        }
+        a = "M" + a.join(",");
+      }
+      e && e.setAttribute("d", a);
+      return a;
+    };
+    return CustomEase2;
+  }();
+  CustomEase.version = "3.13.0";
+  CustomEase.headless = true;
+  _getGSAP() && gsap3.registerPlugin(CustomEase);
+
+  // node_modules/gsap/CustomBounce.js
+  var gsap4;
+  var _coreInitted4;
+  var createCustomEase;
+  var _getGSAP3 = function _getGSAP4() {
+    return gsap4 || typeof window !== "undefined" && (gsap4 = window.gsap) && gsap4.registerPlugin && gsap4;
+  };
+  var _initCore5 = function _initCore6(required) {
+    gsap4 = _getGSAP3();
+    createCustomEase = gsap4 && gsap4.parseEase("_CE");
+    if (createCustomEase) {
+      _coreInitted4 = 1;
+      gsap4.parseEase("bounce").config = function(vars) {
+        return typeof vars === "object" ? _create("", vars) : _create("bounce(" + vars + ")", {
+          strength: +vars
+        });
+      };
+    } else {
+      required && console.warn("Please gsap.registerPlugin(CustomEase, CustomBounce)");
+    }
+  };
+  var _normalizeX = function _normalizeX2(a) {
+    var l = a.length, s = 1 / a[l - 2], rnd = 1e3, i;
+    for (i = 2; i < l; i += 2) {
+      a[i] = ~~(a[i] * s * rnd) / rnd;
+    }
+    a[l - 2] = 1;
+  };
+  var _bonusValidated2 = 1;
+  var _create = function _create2(id, vars) {
+    if (!_coreInitted4) {
+      _initCore5(1);
+    }
+    vars = vars || {};
+    if (_bonusValidated2) {
+      var max = 0.999, decay = Math.min(max, vars.strength || 0.7), decayX = decay, gap = (vars.squash || 0) / 100, originalGap = gap, slope = 1 / 0.03, w = 0.2, h = 1, prevX = 0.1, path = [0, 0, 0.07, 0, 0.1, 1, 0.1, 1], squashPath = [0, 0, 0, 0, 0.1, 0, 0.1, 0], cp1, cp2, x, y, i, nextX, squishMagnitude;
+      for (i = 0; i < 200; i++) {
+        w *= decayX * ((decayX + 1) / 2);
+        h *= decay * decay;
+        nextX = prevX + w;
+        x = prevX + w * 0.49;
+        y = 1 - h;
+        cp1 = prevX + h / slope;
+        cp2 = x + (x - cp1) * 0.8;
+        if (gap) {
+          prevX += gap;
+          cp1 += gap;
+          x += gap;
+          cp2 += gap;
+          nextX += gap;
+          squishMagnitude = gap / originalGap;
+          squashPath.push(
+            prevX - gap,
+            0,
+            prevX - gap,
+            squishMagnitude,
+            prevX - gap / 2,
+            squishMagnitude,
+            //center peak anchor
+            prevX,
+            squishMagnitude,
+            prevX,
+            0,
+            prevX,
+            0,
+            //base anchor
+            prevX,
+            squishMagnitude * -0.6,
+            prevX + (nextX - prevX) / 6,
+            0,
+            nextX,
+            0
+          );
+          path.push(prevX - gap, 1, prevX, 1, prevX, 1);
+          gap *= decay * decay;
+        }
+        path.push(prevX, 1, cp1, y, x, y, cp2, y, nextX, 1, nextX, 1);
+        decay *= 0.95;
+        slope = h / (nextX - cp2);
+        prevX = nextX;
+        if (y > max) {
+          break;
+        }
+      }
+      if (vars.endAtStart && vars.endAtStart !== "false") {
+        x = -0.1;
+        path.unshift(x, 1, x, 1, -0.07, 0);
+        if (originalGap) {
+          gap = originalGap * 2.5;
+          x -= gap;
+          path.unshift(x, 1, x, 1, x, 1);
+          squashPath.splice(0, 6);
+          squashPath.unshift(x, 0, x, 0, x, 1, x + gap / 2, 1, x + gap, 1, x + gap, 0, x + gap, 0, x + gap, -0.6, x + gap + 0.033, 0);
+          for (i = 0; i < squashPath.length; i += 2) {
+            squashPath[i] -= x;
+          }
+        }
+        for (i = 0; i < path.length; i += 2) {
+          path[i] -= x;
+          path[i + 1] = 1 - path[i + 1];
+        }
+      }
+      if (gap) {
+        _normalizeX(squashPath);
+        squashPath[2] = "C" + squashPath[2];
+        createCustomEase(vars.squashID || id + "-squash", "M" + squashPath.join(","));
+      }
+      _normalizeX(path);
+      path[2] = "C" + path[2];
+      return createCustomEase(id, "M" + path.join(","));
+    }
+  };
+  var CustomBounce = /* @__PURE__ */ function() {
+    function CustomBounce2(id, vars) {
+      this.ease = _create(id, vars);
+    }
+    CustomBounce2.create = function create(id, vars) {
+      return _create(id, vars);
+    };
+    CustomBounce2.register = function register(core) {
+      gsap4 = core;
+      _initCore5();
+    };
+    return CustomBounce2;
+  }();
+  _getGSAP3() && gsap4.registerPlugin(CustomBounce);
+  CustomBounce.version = "3.13.0";
+
+  // js/Diction.js
+  var Diction = class {
+    constructor(element) {
+      gsapWithCSS.registerPlugin(CustomEase, CustomBounce);
+      this.element = element;
+      this.direction = element.getAttribute("diction");
+      console.log("direction", this.direction);
+      this.color1 = getComputedStyle(element).getPropertyValue("--diction-color1");
+      this.color2 = getComputedStyle(element).getPropertyValue("--diction-color2");
+      this.create();
+      this.split();
+      this.animate();
+    }
+    create() {
+      this.dot = document.createElement("div");
+      this.dot.classList.add("dot");
+      this.element.appendChild(this.dot);
+    }
+    split() {
+      this.splitText = new SplitText(this.element, {
+        type: "chars"
+      });
+    }
+    animate() {
+      gsapWithCSS.from(this.splitText.chars, {
+        opacity: 0,
+        duration: 1,
+        transformOrigin: this.direction === "over" ? "center top" : "center bottom",
+        scaleY: 0,
+        ease: "elastic.out(1, 0.7)",
+        delay: 1,
+        stagger: {
+          amount: 1
+        }
+      });
+      const tl = gsapWithCSS.timeline();
+      gsapWithCSS.set(this.dot, {
+        autoAlpha: 0,
+        backgroundColor: this.color1
+      });
+      tl.to(this.dot, {
+        autoAlpha: 1,
+        duration: 0.2,
+        ease: "none",
+        delay: 1
+      });
+      tl.to(this.dot, {
+        left: "calc(100% - 0.5rem)",
+        backgroundColor: this.color2,
+        duration: 2,
+        // ease: "none",
+        ease: "power1.out",
+        delay: 1
+      }, 0);
+      tl.fromTo(this.dot, {
+        top: this.direction === "over" ? "-40%" : "140%"
+      }, {
+        top: this.direction === "over" ? "20%" : "80%",
+        duration: 4,
+        ease: "bounce({strength:4, endAtStart:false})",
+        delay: 1
+      }, 0);
+      tl.to(this.dot, {
+        autoAlpha: 0,
+        duration: 0.2,
+        ease: "none",
+        delay: 1
+      }, 1.8);
+    }
+  };
+
+  // js/Megamenu.js
+  var Megamenu = class {
+    constructor(element) {
+      this.element = element;
+      this.megamenuWrapper = this.element.querySelector(".header-megamenu");
+      this.menuLinks = Array.from(this.element.querySelectorAll("[megamenu-link]"));
+      this.menuTargets = Array.from(this.element.querySelectorAll("[megamenu-target]"));
+      while (this.menuLinks.length !== this.menuTargets.length) {
+        if (this.menuLinks.length > this.menuTargets.length) {
+          this.menuLinks.splice(this.menuLinks.length - 1, 1);
+        } else {
+          this.menuTargets.splice(this.menuTargets.length - 1, 1);
+        }
+      }
+      console.log(this.menuLinks.length, this.menuTargets.length);
+      if (this.menuLinks.length !== this.menuTargets.length) {
+        console.error("menuLinks and menuTargets must have the same length");
+        return;
+      }
+      this.currentTarget = null;
+      this.megamenuShowing = false;
+      gsapWithCSS.set(this.menuTargets, {
+        opacity: 0
+      });
+      this.sizing();
+      this.observe();
+      this.spotlight();
+      this.interactions();
+    }
+    observe() {
+      const resizeObserver = new ResizeObserver(() => {
+        this.sizing();
+        console.log(this.element.getBoundingClientRect().height);
+      });
+      resizeObserver.observe(this.element);
+      setTimeout(() => {
+        console.log(this.element.getBoundingClientRect().height);
+      }, 1e3);
+    }
+    sizing() {
+      console.log("resizing");
+      this.left = this.megamenuWrapper.offsetLeft;
+      this.top = this.megamenuWrapper.offsetTop;
+    }
+    spotlight() {
+      this.spotlight = document.createElement("div");
+      this.spotlight.classList.add("spotlight");
+      this.megamenuWrapper.appendChild(this.spotlight);
+      const xPos = gsapWithCSS.quickTo(this.spotlight, "x");
+      const yPos = gsapWithCSS.quickTo(this.spotlight, "y");
+      const interaction = (event) => {
+        const x = event.clientX;
+        const y = event.clientY;
+        xPos(x - this.left);
+        yPos(y - this.top);
+      };
+      window.addEventListener("mousemove", interaction);
+    }
+    interactions() {
+      this.menuLinks.forEach((link, index) => {
+        link.addEventListener("mouseenter", () => {
+          if (!this.megamenuShowing) {
+            this.showMegamenu(true);
+          }
+          if (this.currentTarget === index) return;
+          this.showMenu(index);
+        });
+      });
+      this.element.addEventListener("mouseleave", () => {
+        if (!this.megamenuShowing) return;
+        this.showMegamenu(false);
+      });
+    }
+    showMenu(newIndex) {
+      const targetElement = this.menuTargets[newIndex];
+      const previousTarget = this.menuTargets[this.currentTarget];
+      console.log("change from", this.currentTarget, "to", newIndex);
+      if (this.currentTarget !== null) {
+        console.log(previousTarget);
+        gsapWithCSS.to(previousTarget, {
+          opacity: 0,
+          duration: 1,
+          xPercent: this.currentTarget > newIndex ? 100 : -100,
+          ease: "power4.inOut"
+        });
+      }
+      if (targetElement) {
+        gsapWithCSS.set(targetElement, {
+          xPercent: this.currentTarget !== null ? this.currentTarget > newIndex ? -100 : 100 : 0
+        });
+        gsapWithCSS.to(targetElement, {
+          opacity: 1,
+          duration: 1,
+          xPercent: 0,
+          ease: "power4.inOut"
+        });
+      }
+      this.currentTarget = newIndex;
+    }
+    showMegamenu(show) {
+      gsapWithCSS.to(this.megamenuWrapper, {
+        autoAlpha: show ? 1 : 0,
+        duration: 1,
+        ease: "power4.inOut"
+      });
+      this.megamenuShowing = show;
     }
   };
 
@@ -4817,19 +6808,19 @@
   var Testimonials = class {
     constructor(element) {
       this.element = element;
-      console.log(element);
+      this.wrapper = this.element.querySelector(".testimonials-wrapper");
       this.create();
       this.elements();
       this.sizing();
       this.bind();
     }
     elements() {
-      this.currentPage = 0;
+      this.currentPage = null;
       this.testimonials = this.element.querySelectorAll(".testimonial");
-      this.wrapper = this.element.querySelector(".testimonials-list");
       this.next = this.element.querySelector(".testimonials-controls-next");
+      console.log(this.next, this.prev);
       this.prev = this.element.querySelector(".testimonials-controls-prev");
-      this.indicators = this.element.querySelector(".testimonials-indicator");
+      this.indicators = this.element.querySelector(".testimonials-bullets");
     }
     sizing() {
       this.breakpoint = window.innerWidth < 768 ? "mobile" : window.innerWidth < 992 ? "tablet" : "desktop";
@@ -4838,25 +6829,24 @@
       this.indicators.innerHTML = "";
       this.testimonialWidth = this.testimonials[0].getBoundingClientRect().width;
       this.testimonialGap = parseInt(getComputedStyle(this.wrapper).columnGap);
-      console.log(this.testimonialWidth, this.testimonialGap);
-      setTimeout(() => {
-        console.log(this.testimonials[0].getBoundingClientRect().width, this.testimonialGap);
-      }, 4e3);
       for (let i = 0; i < this.totalPages; i++) {
         const indicator = document.createElement("div");
-        indicator.classList.add("bullet");
+        indicator.classList.add("testimonials-bullet");
         this.indicators.appendChild(indicator);
       }
-      this.indicatorsBullets = this.indicators.querySelectorAll(".bullet");
+      this.indicatorsBullets = this.indicators.querySelectorAll(".testimonials-bullet");
+      console.log(this.indicatorsBullets);
+      this.indicatorsBullets[0].classList.add("active");
       if (this.breakpoint !== this.currentBreakpoint) {
         this.currentBreakpoint = this.breakpoint;
         this.update(0);
       }
     }
     create() {
+      const testimonialOriginal = this.element.querySelector(".testimonial");
       for (let i = 0; i < 8; i++) {
-        const testimonial = this.element.querySelector(".testimonial").cloneNode(true);
-        this.element.querySelector(".testimonials-list").appendChild(testimonial);
+        const testimonial = testimonialOriginal.cloneNode(true);
+        this.wrapper.appendChild(testimonial);
       }
     }
     bind() {
@@ -4877,9 +6867,12 @@
       });
     }
     update(newPage) {
+      console.log("is updating", newPage, this.currentPage);
       let page = Math.min(this.testimonials.length - this.itemsPerPage, newPage * this.itemsPerPage);
       this.indicatorsBullets[newPage].classList.add("active", newPage > this.currentPage ? "from-left" : "from-right");
-      this.indicatorsBullets[this.currentPage].classList.remove("active", "from-left", "from-right");
+      if (this.currentPage !== null) {
+        this.indicatorsBullets[this.currentPage].classList.remove("active", "from-left", "from-right");
+      }
       gsapWithCSS.to(this.testimonials, {
         x: page * (this.testimonialWidth + this.testimonialGap) * -1,
         ease: "elastic.out(1, 0.9)",
@@ -4898,18 +6891,21 @@
       this.bind();
     }
     elements() {
+      this.items = this.element.querySelectorAll(".faq-item");
     }
     bind() {
-      this.element.addEventListener("click", () => {
-        this.toggle();
+      this.items.forEach((item) => {
+        item.addEventListener("click", () => {
+          this.toggle(item);
+        });
       });
     }
-    toggle() {
+    toggle(item) {
       this.open = !this.open;
       if (this.open) {
-        this.element.classList.add("active");
+        item.classList.add("active");
       } else {
-        this.element.classList.remove("active");
+        item.classList.remove("active");
       }
     }
   };
@@ -4922,6 +6918,23 @@
       g.pxToRem = (px) => {
         return px / 16 * 1 + "rem";
       };
+      const lenis = new Lenis({
+        duration: 1.2,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        orientation: "vertical",
+        gestureOrientation: "vertical",
+        smoothWheel: true,
+        wheelMultiplier: 1,
+        smoothTouch: false,
+        touchMultiplier: 2,
+        infinite: false
+      });
+      function raf(time) {
+        lenis.raf(time);
+        requestAnimationFrame(raf);
+      }
+      requestAnimationFrame(raf);
+      window.lenis = lenis;
       getFontSize();
       window.addEventListener("resize", () => {
         getFontSize();
@@ -4930,7 +6943,7 @@
       buttonElements.forEach((element) => {
         new Button(element);
       });
-      const rollerElements = document.querySelectorAll(".logo-roller-logos");
+      const rollerElements = document.querySelectorAll("[data-roller]");
       rollerElements.forEach((element) => {
         new Roller(element);
       });
@@ -4949,6 +6962,18 @@
       const faqElements = document.querySelectorAll("[faq]");
       faqElements.forEach((element) => {
         new FaqElements(element);
+      });
+      const movingHexElements = document.querySelectorAll("[moving-hex]");
+      movingHexElements.forEach((element) => {
+        new MovingHex(element);
+      });
+      const dictionElements = document.querySelectorAll("[diction]");
+      dictionElements.forEach((element) => {
+        new Diction(element);
+      });
+      const megamenuElements = document.querySelectorAll("[megamenu]");
+      megamenuElements.forEach((element) => {
+        new Megamenu(element);
       });
     });
   }
@@ -4988,4 +7013,34 @@ gsap/SplitText.js:
    * @license Copyright 2025, GreenSock. All rights reserved. Subject to the terms at https://gsap.com/standard-license.
    * @author: Jack Doyle
    *)
+
+gsap/utils/paths.js:
+  (*!
+   * paths 3.13.0
+   * https://gsap.com
+   *
+   * Copyright 2008-2025, GreenSock. All rights reserved.
+   * Subject to the terms at https://gsap.com/standard-license
+   * @author: Jack Doyle, jack@greensock.com
+  *)
+
+gsap/CustomEase.js:
+  (*!
+   * CustomEase 3.13.0
+   * https://gsap.com
+   *
+   * @license Copyright 2008-2025, GreenSock. All rights reserved.
+   * Subject to the terms at https://gsap.com/standard-license
+   * @author: Jack Doyle, jack@greensock.com
+  *)
+
+gsap/CustomBounce.js:
+  (*!
+   * CustomBounce 3.13.0
+   * https://gsap.com
+   *
+   * @license Copyright 2008-2025, GreenSock. All rights reserved.
+   * Subject to the terms at https://gsap.com/standard-license
+   * @author: Jack Doyle, jack@greensock.com
+  *)
 */

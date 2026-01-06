@@ -3,7 +3,7 @@ import gsap from "gsap";
 export class Testimonials {
     constructor(element) {
         this.element = element;
-        console.log(element);
+        this.wrapper = this.element.querySelector(".testimonials-wrapper");
 
         this.create();
         this.elements();
@@ -12,12 +12,13 @@ export class Testimonials {
     }
 
     elements() {
-        this.currentPage = 0;
+        this.currentPage = null;
         this.testimonials = this.element.querySelectorAll(".testimonial");
-        this.wrapper = this.element.querySelector(".testimonials-list");
         this.next = this.element.querySelector(".testimonials-controls-next");
+        console.log(this.next, this.prev);
+        
         this.prev = this.element.querySelector(".testimonials-controls-prev");
-        this.indicators = this.element.querySelector(".testimonials-indicator");
+        this.indicators = this.element.querySelector(".testimonials-bullets");
     }
 
     sizing() {
@@ -27,17 +28,16 @@ export class Testimonials {
         this.indicators.innerHTML = "";
         this.testimonialWidth = this.testimonials[0].getBoundingClientRect().width;
         this.testimonialGap = parseInt(getComputedStyle(this.wrapper).columnGap);
-        console.log(this.testimonialWidth, this.testimonialGap);
-        setTimeout(() => {
-            console.log(this.testimonials[0].getBoundingClientRect().width, this.testimonialGap);
-        }, 4000);
         
         for (let i = 0; i < this.totalPages; i++) {
             const indicator = document.createElement("div");
-            indicator.classList.add("bullet");
+            indicator.classList.add("testimonials-bullet");
             this.indicators.appendChild(indicator);
         }
-        this.indicatorsBullets = this.indicators.querySelectorAll(".bullet");
+        this.indicatorsBullets = this.indicators.querySelectorAll(".testimonials-bullet");
+        console.log(this.indicatorsBullets);
+
+        this.indicatorsBullets[0].classList.add("active");
 
         // Detect a change in breakpoint
         if (this.breakpoint !== this.currentBreakpoint) {
@@ -48,9 +48,11 @@ export class Testimonials {
 
     create() {
         // Clone this.testimonials[0] 10 times in the HTML
+        const testimonialOriginal = this.element.querySelector(".testimonial");
+        // this.wrapper.innerHTML = "";
         for (let i = 0; i < 8; i++) {
-            const testimonial = this.element.querySelector(".testimonial").cloneNode(true);
-            this.element.querySelector(".testimonials-list").appendChild(testimonial);
+            const testimonial = testimonialOriginal.cloneNode(true);
+            this.wrapper.appendChild(testimonial);
         }
     }
 
@@ -70,9 +72,13 @@ export class Testimonials {
     }
 
     update(newPage) {
+        console.log("is updating", newPage, this.currentPage);
+        
         let page = Math.min(this.testimonials.length - this.itemsPerPage, newPage * this.itemsPerPage);
         this.indicatorsBullets[newPage].classList.add("active", newPage > this.currentPage ? "from-left" : "from-right");
-        this.indicatorsBullets[this.currentPage].classList.remove("active", "from-left", "from-right");        
+        if (this.currentPage !== null) {
+            this.indicatorsBullets[this.currentPage].classList.remove("active", "from-left", "from-right");        
+        }
         
         gsap.to(this.testimonials, {
             x: (page * (this.testimonialWidth + this.testimonialGap)) * -1,

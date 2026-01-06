@@ -11,6 +11,10 @@ export class Hex {
         this.elements();
         this.build();
         this.place();
+        this.sizing();
+        this.animate();
+
+        window.addEventListener("resize", this.sizing.bind(this));
     }
 
     elements() {
@@ -44,14 +48,24 @@ export class Hex {
             const bVar = Math.random() * 10;
 
             gsap.set(hex, {
-                xPercent: col * (93.3 - 6.7) + (row % 2 ? 0 : (93.3 - 6.7) / 2) - 50,
+                xPercent: col * (93.3 - 6.7) - 6.7 + (93.3 - 6.7) / (row % 2 ? -4 : 4),
                 yPercent: row * 75,
                 backgroundColor: `rgb(${Math.max(0, Math.min(255, rgb[0] + rVar))}, ${Math.max(0, Math.min(255, rgb[1] + gVar))}, ${Math.max(0, Math.min(255, rgb[2] + bVar))})`
             });
         });
+    }
+
+    sizing() {
+        gsap.set(this.hexes, {
+            width: this.bgWrapper.offsetHeight / 2,
+        })
         gsap.set(this.bg, {
             height: this.hexes[0].getBoundingClientRect().height + (this.hexes[0].getBoundingClientRect().height * 3 * 0.75),
+            width: this.hexes[0].getBoundingClientRect().width * 8 * 0.866,
         })
+    }
+
+    animate() {
         const tl = gsap.timeline();
         tl.from(this.hexes, {
             opacity: 0,
@@ -69,8 +83,6 @@ export class Hex {
                         duration: "random(0.5, 5)",
                         delay: "random(0, 2)",
                         repeat: -1,
-                        // new random on each rep
-
                     })
                     
                 }
@@ -85,7 +97,6 @@ export class Hex {
             ease: "power2.inOut",
             duration: "random(0.5, 5)",
             delay: "random(0, 2)"
-
         })
     }
 }

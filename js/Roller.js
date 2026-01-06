@@ -1,7 +1,7 @@
 import gsap from "gsap";
 // Roller class
 export class Roller {
-    constructor(element) {
+    constructor(element) {        
         this.element = element;
         this.position = 0;
         
@@ -11,6 +11,7 @@ export class Roller {
 
     elements() {
         this.logos = this.element.querySelectorAll("img");
+        
         this.logos.forEach(logo => {
             this.loaded = false;
         });
@@ -32,7 +33,7 @@ export class Roller {
                     logosLoaded++;
                     if (logosLoaded === logosToLoad) {
                         this.sizing();
-                        this.update();
+                        this.update();                        
                     }
                 });
             }
@@ -44,12 +45,14 @@ export class Roller {
     }
 
     sizing() {
-        this.totalWidth = this.logos[this.logos.length - 1].offsetWidth + this.logos[this.logos.length - 1].offsetLeft + parseInt(getComputedStyle(this.element).gap) - this.element.offsetLeft;
+        this.totalWidth = this.logos[this.logos.length - 1].offsetWidth + this.logos[this.logos.length - 1].offsetLeft + (parseInt(getComputedStyle(this.element).gap) || 0) - this.element.offsetLeft;        
 
         this.logos.forEach(logo => {
             logo.startingWidth = logo.offsetWidth;
             logo.startingX = logo.offsetLeft - this.element.offsetLeft;
             logo.loop = 0;
+            console.log(logo.startingWidth, logo.startingX, logo.loop);
+            
         });
 
         // Get the widest logo's width
@@ -67,10 +70,10 @@ export class Roller {
     }
 
     update() {
+        console.log(this.logos);
+        
         this.ticker = () => {
             this.position -= 1;
-
-
             this.logos.forEach((logo, index) => {                
                 if (-this.position > (logo.startingWidth + logo.startingX + logo.loop * this.totalWidth) ) {
                     logo.loop++;

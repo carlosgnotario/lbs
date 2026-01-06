@@ -42,7 +42,6 @@ a {
     font-size: ptr(16);
     line-height: ptr(24);
     font-weight: 700;
-    color: $black;
     border-radius: 999em;
     gap: ptr(6);
     display: flex;
@@ -101,16 +100,18 @@ a {
         overflow: hidden;
         z-index: 0;
         border-radius: inherit;
+        container-type: inline-size;
     }
-
+    
     .bg {
         position: absolute;
+        outline: 1px solid red;
         display: grid;
         top: 50%;
-        transform: translateY(-50%);
+        left: 50%;
         opacity: 0.45;
         width: 100%;
-        container-type: inline-size;
+        transform: translate(-50%, -50%);
     }
 
     > * {
@@ -118,7 +119,7 @@ a {
     }
 
     .hex {
-        width: max(calc(100% / 6), 50cqh);
+        width: max(calc(100% / 6));
         aspect-ratio: 1 / 1;
         background-color: $half-way-orange;
         grid-area: 1/1;
@@ -155,8 +156,8 @@ a {
     }
 }
 
-.testimonials {
-    .bullet {
+.testimonials {    
+    &-bullet {
         position: relative;
         overflow: hidden;
 
@@ -250,7 +251,6 @@ a {
         }
 
         &.active {
-
             .faq-item-a {
                 height: auto;
                 padding-bottom: ptr(20);
@@ -283,5 +283,80 @@ a {
         left: 0;
         background-color: $background-1;
         z-index: 0;
+    }
+}
+
+h2:has([diction]) {
+    background-color: white;
+    mix-blend-mode: darken;
+}
+
+[diction] {
+    .dot {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 0.8rem;
+        height: 0.8rem;
+        background-color: $text-1;
+        border-radius: 50%;
+        z-index: 1;
+    }
+}
+
+[moving-hex] {
+    position: relative;
+
+    > * {
+        z-index: 1;
+    }
+
+    .hex-wrapper {
+        position: absolute;
+        inset: 0;
+        transform: translateY(-6rem);
+        display: grid;
+        z-index: 0;
+    }
+
+    .hex-controller {
+        width: max(calc(100% / 11));
+        aspect-ratio: 1 / 1;
+        grid-area: 1/1;
+        display: flex;
+        
+        .hex {
+            flex-grow: 1;
+            background-color: #f2f2f2;
+            clip-path: polygon(
+                50% 0%, 
+                93.3% 25%, 
+                93.3% 75%, 
+                50% 100%, 
+                6.7% 75%, 
+                6.7% 25%
+            );
+        }
+    }
+}
+
+[megamenu] .header-megamenu {
+    position: relative;
+    overflow: hidden;
+    > * {
+        z-index: 1;
+    }
+
+    .spotlight {
+        position: absolute;
+        width: 60rem;
+        height: 60rem;
+        top: 0;
+        z-index: 0;
+        left: 0;
+        background-image: radial-gradient(circle at center, #855D0D 0%, transparent 50%, transparent 100%);
+        border-radius: 50%;
+        pointer-events: none;
+        transform: translate(-50%, -50%);
     }
 }

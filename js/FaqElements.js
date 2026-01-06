@@ -9,21 +9,23 @@ export class FaqElements {
     }
 
     elements() {
-        
+        this.items = this.element.querySelectorAll(".faq-item");
     }
 
     bind() {
-        this.element.addEventListener("click", () => {
-            this.toggle();
+        this.items.forEach(item => {
+            item.addEventListener("click", () => {
+                this.toggle(item);
+            });
         });
     }
 
-    toggle() {
+    toggle(item) {
         this.open = !this.open;
         if (this.open) {
-            this.element.classList.add("active");
+            item.classList.add("active");
         } else {
-            this.element.classList.remove("active");
+            item.classList.remove("active");
         }
     }
 }

@@ -1,7 +1,11 @@
 // JavaScript Modules
+import Lenis from "lenis";
 import { Button } from "./Button.js";
 import { Roller } from "./Roller.js";
 import { Hex } from "./Hex.js";
+import { MovingHex } from "./MovingHex.js";
+import { Diction } from "./Diction.js";
+import { Megamenu } from "./Megamenu.js";
 import { ShrinkText } from "./ShrinkText.js";
 import { Testimonials } from "./Testimonials.js";
 import { FaqElements } from "./FaqElements.js";
@@ -15,6 +19,27 @@ if (typeof document !== "undefined") {
             return ( px / 16 * 1 ) + "rem";
         }
 
+        // Initialize Lenis smooth scroll
+        const lenis = new Lenis({
+            duration: 1.2,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            orientation: 'vertical',
+            gestureOrientation: 'vertical',
+            smoothWheel: true,
+            wheelMultiplier: 1,
+            smoothTouch: false,
+            touchMultiplier: 2,
+            infinite: false,
+        });
+
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+
+        window.lenis = lenis;
+
         getFontSize();
         window.addEventListener('resize', () => {
             getFontSize();
@@ -25,7 +50,7 @@ if (typeof document !== "undefined") {
             new Button(element);
         });
 
-        const rollerElements = document.querySelectorAll(".logo-roller-logos");
+        const rollerElements = document.querySelectorAll("[data-roller]");
         rollerElements.forEach(element => {
             new Roller(element);
         });
@@ -48,6 +73,21 @@ if (typeof document !== "undefined") {
         const faqElements = document.querySelectorAll("[faq]");
         faqElements.forEach(element => {
             new FaqElements(element);
+        });
+
+        const movingHexElements = document.querySelectorAll("[moving-hex]");
+        movingHexElements.forEach(element => {
+            new MovingHex(element);
+        });
+
+        const dictionElements = document.querySelectorAll("[diction]");
+        dictionElements.forEach(element => {
+            new Diction(element);
+        });
+
+        const megamenuElements = document.querySelectorAll("[megamenu]");
+        megamenuElements.forEach(element => {
+            new Megamenu(element);
         });
     });
 }

@@ -1,6 +1,9 @@
 @use 'variables' as *;
 
 .text {
+    &-1 { color: $text-1; }
+    &-2 { color: $text-2; }
+    &-dark-1 { color: $text-dark-1; }
     &-orange { color: $orange; }
     &-pink { color: $pink; }
     &-yellow { color: $yellow; }
@@ -44,6 +47,7 @@
     &-yellow { background-color: $yellow; &:is(.button):before { background-color: $yellow; } }
     &-half-way-orange { background-color: $half-way-orange; &:is(.button):before { background-color: $half-way-orange; } }
     &-orange { background-color: $orange; &:is(.button):before { background-color: $orange; } }
+    &-blood-orange { background-color: #C53000; &:is(.button):before { background-color: #C53000; } }
     &-gray { background-color: $gray; &:is(.button):before { background-color: $gray; } }
     &-blue { background-color: $blue; &:is(.button):before { background-color: $blue; } }
     &-black { background-color: $black; &:is(.button):before { background-color: $black; } }
@@ -76,6 +80,13 @@
     }
 }
 
+.lh {
+    &-s { line-height: 1; }
+    &-m { line-height: 1.35; }
+    &-l { line-height: 1.5; }
+    &-xl { line-height: 2; }
+}
+
 .mb {
     &-0 { margin-bottom: 0; }
     &-xxs { margin-bottom: $margin-xxs-12; }
@@ -89,6 +100,7 @@
     &-s { padding-top: $padding-s-15; padding-bottom: $padding-s-15; }
     &-m { padding-top: $padding-m-45; padding-bottom: $padding-m-45; }
     &-l { padding-top: $padding-l-80; padding-bottom: $padding-l-80; }
+    &-xl { padding-top: $margin-l-100; padding-bottom: $margin-l-100; }
 }
 
 .ph {
@@ -120,4 +132,8 @@
         justify-content: center;
         justify-items: center;
     }
+}
+
+.full-w {
+    width: 100%;
 }

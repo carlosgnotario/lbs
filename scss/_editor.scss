@@ -1,7 +1,7 @@
 @use "helpers" as *;
 @use "variables" as *;
 
-.logo-roller-logos {
+.enroll-roller {
     flex-wrap: wrap;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -29,5 +29,22 @@
 .testimonial {
     &-comment {
         font-size: ptr(14);
+    }
+}
+
+[megamenu] {
+    margin-top: ptr(-120);
+    .header-megamenu {
+        position: relative;
+        display: flex;
+        justify-content: flex-start;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        
+        .megamenu {
+            flex-shrink: 0;
+            width: 100%;
+            scroll-snap-align: center;
+        }
     }
 }

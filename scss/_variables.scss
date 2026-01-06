@@ -58,6 +58,26 @@ $heading-s-22: var(--_sizes---heading-s-22);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     line-height: 1.1;
+
+    &[diction] {
+        --diction-color1: #{$color-1};
+        --diction-color2: #{$color-2};
+        background: white;
+        color: black;
+        -webkit-background-clip: content-box;
+        -webkit-text-fill-color: inherit;
+        line-height: 1.1;
+        position: relative;
+        mix-blend-mode: darken;
+
+        &:after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to right, $color-1, $color-2);
+            mix-blend-mode: plus-lighter;
+        }
+    }
 }
 
 @mixin margin-arrow($height) {
