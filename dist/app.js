@@ -5728,8 +5728,7 @@
           scaleY: 1,
           stagger: {
             amount: 0.6
-          },
-          scaleY: 1
+          }
         }, "<0.3");
       });
     }
@@ -5887,7 +5886,6 @@
         opacity: 0,
         yoyo: true,
         repeat: -1,
-        duration: 1,
         ease: "power2.inOut",
         duration: "random(0.5, 5)",
         delay: "random(0, 2)"
@@ -6784,6 +6782,61 @@
     }
   };
 
+  // js/Video.js
+  var Video = class {
+    constructor(element) {
+      this.element = element;
+      this.open = false;
+      this.elements();
+      this.bind();
+    }
+    elements() {
+      this.modal = document.querySelector(".video-modal");
+      this.videoWrapper = this.modal.querySelector(".video-modal-video");
+      this.closeButton = this.modal.querySelector(".video-modal-close");
+      this.videoURL = this.element.dataset.video;
+    }
+    bind() {
+      this.element.addEventListener("click", () => {
+        if (this.open) {
+          return;
+        }
+        console.log("play this video", this.videoURL);
+        this.openModal();
+      });
+      this.modal.addEventListener("click", () => {
+        if (!this.open) {
+          return;
+        }
+        this.closeModal();
+      });
+      this.videoWrapper.addEventListener("click", (e) => {
+        e.stopPropagation();
+      });
+    }
+    openModal() {
+      const embedUrl = this.videoURL.includes("vimeo.com") ? `https://player.vimeo.com/video/${this.videoURL.split("/").pop()}?autoplay=1` : `https://www.youtube.com/embed/${this.videoURL.split("v=")[1]}?autoplay=1`;
+      this.videoWrapper.innerHTML = `<iframe width="100%" height="100%" src="${embedUrl}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen style="pointer-events: auto; touch-action: auto;"></iframe>`;
+      gsapWithCSS.to(this.modal, {
+        autoAlpha: 1,
+        duration: 1,
+        ease: "power4.inOut"
+      });
+      this.open = true;
+    }
+    closeModal() {
+      gsapWithCSS.to(this.modal, {
+        autoAlpha: 0,
+        duration: 1,
+        ease: "power4.inOut",
+        onComplete: () => {
+          this.videoWrapper.innerHTML = "";
+        }
+      });
+      this.open = false;
+    }
+  };
+
   // js/ShrinkText.js
   var ShrinkText = class {
     constructor(element) {
@@ -6974,6 +7027,10 @@
       const megamenuElements = document.querySelectorAll("[megamenu]");
       megamenuElements.forEach((element) => {
         new Megamenu(element);
+      });
+      const videoModalElements = document.querySelectorAll("[data-video]");
+      videoModalElements.forEach((element) => {
+        new Video(element);
       });
     });
   }

@@ -6,6 +6,7 @@ import { Hex } from "./Hex.js";
 import { MovingHex } from "./MovingHex.js";
 import { Diction } from "./Diction.js";
 import { Megamenu } from "./Megamenu.js";
+import { Video } from "./Video.js";
 import { ShrinkText } from "./ShrinkText.js";
 import { Testimonials } from "./Testimonials.js";
 import { FaqElements } from "./FaqElements.js";
@@ -88,6 +89,11 @@ if (typeof document !== "undefined") {
         const megamenuElements = document.querySelectorAll("[megamenu]");
         megamenuElements.forEach(element => {
             new Megamenu(element);
+        });
+
+        const videoModalElements = document.querySelectorAll("[data-video]");
+        videoModalElements.forEach(element => {
+            new Video(element);
         });
     });
 }

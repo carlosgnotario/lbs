@@ -55,7 +55,6 @@ export class Button {
                 stagger: {
                     amount: 0.6,
                 },
-                scaleY: 1,
             }, "<0.3");
         });
     }

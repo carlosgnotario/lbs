@@ -42,3 +42,31 @@ body {
         pointer-events: all;
     }
 }
+
+.team-member-image {
+    outline: 1px solid red;
+
+    > * {
+        transition: transform 1s cubic-bezier(0.60, 0.770, 0.000, 1.2);
+        backface-visibility: hidden;
+    }
+
+    &:hover {
+        .team-member-picture {
+            transform: perspective(10rem) rotateY(0deg) scale(1);
+        }
+
+        .team-member-illustration {
+            transform: perspective(10rem) rotateY(-180deg) scale(0.3);
+        }
+    }
+
+    .team-member-picture {
+        transform: perspective(10rem) rotateY(180deg) scale(0.3);
+    }
+
+    .team-member-illustration {
+        transform: perspective(10rem) rotateY(0deg) scale(1);
+
+    }
+}

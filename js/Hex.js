@@ -93,7 +93,6 @@ export class Hex {
             opacity: 0,
             yoyo: true,
             repeat: -1,
-            duration: 1,
             ease: "power2.inOut",
             duration: "random(0.5, 5)",
             delay: "random(0, 2)"

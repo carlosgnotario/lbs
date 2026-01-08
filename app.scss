@@ -35,6 +35,13 @@ a {
     color: $half-way-orange;
 }
 
+section {
+    > img {
+        // mask gradient transparent bottom
+        mask-image: linear-gradient(to bottom, black 0%, black 50%, transparent 70%);
+    }
+}
+
 .button {
     display: inline-block;
     padding: ptr(15) ptr(40);
@@ -358,5 +365,39 @@ h2:has([diction]) {
         border-radius: 50%;
         pointer-events: none;
         transform: translate(-50%, -50%);
+    }
+}
+
+.video {
+    &-icon {
+        &:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: $black;
+            border-radius: 50%;
+            z-index: -1;
+            opacity: 0.6;
+            transition: transform 1s cubic-bezier(0.060, 0.770, 0.000, 1.615);
+        }
+
+        img {
+            transition: transform 1s cubic-bezier(0.060, 0.770, 0.000, 1.615);
+        }
+    }
+
+    &:hover {
+        .video-icon {
+            &:before {
+                transform: scale(1.1);
+            }
+
+            img {
+                transform: scale(0.9);
+            }
+        }
     }
 }
