@@ -6,27 +6,38 @@
     &-dark-1 { color: $text-dark-1; }
     &-orange { color: $orange; }
     &-pink { color: $pink; }
+    &-neon-red { color: #F63C4E; }
     &-yellow { color: $yellow; }
     &-half-way-orange { color: $half-way-orange; }
-    &-orange { color: $orange; }
     &-gray { color: $gray; }
     &-blue { color: $blue; }
     &-black { color: $black; }
     &-teal { color: $teal; }
+    &-emerald { color: #46C998; }
+    &-sea-blue { color: #83ACB2; }
     &-violet { color: $violet; }
     &-baby-blue { color: $baby-blue; }
     &-white { color: $background-1; }
+    &-green { color: #93DA08; }
+    &-blood-orange { color: #C53000; }
+    &-light-gray { color: #CED0D3; }
+    &-dark-gray { color: #373737; }
+    &-dark-gray-2 { color: #1F1F1F; }
 
     &-gradient {
         &-orange { @include gradient-text($orange, $yellow); }
         &-purple { @include gradient-text(#52A6E0, #F379E7); }
+        &-yellow { @include gradient-text(#FFB700, $yellow); }
+        &-purple-vertical { @include gradient-text(#B57DC1, #9A7DC1); }
+        &-gray-vertical { @include gradient-text($background-2, $background-1); }
     }
 
     // Sizes
     &-s { font-size: $text-s-13; }
     &-m { font-size: $text-m-16; }
     &-l { font-size: $text-l-19; }
-    &-xl { font-size: $text-xl-26; }
+    &-xl { font-size: ptr(22); font-weight: 500; }
+    &-xxl { font-size: $text-xl-26; font-weight: 500; }
 
     // Headings
     &-hs { font-size: $heading-s-22; }
@@ -41,28 +52,35 @@
 }
 
 .bg {
+    &-1 { background-color: $background-1; &:is(.button):before { background-color: $background-1; } }
     &-2 { background-color: $background-2; &:is(.button):before { background-color: $background-2; } }
     &-dark-1 { background-color: $background-dark-1; &:is(.button):before { background-color: $background-dark-1; } }
     &-dark-2 { background-color: $background-dark-2; &:is(.button):before { background-color: $background-dark-2; } }
     &-orange { background-color: $orange; &:is(.button):before { background-color: $orange; } }
     &-pink { background-color: $pink; &:is(.button):before { background-color: $pink; } }
+    &-neon-red { background-color: #F63C4E; &:is(.button):before { background-color: #F63C4E; } }
     &-yellow { background-color: $yellow; &:is(.button):before { background-color: $yellow; } }
+    &-green { background-color: #93DA08; &:is(.button):before { background-color: #93DA08; } }
     &-half-way-orange { background-color: $half-way-orange; &:is(.button):before { background-color: $half-way-orange; } }
-    &-orange { background-color: $orange; &:is(.button):before { background-color: $orange; } }
     &-blood-orange { background-color: #C53000; &:is(.button):before { background-color: #C53000; } }
+    &-light-gray { background-color: #CED0D3; &:is(.button):before { background-color: #CED0D3; } }
     &-gray { background-color: $gray; &:is(.button):before { background-color: $gray; } }
     &-dark-gray { background-color: #373737; &:is(.button):before { background-color: #373737; } }
     &-dark-gray-2 { background-color: #1F1F1F; &:is(.button):before { background-color: #1F1F1F; } }
     &-blue { background-color: $blue; &:is(.button):before { background-color: $blue; } }
     &-black { background-color: $black; &:is(.button):before { background-color: $black; } }
     &-teal { background-color: $teal; &:is(.button):before { background-color: $teal; } }
+    &-emerald { background-color: #46C998; &:is(.button):before { background-color: #46C998; } }
+    &-sea-blue { background-color: #83ACB2; &:is(.button):before { background-color: #83ACB2; } }
     &-violet { background-color: $violet; &:is(.button):before { background-color: $violet; } }
     &-baby-blue { background-color: $baby-blue; &:is(.button):before { background-color: $baby-blue; } }
     &-white { background-color: $background-1; &:is(.button):before { background-color: $background-1; } }
 
     &-gradient {
+        &-orange { background: linear-gradient(to right, $orange, $yellow); &:is(.button):before { background: linear-gradient(to right, $orange, $yellow); } }
         &-yellow { background: linear-gradient(to right, #FFB700, $yellow); &:is(.button):before { background: linear-gradient(to right, #FFB700, $yellow); } }
         &-purple { background: linear-gradient(to right, #52A6E0, #F379E7); &:is(.button):before { background: linear-gradient(to right, #52A6E0, #F379E7); } }
+        &-purple-vertical { background: linear-gradient(to bottom, #B57DC1, #9A7DC1); &:is(.button):before { background: linear-gradient(to bottom, #B57DC1, #9A7DC1); } }
         &-gray-vertical { background: linear-gradient(to bottom, $background-2, $background-1); &:is(.button):before { background: linear-gradient(to bottom, $background-2, $background-1); } }
     }
 }
@@ -165,6 +183,10 @@
 
 .shadow {
     box-shadow: 0 0.01rem 2rem 0 rgba(0, 0, 0, 0.05);
+
+    &-top {
+        box-shadow: -2.75rem -3.75rem 3.125rem -3.125rem rgba(0, 9, 0, 0.06), 2.75rem -3.75rem 3.125rem -3.125rem rgba(0, 9, 0, 0.06)
+    }
 }
 
 .slot {
@@ -173,6 +195,13 @@
         justify-content: center;
         justify-items: center;
     }
+
+    &-dual {
+        display: grid;
+        width: 100%;
+        grid-template-columns: 1fr 1fr;
+        gap: 0 $gap-s-24;
+    }
 }
 
 .full-w {
@@ -180,5 +209,47 @@
 }
 
 .center {
-    margin: 0 auto;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.padded {
+    max-width: ptr(920);
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.content-top {
+    .dual-layout-content {
+        align-self: flex-start;
+        padding-top: ptr(50);
+    }
+}
+
+/* Grid */
+@for $i from 1 through 15 {
+    [data-grid="#{$i}"] {
+        display: grid;
+        grid-template-columns: repeat(#{$i}, minmax(0, 1fr));
+    }
+    [data-grid-cell-span="#{$i}"] {
+        grid-column: span #{$i};
+    }
+    [data-grid-vertical-gap="#{$i}"] {
+        grid-column-gap: #{$i}rem;
+    }
+    [data-grid-horizontal-gap="#{$i}"] {
+        grid-row-gap: #{$i}rem;
+    }
+
+    [data-grid-row-span="#{$i}"] {
+        grid-row: span #{$i};
+    }
+}
+
+.gap {
+    &-s { gap: $gap-s-24; }
+    &-m { gap: ptr(34); }
+    &-l { gap: $gap-l-72; }
+    &-xl { gap: $gap-xl-120; }
 }

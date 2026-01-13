@@ -347,6 +347,14 @@ h2:has([diction]) {
     }
 }
 
+.header-menu-link {
+    height: 100%;
+    color: $text-1;
+    align-items: center;
+    display: flex;
+    font-weight: 600;
+}
+
 [megamenu] .header-megamenu {
     position: relative;
     overflow: hidden;
@@ -400,4 +408,8 @@ h2:has([diction]) {
             }
         }
     }
+}
+
+.faded-end {
+    mask-image: linear-gradient(to bottom, black 0%, black 80%, transparent 100%);
 }

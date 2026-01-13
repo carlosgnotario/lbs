@@ -1,6 +1,10 @@
 @use "helpers" as *;
 @use "variables" as *;
 
+.wf-empty {
+    padding: 0!important;
+}
+
 .enroll-roller {
     flex-wrap: wrap;
     display: grid;
@@ -46,5 +50,13 @@
             width: 100%;
             scroll-snap-align: center;
         }
+    }
+}
+
+#scenes {
+    .scenes-item-description {
+        transform: translateX(50%) rotate(0deg);
+        opacity: 1;
+        visibility: visible;
     }
 }

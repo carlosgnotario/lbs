@@ -7,12 +7,16 @@ import { MovingHex } from "./MovingHex.js";
 import { Diction } from "./Diction.js";
 import { Megamenu } from "./Megamenu.js";
 import { Video } from "./Video.js";
+import { Parallax } from "./Parallax.js";
 import { ShrinkText } from "./ShrinkText.js";
 import { Testimonials } from "./Testimonials.js";
 import { FaqElements } from "./FaqElements.js";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 if (typeof document !== "undefined") {
     document.addEventListener("DOMContentLoaded", () => {
+        gsap.registerPlugin(ScrollTrigger);
         const g = {}
         window.g = g;
 
@@ -38,6 +42,12 @@ if (typeof document !== "undefined") {
             requestAnimationFrame(raf);
         }
         requestAnimationFrame(raf);
+
+        //stop lenis 
+        lenis.stop();
+
+        //reload lenis animations
+        $(document).ready(function(){lenis.start();})
 
         window.lenis = lenis;
 
@@ -94,6 +104,11 @@ if (typeof document !== "undefined") {
         const videoModalElements = document.querySelectorAll("[data-video]");
         videoModalElements.forEach(element => {
             new Video(element);
+        });
+
+        const parallaxElements = document.querySelectorAll("[data-animation='parallax']");
+        parallaxElements.forEach(element => {
+            new Parallax(element);
         });
     });
 }
