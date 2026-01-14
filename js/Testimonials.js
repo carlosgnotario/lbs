@@ -5,7 +5,7 @@ export class Testimonials {
         this.element = element;
         this.wrapper = this.element.querySelector(".testimonials-wrapper");
 
-        this.create();
+        // this.create();
         this.elements();
         this.sizing();
         this.bind();

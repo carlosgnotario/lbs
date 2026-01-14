@@ -51,6 +51,12 @@
     &-left { text-align: left; }
 }
 
+// Replace the text size classes with this
+@for $i from 10 through 100 {
+    .text-#{$i} { font-size: ptr($i); }
+    .lh-#{$i} { line-height: ptr($i); }
+}
+
 .bg {
     &-1 { background-color: $background-1; &:is(.button):before { background-color: $background-1; } }
     &-2 { background-color: $background-2; &:is(.button):before { background-color: $background-2; } }
@@ -75,6 +81,7 @@
     &-violet { background-color: $violet; &:is(.button):before { background-color: $violet; } }
     &-baby-blue { background-color: $baby-blue; &:is(.button):before { background-color: $baby-blue; } }
     &-white { background-color: $background-1; &:is(.button):before { background-color: $background-1; } }
+    &-note { background-color: #FFFBDE; &:is(.button):before { background-color: #FFFBDE; } }
 
     &-gradient {
         &-orange { background: linear-gradient(to right, $orange, $yellow); &:is(.button):before { background: linear-gradient(to right, $orange, $yellow); } }
@@ -252,4 +259,17 @@
     &-m { gap: ptr(34); }
     &-l { gap: $gap-l-72; }
     &-xl { gap: $gap-xl-120; }
+}
+
+@for $i from 1 through 100 {
+    .mw-#{$i} {
+        max-width: #{$i}rem;
+    }
+}
+
+$weights: 400, 500, 600, 700, 800;
+@each $weight in $weights {
+    .fw-#{$weight} {
+        font-weight: $weight;
+    }
 }

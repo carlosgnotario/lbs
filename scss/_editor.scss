@@ -30,6 +30,15 @@
     }
 }
 
+.testimonials {   
+    &-title {
+        @include editor-notice;
+    }
+    &-wrapper {
+        flex-wrap: wrap;
+    }
+}
+
 .testimonial {
     &-comment {
         font-size: ptr(14);
@@ -53,7 +62,7 @@
     }
 }
 
-#scenes {
+#scenes, #conversation {
     .scenes-item-description {
         transform: translateX(50%) rotate(0deg);
         opacity: 1;
