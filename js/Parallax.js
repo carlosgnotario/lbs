@@ -20,8 +20,8 @@ export class Parallax {
     }
 
     elements() {
-        this.wrapper = this.element.querySelector(".parallax");
-        this.image = this.element.querySelector(".parallax-img");
+        this.wrapper = this.element.querySelector("[data-parallax='wrapper']");
+        this.image = this.element.querySelector("[data-parallax='image']");
     }
 
     sizing() {

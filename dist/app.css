@@ -2322,6 +2322,7 @@ html {
 }
 html {
   font-size: var(--fontSize);
+  height: auto;
 }
 
 [data-automation-id=focused-symbol-mask] {
@@ -2671,6 +2672,11 @@ html:not(.wf-design-mode) [megamenu] .header-megamenu {
   opacity: 0;
   visibility: hidden;
   pointer-events: all;
+  position: absolute;
+  top: 100%;
+  max-width: 75rem;
+  left: 50%;
+  transform: translateX(-50%);
 }
 html:not(.wf-design-mode) .team-member-image {
   outline: 1px solid red;
@@ -2945,6 +2951,9 @@ h2:has([diction]) {
   clip-path: polygon(50% 0%, 93.3% 25%, 93.3% 75%, 50% 100%, 6.7% 75%, 6.7% 25%);
 }
 
+.header-menu {
+  pointer-events: all;
+}
 .header-menu-link {
   height: 100%;
   color: var(--_colors---text-1);

@@ -35,6 +35,7 @@ export class Megamenu {
         this.observe();
         this.spotlight();
         this.interactions();
+        this.update();
     }
 
     observe() {
@@ -130,6 +131,28 @@ export class Megamenu {
             duration: 1,
             ease: "power4.inOut"
         });
+        console.log(show ? "showing" : "hiding");
+        
         this.megamenuShowing = show;
+    }
+
+    update() {
+        this.menuSmall = false;
+        this.ticker = () => {
+            if (window.lenis.targetScroll > 0 && !this.menuSmall) {
+                this.menuSmall = true;
+                gsap.to(this.element, {
+                    padding: "1rem 0",
+                })
+            } else if (window.lenis.targetScroll <= 0 && this.menuSmall) {
+                this.menuSmall = false;
+                gsap.to(this.element, {
+                    // reset padding
+                    padding: "2.125rem 0",
+
+                })
+            }
+        }
+        gsap.ticker.add(this.ticker);
     }
 }

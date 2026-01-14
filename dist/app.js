@@ -6701,6 +6701,7 @@
       this.observe();
       this.spotlight();
       this.interactions();
+      this.update();
     }
     observe() {
       const resizeObserver = new ResizeObserver(() => {
@@ -6778,7 +6779,26 @@
         duration: 1,
         ease: "power4.inOut"
       });
+      console.log(show ? "showing" : "hiding");
       this.megamenuShowing = show;
+    }
+    update() {
+      this.menuSmall = false;
+      this.ticker = () => {
+        if (window.lenis.targetScroll > 0 && !this.menuSmall) {
+          this.menuSmall = true;
+          gsapWithCSS.to(this.element, {
+            padding: "1rem 0"
+          });
+        } else if (window.lenis.targetScroll <= 0 && this.menuSmall) {
+          this.menuSmall = false;
+          gsapWithCSS.to(this.element, {
+            // reset padding
+            padding: "2.125rem 0"
+          });
+        }
+      };
+      gsapWithCSS.ticker.add(this.ticker);
     }
   };
 
@@ -9235,8 +9255,8 @@
       });
     }
     elements() {
-      this.wrapper = this.element.querySelector(".parallax");
-      this.image = this.element.querySelector(".parallax-img");
+      this.wrapper = this.element.querySelector("[data-parallax='wrapper']");
+      this.image = this.element.querySelector("[data-parallax='image']");
     }
     sizing() {
       this.wrapperHeight = this.wrapper.offsetHeight;

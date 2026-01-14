@@ -16,6 +16,7 @@ html {
     }
 
     font-size: var(--fontSize);
+    height: auto;
 }
 
 [data-automation-id="focused-symbol-mask"] {
@@ -347,12 +348,15 @@ h2:has([diction]) {
     }
 }
 
-.header-menu-link {
-    height: 100%;
-    color: $text-1;
-    align-items: center;
-    display: flex;
-    font-weight: 600;
+.header-menu {
+    pointer-events: all;
+    &-link {
+        height: 100%;
+        color: $text-1;
+        align-items: center;
+        display: flex;
+        font-weight: 600;
+    }
 }
 
 [megamenu] .header-megamenu {
