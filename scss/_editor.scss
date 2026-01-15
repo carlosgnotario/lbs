@@ -47,12 +47,15 @@
 
 [megamenu] {
     margin-top: ptr(-120);
+    padding-bottom: 0;
+    
     .header-megamenu {
         position: relative;
         display: flex;
         justify-content: flex-start;
         overflow-x: auto;
         scroll-snap-type: x mandatory;
+        margin-top: 1rem;
         
         .megamenu {
             flex-shrink: 0;

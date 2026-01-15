@@ -18,6 +18,10 @@
         font-size: 10px;
         mix-blend-mode: difference;
         z-index: 1000;
+
+        .legend-warning {
+            display: none;
+        }
         
         &:before {
             content: "";
