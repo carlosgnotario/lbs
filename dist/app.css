@@ -47,6 +47,7 @@
   pointer-events: none;
   left: 0;
   opacity: 0;
+  display: block;
   transform: translateY(10px);
   width: 100%;
   color: rgba(255, 255, 255, 0.5);
@@ -2400,6 +2401,7 @@ html.wf-design-mode .wf-design-mode .custom-styles:has(> div:nth-of-type(2):not(
   pointer-events: none;
   left: 0;
   opacity: 0;
+  display: block;
   transform: translateY(10px);
   width: 100%;
   color: rgba(255, 255, 255, 0.5);
@@ -2614,6 +2616,7 @@ html:not(.wf-design-mode) .wf-design-mode .custom-styles:has(> div:nth-of-type(2
   pointer-events: none;
   left: 0;
   opacity: 0;
+  display: block;
   transform: translateY(10px);
   width: 100%;
   color: rgba(255, 255, 255, 0.5);
@@ -2699,6 +2702,7 @@ html:not(.wf-design-mode) [megamenu] .header-megamenu {
   opacity: 0;
   visibility: hidden;
   pointer-events: all;
+  margin-top: 0;
   position: absolute;
   top: 100%;
   max-width: 75rem;
@@ -2986,6 +2990,27 @@ h2:has([diction]) {
   align-items: center;
   display: flex;
   font-weight: 600;
+  position: relative;
+}
+.header-menu-link[megamenu-link="1"].active:after {
+  opacity: 1;
+  transform: translate(-50%, 1rem) rotate(-45deg);
+}
+.header-menu-link[megamenu-link="1"]:after {
+  content: "";
+  opacity: 0;
+  position: absolute;
+  background-color: red;
+  height: 0.5rem;
+  width: 0.5rem;
+  border-radius: 0.125rem;
+  background-color: #1D1D1D;
+  top: 50%;
+  left: 50%;
+  z-index: 0;
+  transform: translate(-50%, 1.5rem) rotate(-45deg);
+  clip-path: polygon(0 0, 100% 100%, 0 100%);
+  transition: all 1s cubic-bezier(0.06, 0.77, 0, 1.615);
 }
 
 [megamenu] .header-megamenu {

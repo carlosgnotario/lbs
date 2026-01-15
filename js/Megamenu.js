@@ -4,37 +4,79 @@ import gsap from "gsap";
 export class Megamenu {
     constructor(element) {
         this.element = element;
-        this.megamenuWrapper = this.element.querySelector(".header-megamenu");
-        // Only the ones with a value
-        this.menuLinks = Array.from(this.element.querySelectorAll("[megamenu-link]")); 
-        this.menuTargets = Array.from(this.element.querySelectorAll("[megamenu-target]"));
-
-        // if menuLinks and targets are not the same length, remove the ones that have more length until they are equal from the last
-        while (this.menuLinks.length !== this.menuTargets.length) {
-            if (this.menuLinks.length > this.menuTargets.length) {
-                this.menuLinks.splice(this.menuLinks.length - 1, 1);
-            } else {
-                this.menuTargets.splice(this.menuTargets.length - 1, 1);
-            }
-        }
-
-        if (this.menuLinks.length !== this.menuTargets.length) {
-            console.error("menuLinks and menuTargets must have the same length");
-            return;
-        }
-        
+        this.isShowing = false;
         this.currentTarget = null;
-        this.megamenuShowing = false;
+
+        this.elements();
+        this.binds();
+        this.update();
+        this.sizing();
+        this.spotlight();
+
+        window.addEventListener("resize", () => {
+            this.sizing();
+        });
+    }
+
+    elements() {
+        this.wrapper = this.element.querySelector(".header-megamenu");
+        this.logo = this.element.querySelector(".header-logo");
+        this.menu = this.element.querySelector(".header-menu");
+        this.links = this.element.querySelectorAll("[megamenu-link='0']");
+        this.menuLinks = this.element.querySelectorAll("[megamenu-link='1']");
+        this.menuTargets = this.element.querySelectorAll("[megamenu-target]");
+        this.megamenuWrapper = this.element.querySelector(".header-megamenu");
+        console.log(this.menuLinks, this.menuTargets);
 
         gsap.set(this.menuTargets, {
             opacity: 0
         });
+    }
 
-        this.sizing();
-        this.observe();
-        this.spotlight();
-        this.interactions();
-        this.update();
+    binds() {
+        console.log("binds");
+        
+        this.menuLinks.forEach((link, index) => {
+            link.addEventListener("mouseenter", () => {                
+                if (!this.isShowing) {
+                    this.isShowing = true;
+                    console.log("show menu");
+                    this.showMegamenu(true);
+                }
+                link.classList.add("active");
+                if (this.currentTarget !== null && this.currentTarget !== index) {
+                    this.menuLinks[this.currentTarget].classList.remove("active");
+                }
+                if (this.currentTarget === index) return;
+                this.showMenu(index);  
+            });
+        });
+
+        this.element.addEventListener("mouseleave", () => {
+            if (!this.isShowing) return;
+            this.isShowing = false;
+            console.log("hide menu");
+            this.showMegamenu(false);
+            if (this.currentTarget !== null) {
+                this.menuLinks[this.currentTarget].classList.remove("active");
+            }
+        });
+
+        this.links.forEach(link => {
+            link.addEventListener("mouseenter", () => {
+                if (!this.isShowing) return;
+                this.isShowing = false;
+                console.log("hide menu");
+                this.showMegamenu(false);
+                if (this.currentTarget !== null) {
+                    this.menuLinks[this.currentTarget].classList.remove("active");
+                }
+            });
+        });
+
+        this.menu.addEventListener("mouseenter", (e) => {
+            e.preventDefault();
+        });
     }
 
     observe() {
@@ -46,8 +88,9 @@ export class Megamenu {
     }
 
     sizing() {
-        this.left = this.megamenuWrapper.offsetLeft;
-        this.top = this.megamenuWrapper.offsetTop;
+        this.left = this.megamenuWrapper.getBoundingClientRect().left;
+        this.top = this.megamenuWrapper.getBoundingClientRect().top;
+        console.log(this.left, this.top);
     }
 
     spotlight() {
@@ -65,23 +108,6 @@ export class Megamenu {
             yPos(y - this.top);
         }
         window.addEventListener("mousemove", interaction);
-    }
-
-    interactions() {
-        this.menuLinks.forEach((link, index) => {
-            link.addEventListener("mouseenter", () => {
-                if (!this.megamenuShowing) {
-                    this.showMegamenu(true);
-                }
-                if (this.currentTarget === index) return;
-                this.showMenu(index);        
-            });
-        });
-
-        this.element.addEventListener("mouseleave", () => {
-            if (!this.megamenuShowing) return;
-            this.showMegamenu(false);
-        });
     }
 
     showMenu(newIndex) {
@@ -114,10 +140,15 @@ export class Megamenu {
     }
 
     showMegamenu(show) {
+        gsap.set(this.megamenuWrapper, {
+            autoAlpha: show ? 0 : 1,
+            y: show ? 100 : 0,
+        });
         gsap.to(this.megamenuWrapper, {
             autoAlpha: show ? 1 : 0,
             duration: 1,
-            ease: "power4.inOut"
+            y: show ? 0 : 100,
+            ease: "power4.out"
         });
         
         this.megamenuShowing = show;
@@ -128,12 +159,12 @@ export class Megamenu {
         this.ticker = () => {
             if (window.lenis.targetScroll > 0 && !this.menuSmall) {
                 this.menuSmall = true;
-                gsap.to(this.element, {
+                gsap.to(this.logo, {
                     padding: "1rem 0",
                 })
             } else if (window.lenis.targetScroll <= 0 && this.menuSmall) {
                 this.menuSmall = false;
-                gsap.to(this.element, {
+                gsap.to(this.logo, {
                     // reset padding
                     padding: "2.125rem 0",
 
