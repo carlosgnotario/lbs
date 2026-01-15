@@ -74,6 +74,7 @@
     &-dark-gray { background-color: #373737; &:is(.button):before { background-color: #373737; } }
     &-dark-gray-2 { background-color: #1F1F1F; &:is(.button):before { background-color: #1F1F1F; } }
     &-blue { background-color: $blue; &:is(.button):before { background-color: $blue; } }
+    &-light-blue { background-color: #06CCD3; &:is(.button):before { background-color: #06CCD3; } }
     &-black { background-color: $black; &:is(.button):before { background-color: $black; } }
     &-teal { background-color: $teal; &:is(.button):before { background-color: $teal; } }
     &-emerald { background-color: #46C998; &:is(.button):before { background-color: #46C998; } }

@@ -171,13 +171,15 @@
 .text-gradient-orange[diction] {
   --diction-color1: var(--_colors---orange);
   --diction-color2: var(--_colors---yellow);
-  background: white;
   color: black;
   -webkit-background-clip: content-box;
   -webkit-text-fill-color: inherit;
   line-height: 1.1;
   position: relative;
+  background: white;
+  background-blend-mode: difference;
   mix-blend-mode: darken;
+  display: inline-flex;
 }
 .text-gradient-orange[diction]:after {
   content: "";
@@ -195,13 +197,15 @@
 .text-gradient-purple[diction] {
   --diction-color1: #52A6E0;
   --diction-color2: #F379E7;
-  background: white;
   color: black;
   -webkit-background-clip: content-box;
   -webkit-text-fill-color: inherit;
   line-height: 1.1;
   position: relative;
+  background: white;
+  background-blend-mode: difference;
   mix-blend-mode: darken;
+  display: inline-flex;
 }
 .text-gradient-purple[diction]:after {
   content: "";
@@ -219,13 +223,15 @@
 .text-gradient-yellow[diction] {
   --diction-color1: #FFB700;
   --diction-color2: var(--_colors---yellow);
-  background: white;
   color: black;
   -webkit-background-clip: content-box;
   -webkit-text-fill-color: inherit;
   line-height: 1.1;
   position: relative;
+  background: white;
+  background-blend-mode: difference;
   mix-blend-mode: darken;
+  display: inline-flex;
 }
 .text-gradient-yellow[diction]:after {
   content: "";
@@ -243,13 +249,15 @@
 .text-gradient-purple-vertical[diction] {
   --diction-color1: #B57DC1;
   --diction-color2: #9A7DC1;
-  background: white;
   color: black;
   -webkit-background-clip: content-box;
   -webkit-text-fill-color: inherit;
   line-height: 1.1;
   position: relative;
+  background: white;
+  background-blend-mode: difference;
   mix-blend-mode: darken;
+  display: inline-flex;
 }
 .text-gradient-purple-vertical[diction]:after {
   content: "";
@@ -267,13 +275,15 @@
 .text-gradient-gray-vertical[diction] {
   --diction-color1: var(--_colors---background-2);
   --diction-color2: var(--_colors---background-1);
-  background: white;
   color: black;
   -webkit-background-clip: content-box;
   -webkit-text-fill-color: inherit;
   line-height: 1.1;
   position: relative;
+  background: white;
+  background-blend-mode: difference;
   mix-blend-mode: darken;
+  display: inline-flex;
 }
 .text-gradient-gray-vertical[diction]:after {
   content: "";
@@ -1144,6 +1154,12 @@
 }
 .bg-blue:is(.button):before {
   background-color: var(--_colors---blue);
+}
+.bg-light-blue {
+  background-color: #06CCD3;
+}
+.bg-light-blue:is(.button):before {
+  background-color: #06CCD3;
 }
 .bg-black {
   background-color: var(--_colors---black);
@@ -2911,7 +2927,6 @@ section > img {
 }
 
 h2:has([diction]) {
-  background-color: white;
   mix-blend-mode: darken;
 }
 

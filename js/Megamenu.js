@@ -18,7 +18,6 @@ export class Megamenu {
             }
         }
 
-        console.log(this.menuLinks.length, this.menuTargets.length);
         if (this.menuLinks.length !== this.menuTargets.length) {
             console.error("menuLinks and menuTargets must have the same length");
             return;
@@ -41,19 +40,12 @@ export class Megamenu {
     observe() {
         // Add a resize observer to the element
         const resizeObserver = new ResizeObserver(() => {
-            this.sizing();
-            console.log(this.element.getBoundingClientRect().height);
-            
+            this.sizing();            
         });
         resizeObserver.observe(this.element);
-        setTimeout(() => {
-            console.log(this.element.getBoundingClientRect().height);
-        }, 1000);
     }
 
     sizing() {
-        console.log("resizing");
-        
         this.left = this.megamenuWrapper.offsetLeft;
         this.top = this.megamenuWrapper.offsetTop;
     }
@@ -96,11 +88,7 @@ export class Megamenu {
         const targetElement = this.menuTargets[newIndex];
         const previousTarget = this.menuTargets[this.currentTarget];
         
-        console.log("change from", this.currentTarget, "to", newIndex);
-        
-        
         if (this.currentTarget !== null) {
-            console.log(previousTarget);
             gsap.to(previousTarget, {
                 opacity: 0,
                 duration: 1,
@@ -131,7 +119,6 @@ export class Megamenu {
             duration: 1,
             ease: "power4.inOut"
         });
-        console.log(show ? "showing" : "hiding");
         
         this.megamenuShowing = show;
     }

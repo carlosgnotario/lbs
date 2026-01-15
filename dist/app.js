@@ -1918,7 +1918,7 @@
     return (h * 6 < 1 ? m1 + (m2 - m1) * h * 6 : h < 0.5 ? m2 : h * 3 < 2 ? m1 + (m2 - m1) * (2 / 3 - h) * 6 : m1) * _255 + 0.5 | 0;
   };
   var splitColor = function splitColor2(v, toHSL, forceAlpha) {
-    var a = !v ? _colorLookup.black : _isNumber(v) ? [v >> 16, v >> 8 & _255, v & _255] : 0, r, g, b, h, s, l, max, min, d, wasHSL;
+    var a = !v ? _colorLookup.black : _isNumber(v) ? [v >> 16, v >> 8 & _255, v & _255] : 0, r, g2, b, h, s, l, max, min, d, wasHSL;
     if (!a) {
       if (v.substr(-1) === ",") {
         v = v.substr(0, v.length - 1);
@@ -1928,9 +1928,9 @@
       } else if (v.charAt(0) === "#") {
         if (v.length < 6) {
           r = v.charAt(1);
-          g = v.charAt(2);
+          g2 = v.charAt(2);
           b = v.charAt(3);
-          v = "#" + r + r + g + g + b + b + (v.length === 5 ? v.charAt(4) + v.charAt(4) : "");
+          v = "#" + r + r + g2 + g2 + b + b + (v.length === 5 ? v.charAt(4) + v.charAt(4) : "");
         }
         if (v.length === 9) {
           a = parseInt(v.substr(1, 6), 16);
@@ -1944,12 +1944,12 @@
           h = +a[0] % 360 / 360;
           s = +a[1] / 100;
           l = +a[2] / 100;
-          g = l <= 0.5 ? l * (s + 1) : l + s - l * s;
-          r = l * 2 - g;
+          g2 = l <= 0.5 ? l * (s + 1) : l + s - l * s;
+          r = l * 2 - g2;
           a.length > 3 && (a[3] *= 1);
-          a[0] = _hue(h + 1 / 3, r, g);
-          a[1] = _hue(h, r, g);
-          a[2] = _hue(h - 1 / 3, r, g);
+          a[0] = _hue(h + 1 / 3, r, g2);
+          a[1] = _hue(h, r, g2);
+          a[2] = _hue(h - 1 / 3, r, g2);
         } else if (~v.indexOf("=")) {
           a = v.match(_numExp);
           forceAlpha && a.length < 4 && (a[3] = 1);
@@ -1962,17 +1962,17 @@
     }
     if (toHSL && !wasHSL) {
       r = a[0] / _255;
-      g = a[1] / _255;
+      g2 = a[1] / _255;
       b = a[2] / _255;
-      max = Math.max(r, g, b);
-      min = Math.min(r, g, b);
+      max = Math.max(r, g2, b);
+      min = Math.min(r, g2, b);
       l = (max + min) / 2;
       if (max === min) {
         h = s = 0;
       } else {
         d = max - min;
         s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-        h = max === r ? (g - b) / d + (g < b ? 6 : 0) : max === g ? (b - r) / d + 2 : (r - g) / d + 4;
+        h = max === r ? (g2 - b) / d + (g2 < b ? 6 : 0) : max === g2 ? (b - r) / d + 2 : (r - g2) / d + 4;
         h *= 60;
       }
       a[0] = ~~(h + 0.5);
@@ -5751,18 +5751,27 @@
     loader() {
       let logosLoaded = 0;
       let logosToLoad = this.logos.length;
+      const checkIfAllLoaded = () => {
+        if (logosLoaded === logosToLoad) {
+          this.sizing();
+          this.update();
+          console.log("execute update");
+        }
+      };
       this.logos.forEach((logo) => {
         if (logo.complete) {
           this.loaded = true;
           logosLoaded++;
+          console.log("logos loaded", logosLoaded, logosToLoad);
+          console.log(logosLoaded === logosToLoad);
+          checkIfAllLoaded();
         } else {
           logo.addEventListener("load", () => {
             this.loaded = true;
             logosLoaded++;
-            if (logosLoaded === logosToLoad) {
-              this.sizing();
-              this.update();
-            }
+            console.log("logos loaded", logosLoaded, logosToLoad);
+            console.log(logosLoaded === logosToLoad);
+            checkIfAllLoaded();
           });
         }
       });
@@ -5776,7 +5785,6 @@
         logo.startingWidth = logo.offsetWidth;
         logo.startingX = logo.offsetLeft - this.element.offsetLeft;
         logo.loop = 0;
-        console.log(logo.startingWidth, logo.startingX, logo.loop);
       });
       let widestLogoWidth = 0;
       this.logos.forEach((logo) => {
@@ -5789,7 +5797,6 @@
       });
     }
     update() {
-      console.log(this.logos);
       this.ticker = () => {
         this.position -= 1;
         this.logos.forEach((logo, index) => {
@@ -5809,7 +5816,6 @@
   var Hex = class {
     constructor(element) {
       this.element = element;
-      console.log("hex");
       this.hexQ = 32;
       this.elements();
       this.build();
@@ -6608,7 +6614,6 @@
       gsapWithCSS.registerPlugin(CustomEase, CustomBounce);
       this.element = element;
       this.direction = element.getAttribute("diction");
-      console.log("direction", this.direction);
       this.color1 = getComputedStyle(element).getPropertyValue("--diction-color1");
       this.color2 = getComputedStyle(element).getPropertyValue("--diction-color2");
       this.create();
@@ -6687,7 +6692,6 @@
           this.menuTargets.splice(this.menuTargets.length - 1, 1);
         }
       }
-      console.log(this.menuLinks.length, this.menuTargets.length);
       if (this.menuLinks.length !== this.menuTargets.length) {
         console.error("menuLinks and menuTargets must have the same length");
         return;
@@ -6706,15 +6710,10 @@
     observe() {
       const resizeObserver = new ResizeObserver(() => {
         this.sizing();
-        console.log(this.element.getBoundingClientRect().height);
       });
       resizeObserver.observe(this.element);
-      setTimeout(() => {
-        console.log(this.element.getBoundingClientRect().height);
-      }, 1e3);
     }
     sizing() {
-      console.log("resizing");
       this.left = this.megamenuWrapper.offsetLeft;
       this.top = this.megamenuWrapper.offsetTop;
     }
@@ -6750,9 +6749,7 @@
     showMenu(newIndex) {
       const targetElement = this.menuTargets[newIndex];
       const previousTarget = this.menuTargets[this.currentTarget];
-      console.log("change from", this.currentTarget, "to", newIndex);
       if (this.currentTarget !== null) {
-        console.log(previousTarget);
         gsapWithCSS.to(previousTarget, {
           opacity: 0,
           duration: 1,
@@ -6779,7 +6776,6 @@
         duration: 1,
         ease: "power4.inOut"
       });
-      console.log(show ? "showing" : "hiding");
       this.megamenuShowing = show;
     }
     update() {
@@ -6821,7 +6817,6 @@
         if (this.open) {
           return;
         }
-        console.log("play this video", this.videoURL);
         this.openModal();
       });
       this.modal.addEventListener("click", () => {
@@ -9243,32 +9238,30 @@
   var Parallax = class {
     constructor(element) {
       this.element = element;
-      console.log("parallax", this.element);
       this.elements();
       this.sizing();
       this.animate();
       window.addEventListener("resize", () => {
         this.sizing();
-        if (this.scrollTrigger) {
-          this.scrollTrigger.refresh();
-        }
+        g.scrollTrigger.refresh();
       });
     }
     elements() {
       this.wrapper = this.element.querySelector("[data-parallax='wrapper']");
-      this.image = this.element.querySelector("[data-parallax='image']");
+      this.image = this.element.querySelector("[data-parallax-image]");
+      this.direction = this.image.getAttribute("data-parallax-image") === "down" ? "up" : "up";
     }
     sizing() {
       this.wrapperHeight = this.wrapper.offsetHeight;
-      this.imageHeight = this.image.offsetHeight;
+      this.imageHeight = this.image.getBoundingClientRect().height;
+      this.travelDistance = this.imageHeight - this.wrapperHeight;
     }
     animate() {
-      const travelDistance = this.imageHeight - this.wrapperHeight;
       gsapWithCSS.set(this.image, {
-        y: -travelDistance
+        y: this.direction === "up" ? -this.travelDistance : 0
       });
       this.scrollTrigger = gsapWithCSS.to(this.image, {
-        y: 0,
+        y: this.direction === "up" ? 0 : -this.travelDistance,
         ease: "none",
         scrollTrigger: {
           trigger: this.wrapper,
@@ -9313,7 +9306,6 @@
       this.currentPage = null;
       this.testimonials = this.element.querySelectorAll(".testimonial");
       this.next = this.element.querySelector(".testimonials-controls-next");
-      console.log(this.next, this.prev);
       this.prev = this.element.querySelector(".testimonials-controls-prev");
       this.indicators = this.element.querySelector(".testimonials-bullets");
     }
@@ -9330,7 +9322,6 @@
         this.indicators.appendChild(indicator);
       }
       this.indicatorsBullets = this.indicators.querySelectorAll(".testimonials-bullet");
-      console.log(this.indicatorsBullets);
       this.indicatorsBullets[0].classList.add("active");
       if (this.breakpoint !== this.currentBreakpoint) {
         this.currentBreakpoint = this.breakpoint;
@@ -9362,7 +9353,6 @@
       });
     }
     update(newPage) {
-      console.log("is updating", newPage, this.currentPage);
       let page = Math.min(this.testimonials.length - this.itemsPerPage, newPage * this.itemsPerPage);
       this.indicatorsBullets[newPage].classList.add("active", newPage > this.currentPage ? "from-left" : "from-right");
       if (this.currentPage !== null) {
@@ -9409,11 +9399,13 @@
   if (typeof document !== "undefined") {
     document.addEventListener("DOMContentLoaded", () => {
       gsapWithCSS.registerPlugin(ScrollTrigger2);
-      const g = {};
-      window.g = g;
-      g.pxToRem = (px) => {
+      const g2 = {};
+      window.g = g2;
+      g2.scrollTrigger = ScrollTrigger2;
+      g2.pxToRem = (px) => {
         return px / 16 * 1 + "rem";
       };
+      handleLazyLoad();
       const lenis = new Lenis({
         duration: 1.2,
         easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -9439,7 +9431,7 @@
       window.addEventListener("resize", () => {
         getFontSize();
       });
-      const buttonElements = document.querySelectorAll(".button");
+      const buttonElements = document.querySelectorAll("[data-button-text]");
       buttonElements.forEach((element) => {
         new Button(element);
       });
@@ -9489,6 +9481,13 @@
     const breakpoint = window.innerWidth < 768 ? "small" : window.innerWidth < 992 ? "medium" : "desktop";
     let fontSize = breakpoint === "small" ? document.body.clientWidth / 767 * 16 : breakpoint === "medium" ? document.body.clientWidth / 991 * 16 : Math.min(document.body.clientWidth / 1290 * 16, 1680 / 1290 * 16);
     document.documentElement.style.setProperty("--fontSize", fontSize + "px");
+  }
+  function handleLazyLoad(config3 = {}) {
+    let lazyImages = gsapWithCSS.utils.toArray("img[loading='lazy']"), timeout = gsapWithCSS.delayedCall(config3.timeout || 1, ScrollTrigger2.refresh).pause(), lazyMode = config3.lazy !== false, imgLoaded = lazyImages.length, onImgLoad = () => lazyMode ? timeout.restart(true) : --imgLoaded || ScrollTrigger2.refresh();
+    lazyImages.forEach((img, i) => {
+      lazyMode || (img.loading = "eager");
+      img.naturalWidth ? onImgLoad() : img.addEventListener("load", onImgLoad);
+    });
   }
 })();
 /*! Bundled license information:

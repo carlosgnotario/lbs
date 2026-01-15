@@ -15,8 +15,6 @@ export class Testimonials {
         this.currentPage = null;
         this.testimonials = this.element.querySelectorAll(".testimonial");
         this.next = this.element.querySelector(".testimonials-controls-next");
-        console.log(this.next, this.prev);
-        
         this.prev = this.element.querySelector(".testimonials-controls-prev");
         this.indicators = this.element.querySelector(".testimonials-bullets");
     }
@@ -35,8 +33,6 @@ export class Testimonials {
             this.indicators.appendChild(indicator);
         }
         this.indicatorsBullets = this.indicators.querySelectorAll(".testimonials-bullet");
-        console.log(this.indicatorsBullets);
-
         this.indicatorsBullets[0].classList.add("active");
 
         // Detect a change in breakpoint
@@ -72,8 +68,6 @@ export class Testimonials {
     }
 
     update(newPage) {
-        console.log("is updating", newPage, this.currentPage);
-        
         let page = Math.min(this.testimonials.length - this.itemsPerPage, newPage * this.itemsPerPage);
         this.indicatorsBullets[newPage].classList.add("active", newPage > this.currentPage ? "from-left" : "from-right");
         if (this.currentPage !== null) {

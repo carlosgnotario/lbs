@@ -11,7 +11,6 @@ export class Diction {
         this.element = element;
         // get the [diction] value
         this.direction = element.getAttribute("diction");
-        console.log("direction", this.direction);
         this.color1 = getComputedStyle(element).getPropertyValue("--diction-color1");
         this.color2 = getComputedStyle(element).getPropertyValue("--diction-color2");        
         

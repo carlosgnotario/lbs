@@ -20,7 +20,6 @@ export class Video {
     bind() {
         this.element.addEventListener("click", () => {
             if (this.open) { return; }
-            console.log("play this video", this.videoURL);
             this.openModal()
         });
 

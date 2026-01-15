@@ -21,20 +21,32 @@ export class Roller {
         let logosLoaded = 0;
         let logosToLoad = this.logos.length;
         
+        const checkIfAllLoaded = () => {
+            if (logosLoaded === logosToLoad) {
+                this.sizing();
+                this.update();   
+                console.log("execute update");
+            }
+        }
         this.logos.forEach(logo => {
+
             if (logo.complete) {
                 // Image already loaded
                 this.loaded = true;
                 logosLoaded++;
+                console.log("logos loaded", logosLoaded, logosToLoad);
+                console.log(logosLoaded === logosToLoad);
+                checkIfAllLoaded();
             } else {
                 // Image not yet loaded, wait for load event
                 logo.addEventListener("load", () => {
                     this.loaded = true;
                     logosLoaded++;
-                    if (logosLoaded === logosToLoad) {
-                        this.sizing();
-                        this.update();                        
-                    }
+                    console.log("logos loaded", logosLoaded, logosToLoad);
+                    console.log(logosLoaded === logosToLoad);
+                    checkIfAllLoaded();
+                    
+                    // console.log("logos loaded", logosLoaded, logosToLoad);
                 });
             }
         });
@@ -51,8 +63,6 @@ export class Roller {
             logo.startingWidth = logo.offsetWidth;
             logo.startingX = logo.offsetLeft - this.element.offsetLeft;
             logo.loop = 0;
-            console.log(logo.startingWidth, logo.startingX, logo.loop);
-            
         });
 
         // Get the widest logo's width
@@ -69,9 +79,7 @@ export class Roller {
         });
     }
 
-    update() {
-        console.log(this.logos);
-        
+    update() {        
         this.ticker = () => {
             this.position -= 1;
             this.logos.forEach((logo, index) => {                

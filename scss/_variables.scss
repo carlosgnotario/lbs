@@ -62,13 +62,15 @@ $heading-s-22: var(--_sizes---heading-s-22);
     &[diction] {
         --diction-color1: #{$color-1};
         --diction-color2: #{$color-2};
-        background: white;
         color: black;
         -webkit-background-clip: content-box;
         -webkit-text-fill-color: inherit;
         line-height: 1.1;
         position: relative;
+        background: white;
+        background-blend-mode: difference;
         mix-blend-mode: darken;
+        display: inline-flex;
 
         &:after {
             content: '';

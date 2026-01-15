@@ -5,7 +5,6 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 export class Parallax {
     constructor(element) {
         this.element = element;
-        console.log("parallax", this.element);
 
         this.elements();
         this.sizing();
@@ -13,34 +12,34 @@ export class Parallax {
 
         window.addEventListener("resize", () => {
             this.sizing();
-            if (this.scrollTrigger) {
-                this.scrollTrigger.refresh();
-            }
+            g.scrollTrigger.refresh();
         });
     }
 
     elements() {
         this.wrapper = this.element.querySelector("[data-parallax='wrapper']");
-        this.image = this.element.querySelector("[data-parallax='image']");
+        this.image = this.element.querySelector("[data-parallax-image]");
+        this.direction = this.image.getAttribute("data-parallax-image") === "down" ? "up" : "up";
+        
     }
 
     sizing() {
         this.wrapperHeight = this.wrapper.offsetHeight;
-        this.imageHeight = this.image.offsetHeight;
+        this.imageHeight = this.image.getBoundingClientRect().height;
+        this.travelDistance = this.imageHeight - this.wrapperHeight;
     }
 
     animate() {
         // Calculate how far the image needs to travel
-        const travelDistance = this.imageHeight - this.wrapperHeight;
         
         // Set initial position (image at bottom of wrapper)
         gsap.set(this.image, {
-            y: -travelDistance
+            y: this.direction === "up" ? -this.travelDistance : 0
         });
 
         // Create ScrollTrigger animation
         this.scrollTrigger = gsap.to(this.image, {
-            y: 0,
+            y: this.direction === "up" ? 0 : -this.travelDistance,
             ease: "none",
             scrollTrigger: {
                 trigger: this.wrapper,

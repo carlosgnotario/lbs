@@ -19,10 +19,12 @@ if (typeof document !== "undefined") {
         gsap.registerPlugin(ScrollTrigger);
         const g = {}
         window.g = g;
-
+        
+        g.scrollTrigger = ScrollTrigger;
         g.pxToRem = (px) => {
             return ( px / 16 * 1 ) + "rem";
         }
+        handleLazyLoad();
 
         // Initialize Lenis smooth scroll
         const lenis = new Lenis({
@@ -56,7 +58,7 @@ if (typeof document !== "undefined") {
             getFontSize();
         });
         // Classes
-        const buttonElements = document.querySelectorAll(".button");
+        const buttonElements = document.querySelectorAll("[data-button-text]");
         buttonElements.forEach(element => {
             new Button(element);
         });
@@ -118,4 +120,16 @@ function getFontSize() {
     const breakpoint = window.innerWidth < 768 ? "small" : window.innerWidth < 992 ? "medium" : "desktop";
     let fontSize = breakpoint === "small" ?  document.body.clientWidth / 767 * 16 : breakpoint === "medium" ? document.body.clientWidth / 991 * 16 : Math.min(document.body.clientWidth / 1290 * 16, 1680 / 1290 * 16);
     document.documentElement.style.setProperty('--fontSize', fontSize + 'px');
+}
+
+function handleLazyLoad(config={}) {
+    let lazyImages = gsap.utils.toArray("img[loading='lazy']"),
+        timeout = gsap.delayedCall(config.timeout || 1, ScrollTrigger.refresh).pause(),
+        lazyMode = config.lazy !== false,
+        imgLoaded = lazyImages.length,
+        onImgLoad = () => lazyMode ? timeout.restart(true) : --imgLoaded || ScrollTrigger.refresh();
+    lazyImages.forEach((img, i) => {
+      lazyMode || (img.loading = "eager");
+      img.naturalWidth ? onImgLoad() : img.addEventListener("load", onImgLoad);
+    });
 }

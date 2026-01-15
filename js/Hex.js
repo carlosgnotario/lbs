@@ -4,8 +4,6 @@ import gsap from "gsap";
 export class Hex {
     constructor(element) {
         this.element = element;
-        console.log("hex");
-
         this.hexQ = 32;
         
         this.elements();
