@@ -444,3 +444,22 @@ h2:has([diction]) {
 .faded-end {
     mask-image: linear-gradient(to bottom, black 0%, black 80%, transparent 100%);
 }
+
+.w-richtext {
+    h1, h2, h3, h4, h5, h6 {
+        &:not(:first-child) {
+            margin-top: revert;
+        }
+        margin-bottom: revert;
+        font-size: revert;
+        font-weight: revert;
+        color: revert;
+        text-align: revert;
+        text-transform: revert;
+        text-decoration: revert;
+        text-indent: revert;
+        text-overflow: revert;
+        text-shadow: revert;
+        text-wrap: revert;
+    }
+}
