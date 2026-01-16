@@ -7,8 +7,24 @@ export class Parallax {
         this.element = element;
 
         this.elements();
-        this.sizing();
-        this.animate();
+
+        const initiate = () => {
+            this.sizing();
+            this.animate();
+            g.scrollTrigger.refresh();
+        }
+        
+        // wait for the image to load or check if it's loaded
+        if (this.image.complete) {
+            console.log("image loaded");
+            
+            initiate();
+        } else {
+            this.image.addEventListener("load", () => {
+                console.log("image loaded");
+                initiate();
+            });
+        }
 
         window.addEventListener("resize", () => {
             this.sizing();
@@ -27,6 +43,7 @@ export class Parallax {
         this.wrapperHeight = this.wrapper.offsetHeight;
         this.imageHeight = this.image.getBoundingClientRect().height;
         this.travelDistance = this.imageHeight - this.wrapperHeight;
+        console.log("wrapperHeight", this.wrapperHeight, "imageHeight", this.imageHeight, "travelDistance", this.travelDistance);
     }
 
     animate() {

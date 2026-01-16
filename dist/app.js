@@ -9270,8 +9270,20 @@
     constructor(element) {
       this.element = element;
       this.elements();
-      this.sizing();
-      this.animate();
+      const initiate = () => {
+        this.sizing();
+        this.animate();
+        g.scrollTrigger.refresh();
+      };
+      if (this.image.complete) {
+        console.log("image loaded");
+        initiate();
+      } else {
+        this.image.addEventListener("load", () => {
+          console.log("image loaded");
+          initiate();
+        });
+      }
       window.addEventListener("resize", () => {
         this.sizing();
         g.scrollTrigger.refresh();
@@ -9286,6 +9298,7 @@
       this.wrapperHeight = this.wrapper.offsetHeight;
       this.imageHeight = this.image.getBoundingClientRect().height;
       this.travelDistance = this.imageHeight - this.wrapperHeight;
+      console.log("wrapperHeight", this.wrapperHeight, "imageHeight", this.imageHeight, "travelDistance", this.travelDistance);
     }
     animate() {
       gsapWithCSS.set(this.image, {
