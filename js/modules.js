@@ -4,10 +4,12 @@ import { Button } from "./Button.js";
 import { Roller } from "./Roller.js";
 import { Hex } from "./Hex.js";
 import { MovingHex } from "./MovingHex.js";
+import { InteractiveHex } from "./InteractiveHex.js";
 import { Diction } from "./Diction.js";
 import { Megamenu } from "./Megamenu.js";
 import { Video } from "./Video.js";
 import { Parallax } from "./Parallax.js";
+import { Memberships } from "./Memberships.js";
 import { ShrinkText } from "./ShrinkText.js";
 import { Testimonials } from "./Testimonials.js";
 import { FaqElements } from "./FaqElements.js";
@@ -111,6 +113,16 @@ if (typeof document !== "undefined") {
         const parallaxElements = document.querySelectorAll("[data-animation='parallax']");
         parallaxElements.forEach(element => {
             new Parallax(element);
+        });
+
+        const membershipsElements = document.querySelectorAll("[data-animation='memberships']");
+        membershipsElements.forEach(element => {
+            new Memberships(element);
+        });
+
+        const interactiveHexElements = document.querySelectorAll("[data-animation='interactivehex']");
+        interactiveHexElements.forEach(element => {
+            new InteractiveHex(element);
         });
     });
 }

@@ -1117,6 +1117,12 @@
 .bg-green:is(.button):before {
   background-color: #93DA08;
 }
+.bg-honey {
+  background-color: #FFB000;
+}
+.bg-honey:is(.button):before {
+  background-color: #FFB000;
+}
 .bg-half-way-orange {
   background-color: var(--_colors---half-way-orange);
 }
@@ -1140,6 +1146,12 @@
 }
 .bg-gray:is(.button):before {
   background-color: var(--_colors---gray);
+}
+.bg-mid-gray {
+  background-color: #767E83;
+}
+.bg-mid-gray:is(.button):before {
+  background-color: #767E83;
 }
 .bg-dark-gray {
   background-color: #373737;
@@ -1188,6 +1200,12 @@
 }
 .bg-sea-blue:is(.button):before {
   background-color: #83ACB2;
+}
+.bg-pastel-blue {
+  background-color: #7F84DE;
+}
+.bg-pastel-blue:is(.button):before {
+  background-color: #7F84DE;
 }
 .bg-violet {
   background-color: var(--_colors---violet);
@@ -3937,6 +3955,22 @@
   display: contents;
 }
 
+.membership-logo-text-decor {
+  position: relative;
+  z-index: 1;
+}
+.membership-logo-text-decor:before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0.25rem;
+  height: 50%;
+  aspect-ratio: 1/1;
+  transform: translateY(-50%) translateX(-50%) rotate(45deg);
+  background-color: inherit;
+  z-index: -1;
+}
+
 html {
   --fontSize: min(calc(1680 / 1290 * 16px), calc(100vw / 1290 * 16));
 }
@@ -4337,6 +4371,25 @@ html:not(.wf-design-mode) .team-member-image .team-member-picture {
 }
 html:not(.wf-design-mode) .team-member-image .team-member-illustration {
   transform: perspective(10rem) rotateY(0deg) scale(1);
+}
+html:not(.wf-design-mode) .memberships {
+  display: grid;
+}
+html:not(.wf-design-mode) .memberships-toggler {
+  grid-area: 1/1;
+  justify-self: center;
+}
+html:not(.wf-design-mode) .memberships-tab {
+  grid-area: 2/1;
+  justify-items: center;
+  justify-content: center;
+  align-items: start;
+  height: 100%;
+  opacity: 0;
+  visibility: hidden;
+}
+html:not(.wf-design-mode) .memberships-tab > * {
+  height: 100%;
 }
 
 a {

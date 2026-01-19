@@ -76,3 +76,26 @@ body {
 
     }
 }
+
+.memberships {
+    display: grid;
+
+    &-toggler {
+        grid-area: 1/1;
+        justify-self: center;
+    }
+
+    &-tab {
+        grid-area: 2/1;
+        justify-items: center;
+        justify-content: center;
+        align-items: start;
+        height: 100%;
+        opacity: 0;
+        visibility: hidden;
+
+        > * {
+            height: 100%;
+        }
+    }
+}

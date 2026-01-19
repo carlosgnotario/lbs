@@ -67,10 +67,12 @@
     &-neon-red { background-color: #F63C4E; &:is(.button):before { background-color: #F63C4E; } }
     &-yellow { background-color: $yellow; &:is(.button):before { background-color: $yellow; } }
     &-green { background-color: #93DA08; &:is(.button):before { background-color: #93DA08; } }
+    &-honey { background-color: #FFB000; &:is(.button):before { background-color: #FFB000; } }
     &-half-way-orange { background-color: $half-way-orange; &:is(.button):before { background-color: $half-way-orange; } }
     &-blood-orange { background-color: #C53000; &:is(.button):before { background-color: #C53000; } }
     &-light-gray { background-color: #CED0D3; &:is(.button):before { background-color: #CED0D3; } }
     &-gray { background-color: $gray; &:is(.button):before { background-color: $gray; } }
+    &-mid-gray { background-color: #767E83; &:is(.button):before { background-color: #767E83; } }
     &-dark-gray { background-color: #373737; &:is(.button):before { background-color: #373737; } }
     &-dark-gray-2 { background-color: #1F1F1F; &:is(.button):before { background-color: #1F1F1F; } }
     &-blue { background-color: $blue; &:is(.button):before { background-color: $blue; } }
@@ -79,6 +81,7 @@
     &-teal { background-color: $teal; &:is(.button):before { background-color: $teal; } }
     &-emerald { background-color: #46C998; &:is(.button):before { background-color: #46C998; } }
     &-sea-blue { background-color: #83ACB2; &:is(.button):before { background-color: #83ACB2; } }
+    &-pastel-blue { background-color: #7F84DE; &:is(.button):before { background-color: #7F84DE; } }
     &-violet { background-color: $violet; &:is(.button):before { background-color: $violet; } }
     &-baby-blue { background-color: $baby-blue; &:is(.button):before { background-color: $baby-blue; } }
     &-white { background-color: $background-1; &:is(.button):before { background-color: $background-1; } }

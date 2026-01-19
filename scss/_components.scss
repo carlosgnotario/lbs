@@ -160,3 +160,20 @@
 [slot="children"] {
     display: contents;
 }
+
+.membership-logo-text-decor {
+    position: relative;
+    z-index: 1;
+
+    &:before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 0.25rem;
+        height: 50%;
+        aspect-ratio: 1 / 1;
+        transform: translateY(-50%) translateX(-50%) rotate(45deg);
+        background-color: inherit;
+        z-index: -1;
+    }
+}
