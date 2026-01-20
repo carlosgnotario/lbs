@@ -6153,18 +6153,19 @@
                     float edgeFactor = smoothstep(0.0, hexRadius * 0.02, edgeDist);
                     
                     // Emphasize top edge (angle near -90 degrees / 1.5708)
-                    float topEdgeFactor = 1.0 - abs(angle + 1.5708) / 0.5; // Stronger at top
-                    topEdgeFactor = clamp(topEdgeFactor, 0.0, 1.0);
+                    float topEdgeFactor = 1.0 - clamp(abs(angle + 1.5708) / 0.5, 0.0, 1.0); // Stronger at top
                     
-                    // Combine edge detection with top emphasis
-                    float rimLight = edgeFactor * 0.25 * (0.5 + topEdgeFactor * 0.5);
+                    // Combine edge detection with top emphasis - clamp to prevent flares
+                    float rimLight = clamp(edgeFactor * 0.25 * (0.5 + topEdgeFactor * 0.5), 0.0, 0.3);
                     
                     light = light * 0.5 + 0.5;
                     light = max(light, 0.3);
-                    light = light + rimLight;
+                    light = min(light + rimLight, 1.0); // Clamp to prevent over-brightening
                     
                     vec3 finalColor = baseColor * shadowIntensity * light;
                     finalColor = max(finalColor, vec3(0.05));
+                    finalColor = finalColor * 1.1; // 10% brighter overall
+                    finalColor = min(finalColor, vec3(1.0)); // Clamp to prevent over-brightening
                     
                     gl_FragColor = vec4(finalColor, 1.0);
                 }
@@ -6228,7 +6229,7 @@
         normals.push(0, 0, 1);
       }
       for (let i = 0; i < 6; i++) {
-        indices.push(0, i + 1, (i + 1) % 6 + 1);
+        indices.push(0, (i + 1) % 6 + 1, i + 1);
       }
       return { vertices, normals, indices };
     }
@@ -6255,7 +6256,9 @@
           const x = col * hexWidth + xOffset - cols * hexWidth / 2;
           const y = row * hexHeight - rows * hexHeight / 2;
           const z = 0;
-          const baseGray = 0.03 + Math.random() * 0.09;
+          const minGray = 0.033 * 1.1;
+          const maxGray = (0.033 + 0.099) * 0.9;
+          const baseGray = minGray + Math.random() * (maxGray - minGray);
           const phaseOffset = Math.random() * Math.PI * 2;
           hexagons.push({
             x,
@@ -9752,10 +9755,12 @@
     elements() {
       this.togglerLinks = this.element.querySelectorAll(".memberships-toggler div:not(.memberships-indicator");
       this.tabs = this.element.querySelectorAll(".memberships-tab");
+      this.indicator = this.element.querySelector(".memberships-indicator");
       this.tabs.forEach((tab) => {
         tab.items = tab.querySelectorAll(".membership-plan");
         tab.items.forEach((item) => {
           item.numeral = item.querySelector(".membership-pricing-number");
+          item.originalNumber = item.numeral.textContent;
         });
       });
       console.log(this.togglerLinks);
@@ -9771,6 +9776,8 @@
     showTab(index) {
       const currentTab = this.tabs[index];
       const left = index > this.currentTab ? true : false;
+      const bgcolors = ["#FFDF10", "#72BEE0"];
+      const textcolors = ["#404040", "#FFFFFF", "#A9A9A9"];
       if (this.currentTab !== null) {
         const previousTab = this.tabs[this.currentTab];
         gsapWithCSS.to(previousTab.items, {
@@ -9786,6 +9793,31 @@
           delay: 1
         });
       }
+      const tl = gsapWithCSS.timeline();
+      tl.to(this.indicator, {
+        xPercent: -50,
+        duration: 1,
+        left: 50 + index * 100 + "%",
+        ease: "power4.out"
+      }, 0);
+      tl.to(this.indicator, {
+        width: "20%",
+        duration: 0.5,
+        ease: "power4.out"
+      }, 0);
+      tl.to(this.indicator, {
+        width: "100%",
+        duration: 2,
+        ease: "elastic.out(1, 1.3)",
+        backgroundColor: bgcolors[index]
+      }, 0.2);
+      this.togglerLinks.forEach((item, i) => {
+        gsapWithCSS.to(item, {
+          color: i === index ? textcolors[index] : textcolors[2],
+          duration: 1,
+          ease: "power4.out"
+        });
+      });
       gsapWithCSS.to(currentTab, {
         autoAlpha: 1,
         duration: 1,
@@ -9803,10 +9835,12 @@
         delay: 0.5
       });
       currentTab.items.forEach((item) => {
-        gsapWithCSS.from(item.numeral, {
-          textContent: 0,
-          snap: { textContent: 1 },
+        gsapWithCSS.fromTo(item.numeral, {
+          textContent: 0
+        }, {
+          textContent: item.originalNumber,
           duration: 2,
+          snap: { textContent: 1 },
           ease: "power2.out",
           delay: 0.5
         });

@@ -3971,6 +3971,11 @@
   z-index: -1;
 }
 
+.logos-collection img {
+  max-width: 13.9375rem;
+  max-height: 4.0625rem;
+}
+
 html {
   --fontSize: min(calc(1680 / 1290 * 16px), calc(100vw / 1290 * 16));
 }
@@ -4738,6 +4743,13 @@ h2:has([diction]) {
   text-overflow: revert;
   text-shadow: revert;
   text-wrap: revert;
+}
+
+.extra-margin {
+  padding-bottom: 20rem;
+}
+.extra-margin + * {
+  margin-top: -13.125rem;
 }
 
 /*# sourceMappingURL=app.css.map */

@@ -162,18 +162,19 @@ export class InteractiveHex {
                     float edgeFactor = smoothstep(0.0, hexRadius * 0.02, edgeDist);
                     
                     // Emphasize top edge (angle near -90 degrees / 1.5708)
-                    float topEdgeFactor = 1.0 - abs(angle + 1.5708) / 0.5; // Stronger at top
-                    topEdgeFactor = clamp(topEdgeFactor, 0.0, 1.0);
+                    float topEdgeFactor = 1.0 - clamp(abs(angle + 1.5708) / 0.5, 0.0, 1.0); // Stronger at top
                     
-                    // Combine edge detection with top emphasis
-                    float rimLight = edgeFactor * 0.25 * (0.5 + topEdgeFactor * 0.5);
+                    // Combine edge detection with top emphasis - clamp to prevent flares
+                    float rimLight = clamp(edgeFactor * 0.25 * (0.5 + topEdgeFactor * 0.5), 0.0, 0.3);
                     
                     light = light * 0.5 + 0.5;
                     light = max(light, 0.3);
-                    light = light + rimLight;
+                    light = min(light + rimLight, 1.0); // Clamp to prevent over-brightening
                     
                     vec3 finalColor = baseColor * shadowIntensity * light;
                     finalColor = max(finalColor, vec3(0.05));
+                    finalColor = finalColor * 1.1; // 10% brighter overall
+                    finalColor = min(finalColor, vec3(1.0)); // Clamp to prevent over-brightening
                     
                     gl_FragColor = vec4(finalColor, 1.0);
                 }
@@ -255,7 +256,8 @@ export class InteractiveHex {
         }
         
         for (let i = 0; i < 6; i++) {
-            indices.push(0, i + 1, ((i + 1) % 6) + 1);
+            // Ensure counter-clockwise winding for front-facing triangles
+            indices.push(0, ((i + 1) % 6) + 1, i + 1);
         }
         
         return { vertices, normals, indices };
@@ -297,7 +299,10 @@ export class InteractiveHex {
                 const y = (row * hexHeight) - (rows * hexHeight) / 2;
                 const z = 0;
                 
-                const baseGray = 0.03 + Math.random() * 0.09;
+                // Raise minimum 10%, lower max 10%
+                const minGray = 0.033 * 1.1; // 0.0363
+                const maxGray = (0.033 + 0.099) * 0.9; // 0.1188
+                const baseGray = minGray + Math.random() * (maxGray - minGray);
                 const phaseOffset = Math.random() * Math.PI * 2;
                 
                 hexagons.push({
