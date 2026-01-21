@@ -311,7 +311,7 @@ h2:has([diction]) {
     }
 }
 
-[moving-hex] {
+[moving-hex], [data-animation="moving-hex"] {
     position: relative;
 
     > * {
@@ -323,7 +323,7 @@ h2:has([diction]) {
         inset: 0;
         transform: translateY(-6rem);
         display: grid;
-        z-index: 0;
+        z-index: -1;
     }
 
     .hex-controller {
@@ -467,7 +467,7 @@ h2:has([diction]) {
 .extra-margin {
     padding-bottom: ptr(320);
 
-    + * {
+    + * .slot {
         margin-top: ptr(-210);
     }
 }

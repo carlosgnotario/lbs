@@ -109,6 +109,9 @@
 .text-dark-1 {
   color: var(--_colors---text-dark-1);
 }
+.text-dark-2 {
+  color: var(--_colors---background-dark-2);
+}
 .text-orange {
   color: var(--_colors---orange);
 }
@@ -165,6 +168,21 @@
 }
 .text-dark-gray-2 {
   color: #1F1F1F;
+}
+.text-honey {
+  color: #FFB000;
+}
+.text-mid-gray {
+  color: #767E83;
+}
+.text-light-blue {
+  color: #06CCD3;
+}
+.text-pastel-blue {
+  color: #7F84DE;
+}
+.text-note {
+  color: #FFFBDE;
 }
 .text-gradient-orange {
   background: linear-gradient(to right, var(--_colors---orange), var(--_colors---yellow));
@@ -1165,6 +1183,12 @@
 .bg-dark-gray-2:is(.button):before {
   background-color: #1F1F1F;
 }
+.bg-dark-gray-3 {
+  background-color: #2E2E2E;
+}
+.bg-dark-gray-3:is(.button):before {
+  background-color: #2E2E2E;
+}
 .bg-blue {
   background-color: var(--_colors---blue);
 }
@@ -1807,6 +1831,10 @@
 }
 .gap-xl {
   gap: var(--_sizes---gap-xl-120);
+}
+
+.no-overflow {
+  overflow: hidden;
 }
 
 .mw-1 {
@@ -3829,6 +3857,10 @@
   font-weight: 800;
 }
 
+.pull-slot {
+  margin-top: -13.125rem;
+}
+
 [data-wf--media-block--variant=list-item] p {
   margin-bottom: 0;
 }
@@ -3949,6 +3981,13 @@
 
 #test-smarter .custom-img {
   margin-left: 11.25rem;
+}
+
+#signup .hex-wrapper {
+  top: 9rem;
+}
+#signup .hex {
+  background-color: #363636;
 }
 
 [slot=children] {
@@ -4624,26 +4663,26 @@ h2:has([diction]) {
   z-index: 1;
 }
 
-[moving-hex] {
+[moving-hex], [data-animation=moving-hex] {
   position: relative;
 }
-[moving-hex] > * {
+[moving-hex] > *, [data-animation=moving-hex] > * {
   z-index: 1;
 }
-[moving-hex] .hex-wrapper {
+[moving-hex] .hex-wrapper, [data-animation=moving-hex] .hex-wrapper {
   position: absolute;
   inset: 0;
   transform: translateY(-6rem);
   display: grid;
-  z-index: 0;
+  z-index: -1;
 }
-[moving-hex] .hex-controller {
+[moving-hex] .hex-controller, [data-animation=moving-hex] .hex-controller {
   width: 9.0909090909%;
   aspect-ratio: 1/1;
   grid-area: 1/1;
   display: flex;
 }
-[moving-hex] .hex-controller .hex {
+[moving-hex] .hex-controller .hex, [data-animation=moving-hex] .hex-controller .hex {
   flex-grow: 1;
   background-color: #f2f2f2;
   clip-path: polygon(50% 0%, 93.3% 25%, 93.3% 75%, 50% 100%, 6.7% 75%, 6.7% 25%);
@@ -4748,7 +4787,7 @@ h2:has([diction]) {
 .extra-margin {
   padding-bottom: 20rem;
 }
-.extra-margin + * {
+.extra-margin + * .slot {
   margin-top: -13.125rem;
 }
 

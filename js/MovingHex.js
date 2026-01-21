@@ -4,6 +4,7 @@ import gsap from "gsap";
 export class MovingHex {
     constructor(element) {
         this.element = element;
+        this.slot = this.element.querySelector(".slot");
 
         this.create();
         this.position();
@@ -15,11 +16,16 @@ export class MovingHex {
         this.hexWrapper = [document.createElement("div"), document.createElement("div")];
         this.hexWrapper.forEach(wrapper => {
             wrapper.classList.add("hex-wrapper");
-            this.element.appendChild(wrapper);
+            if (this.slot) {
+                this.slot.appendChild(wrapper);
+                gsap.set(this.slot, { position: "relative", })
+            } else {
+                this.element.appendChild(wrapper);
+            }
         });
         gsap.set(this.hexWrapper[1], {
             scaleX: -1,
-            y: "-6rem"
+            y: "-6rem",
         });
         for (let i = 0; i < hexQ; i++) {
             // Wrap the hexes in a div with the class hex-controller

@@ -157,6 +157,15 @@
     }
 }
 
+#signup {
+    .hex-wrapper {
+        top: 9rem
+    }
+    .hex {
+        background-color: #363636;
+    }
+}
+
 [slot="children"] {
     display: contents;
 }

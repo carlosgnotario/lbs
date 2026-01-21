@@ -4,6 +4,7 @@
     &-1 { color: $text-1; }
     &-2 { color: $text-2; }
     &-dark-1 { color: $text-dark-1; }
+    &-dark-2 { color: $background-dark-2; }
     &-orange { color: $orange; }
     &-pink { color: $pink; }
     &-neon-red { color: #F63C4E; }
@@ -23,6 +24,11 @@
     &-light-gray { color: #CED0D3; }
     &-dark-gray { color: #373737; }
     &-dark-gray-2 { color: #1F1F1F; }
+    &-honey { color: #FFB000; }
+    &-mid-gray { color: #767E83; }
+    &-light-blue { color: #06CCD3; }
+    &-pastel-blue { color: #7F84DE; }
+    &-note { color: #FFFBDE; }
 
     &-gradient {
         &-orange { @include gradient-text($orange, $yellow); }
@@ -75,6 +81,7 @@
     &-mid-gray { background-color: #767E83; &:is(.button):before { background-color: #767E83; } }
     &-dark-gray { background-color: #373737; &:is(.button):before { background-color: #373737; } }
     &-dark-gray-2 { background-color: #1F1F1F; &:is(.button):before { background-color: #1F1F1F; } }
+    &-dark-gray-3 { background-color: #2E2E2E; &:is(.button):before { background-color: #2E2E2E; } }
     &-blue { background-color: $blue; &:is(.button):before { background-color: $blue; } }
     &-light-blue { background-color: #06CCD3; &:is(.button):before { background-color: #06CCD3; } }
     &-black { background-color: $black; &:is(.button):before { background-color: $black; } }
@@ -271,6 +278,10 @@
     &-xl { gap: $gap-xl-120; }
 }
 
+.no-overflow {
+    overflow: hidden;
+}
+
 @for $i from 1 through 100 {
     .mw-#{$i} { max-width: #{$i}rem; }
     .mr-#{$i} { margin-right: #{$i}rem; }
@@ -284,4 +295,8 @@ $weights: 400, 500, 600, 700, 800;
     .fw-#{$weight} {
         font-weight: $weight;
     }
+}
+
+.pull-slot {
+    margin-top: ptr(-210);
 }

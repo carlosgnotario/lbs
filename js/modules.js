@@ -95,6 +95,11 @@ if (typeof document !== "undefined") {
             new MovingHex(element);
         });
 
+        const movingHexAnimationElements = document.querySelectorAll("[data-animation='moving-hex']");
+        movingHexAnimationElements.forEach(element => {
+            new MovingHex(element);
+        });
+
         const dictionElements = document.querySelectorAll("[diction]");
         dictionElements.forEach(element => {
             new Diction(element);

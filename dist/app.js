@@ -5903,6 +5903,7 @@
   var MovingHex = class {
     constructor(element) {
       this.element = element;
+      this.slot = this.element.querySelector(".slot");
       this.create();
       this.position();
       this.animate();
@@ -5912,7 +5913,12 @@
       this.hexWrapper = [document.createElement("div"), document.createElement("div")];
       this.hexWrapper.forEach((wrapper) => {
         wrapper.classList.add("hex-wrapper");
-        this.element.appendChild(wrapper);
+        if (this.slot) {
+          this.slot.appendChild(wrapper);
+          gsapWithCSS.set(this.slot, { position: "relative" });
+        } else {
+          this.element.appendChild(wrapper);
+        }
       });
       gsapWithCSS.set(this.hexWrapper[1], {
         scaleX: -1,
@@ -10033,6 +10039,10 @@
       });
       const movingHexElements = document.querySelectorAll("[moving-hex]");
       movingHexElements.forEach((element) => {
+        new MovingHex(element);
+      });
+      const movingHexAnimationElements = document.querySelectorAll("[data-animation='moving-hex']");
+      movingHexAnimationElements.forEach((element) => {
         new MovingHex(element);
       });
       const dictionElements = document.querySelectorAll("[diction]");
