@@ -40,8 +40,10 @@
 }
 
 .testimonial {
-    &-comment {
-        font-size: ptr(14);
+
+    &-text {
+        overflow: visible;
+        font-size: ptr(12);
     }
 }
 

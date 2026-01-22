@@ -10052,6 +10052,7 @@
       });
       const shrinkText = document.querySelectorAll("[data-shrink]");
       shrinkText.forEach((element) => {
+        console.log("shrink text");
         new ShrinkText(element);
       });
       const testimonialElements = document.querySelectorAll("[testimonial]");

@@ -78,6 +78,8 @@ if (typeof document !== "undefined") {
 
         const shrinkText = document.querySelectorAll("[data-shrink]");
         shrinkText.forEach(element => {
+            console.log("shrink text");
+            
             new ShrinkText(element);
         });
 

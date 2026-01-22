@@ -121,7 +121,7 @@
 .text-neon-red {
   color: #F63C4E;
 }
-.text-yellow {
+.text-neon- .text-yellow {
   color: var(--_colors---yellow);
 }
 .text-half-way-orange {
@@ -1169,6 +1169,9 @@
   background-color: #FAFAFA;
   border: 1px solid #E9E9E9;
 }
+.bg-gray-label {
+  background-color: #81868C;
+}
 .bg-mid-gray {
   background-color: #767E83;
 }
@@ -1265,6 +1268,12 @@
 .bg-gradient-orange:is(.button):before {
   background: linear-gradient(to right, var(--_colors---orange), var(--_colors---yellow));
 }
+.bg-gradient-orange-swap {
+  background: linear-gradient(to right, var(--_colors---yellow), var(--_colors---orange));
+}
+.bg-gradient-orange-swap:is(.button):before {
+  background: linear-gradient(to right, var(--_colors---yellow), var(--_colors---orange));
+}
 .bg-gradient-yellow {
   background: linear-gradient(to right, #FFB700, var(--_colors---yellow));
 }
@@ -1288,6 +1297,12 @@
 }
 .bg-gradient-gray-vertical:is(.button):before {
   background: linear-gradient(to bottom, var(--_colors---background-2), var(--_colors---background-1));
+}
+.bg-gradient-spanish {
+  background: linear-gradient(to bottom, #F92B2B, #FFB400);
+}
+.bg-gradient-spanish:is(.button):before {
+  background: linear-gradient(to right, #F92B2B, #FFB400);
 }
 
 .overlay-orange {
@@ -1340,7 +1355,7 @@
   margin-bottom: var(--_sizes---margin-l-100);
 }
 .mb-remove > * {
-  margin-bottom: 0;
+  margin-bottom: 0 !important;
 }
 
 .mt-0 {
@@ -4393,8 +4408,9 @@ html.wf-design-mode .testimonials-title:before {
 html.wf-design-mode .testimonials-wrapper {
   flex-wrap: wrap;
 }
-html.wf-design-mode .testimonial-comment {
-  font-size: 0.875rem;
+html.wf-design-mode .testimonial-text {
+  overflow: visible;
+  font-size: 0.75rem;
 }
 html.wf-design-mode [megamenu] {
   margin-top: -7.5rem;
@@ -4705,7 +4721,7 @@ section > img {
   height: 1.5rem;
   position: absolute;
   aspect-ratio: 1.656;
-  top: 100%;
+  top: calc(100% - 1px);
   right: 10%;
   clip-path: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 53 32'%3E%3CclipPath id='testimonial-clip' clipPathUnits='objectBoundingBox'%3E%3Cpath d='M1 0s-0.1 0-0.1 0.2v0.6s0 0.2-0.1 0.2-0.1-0.1-0.1-0.1L0.2 0.1S0.1 0 0 0z'/%3E%3C/clipPath%3E%3C/svg%3E#testimonial-clip");
   clip-path: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 53 32'%3E%3CclipPath id='testimonial-clip' clipPathUnits='objectBoundingBox'%3E%3Cpath d='M1 0s-0.132-0.0-0.132 0.219v0.563s0 0.188-0.075 0.188-0.113-0.094-0.113-0.094L0.17 0.125S0.105 0.031 0 0.00z'/%3E%3C/clipPath%3E%3C/svg%3E#testimonial-clip");
@@ -4933,10 +4949,10 @@ h2:has([diction]) {
   mask-image: linear-gradient(to bottom, black 0%, black 80%, transparent 100%);
 }
 
-.w-richtext h1:not(:first-child), .w-richtext h2:not(:first-child), .w-richtext h3:not(:first-child), .w-richtext h4:not(:first-child), .w-richtext h5:not(:first-child), .w-richtext h6:not(:first-child) {
+.w-richtext:not(:where([data-wf--media-block--variant=list-item])) h1:not(:first-child), .w-richtext:not(:where([data-wf--media-block--variant=list-item])) h2:not(:first-child), .w-richtext:not(:where([data-wf--media-block--variant=list-item])) h3:not(:first-child), .w-richtext:not(:where([data-wf--media-block--variant=list-item])) h4:not(:first-child), .w-richtext:not(:where([data-wf--media-block--variant=list-item])) h5:not(:first-child), .w-richtext:not(:where([data-wf--media-block--variant=list-item])) h6:not(:first-child) {
   margin-top: revert;
 }
-.w-richtext h1, .w-richtext h2, .w-richtext h3, .w-richtext h4, .w-richtext h5, .w-richtext h6 {
+.w-richtext:not(:where([data-wf--media-block--variant=list-item])) h1, .w-richtext:not(:where([data-wf--media-block--variant=list-item])) h2, .w-richtext:not(:where([data-wf--media-block--variant=list-item])) h3, .w-richtext:not(:where([data-wf--media-block--variant=list-item])) h4, .w-richtext:not(:where([data-wf--media-block--variant=list-item])) h5, .w-richtext:not(:where([data-wf--media-block--variant=list-item])) h6 {
   margin-bottom: revert;
   font-size: revert;
   font-weight: revert;

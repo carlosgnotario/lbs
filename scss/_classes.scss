@@ -8,6 +8,7 @@
     &-orange { color: $orange; }
     &-pink { color: $pink; }
     &-neon-red { color: #F63C4E; }
+    &-neon-
     &-yellow { color: $yellow; }
     &-half-way-orange { color: $half-way-orange; }
     &-gray { color: $gray; }
@@ -82,6 +83,9 @@
         background-color: #FAFAFA;
         border: 1px solid #E9E9E9;
     }
+    &-gray-label {
+        background-color: #81868C;
+    }
     &-mid-gray { background-color: #767E83; &:is(.button):before { background-color: #767E83; } }
     &-dark-gray { background-color: #373737; &:is(.button):before { background-color: #373737; } }
     &-dark-gray-2 { background-color: #1F1F1F; &:is(.button):before { background-color: #1F1F1F; } }
@@ -100,10 +104,12 @@
 
     &-gradient {
         &-orange { background: linear-gradient(to right, $orange, $yellow); &:is(.button):before { background: linear-gradient(to right, $orange, $yellow); } }
+        &-orange-swap { background: linear-gradient(to right, $yellow, $orange); &:is(.button):before { background: linear-gradient(to right, $yellow, $orange); } }
         &-yellow { background: linear-gradient(to right, #FFB700, $yellow); &:is(.button):before { background: linear-gradient(to right, #FFB700, $yellow); } }
         &-purple { background: linear-gradient(to right, #52A6E0, #F379E7); &:is(.button):before { background: linear-gradient(to right, #52A6E0, #F379E7); } }
         &-purple-vertical { background: linear-gradient(to bottom, #B57DC1, #9A7DC1); &:is(.button):before { background: linear-gradient(to bottom, #B57DC1, #9A7DC1); } }
         &-gray-vertical { background: linear-gradient(to bottom, $background-2, $background-1); &:is(.button):before { background: linear-gradient(to bottom, $background-2, $background-1); } }
+        &-spanish { background: linear-gradient(to bottom, #F92B2B, #FFB400); &:is(.button):before { background: linear-gradient(to right, #F92B2B, #FFB400); } }
     }
 }
 
@@ -141,7 +147,7 @@
     &-l { margin-bottom: $margin-l-100; }
     &-remove {
         > * {
-            margin-bottom: 0;
+            margin-bottom: 0!important;
         }
     }
 }
