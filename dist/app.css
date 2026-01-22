@@ -121,7 +121,7 @@
 .text-neon-red {
   color: #F63C4E;
 }
-.text-neon- .text-yellow {
+.text-yellow {
   color: var(--_colors---yellow);
 }
 .text-half-way-orange {
@@ -4643,6 +4643,7 @@ section > img {
   position: relative;
   background: transparent !important;
   z-index: 1;
+  justify-self: revert !important;
 }
 .button:hover:before {
   transform: scale(1.2);

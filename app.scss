@@ -61,6 +61,7 @@ section {
     position: relative;	
     background: transparent!important;
     z-index: 1;
+    justify-self: revert!important;
 
     &:hover:before {
         transform: scale(1.2);
