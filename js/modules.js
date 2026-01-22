@@ -10,6 +10,7 @@ import { Megamenu } from "./Megamenu.js";
 import { Video } from "./Video.js";
 import { Parallax } from "./Parallax.js";
 import { Memberships } from "./Memberships.js";
+import { SearchResults } from "./SearchResults.js";
 import { ShrinkText } from "./ShrinkText.js";
 import { Testimonials } from "./Testimonials.js";
 import { FaqElements } from "./FaqElements.js";
@@ -128,6 +129,13 @@ if (typeof document !== "undefined") {
         const interactiveHexElements = document.querySelectorAll("[data-animation='interactivehex']");
         interactiveHexElements.forEach(element => {
             new InteractiveHex(element);
+        });
+
+        const searchResultsElements = document.querySelectorAll("[search-results]");
+        searchResultsElements.forEach(element => {
+            console.log("one");
+            
+            new SearchResults(element);
         });
     });
 }

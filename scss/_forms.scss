@@ -1,0 +1,152 @@
+@use 'variables' as *;
+
+label {
+    font-size: ptr(12);
+    color: $text-2;
+    font-weight: 500;
+}
+
+.w-input {
+    border-radius: ptr(7);
+    border: 1px solid #dcdcdc;
+    background-color: #f9f9f9;
+    font-size: ptr(16);
+    padding: ptr(10) ptr(10);
+    line-height: 1;
+    height: auto;
+    font-family: 'Sf Pro Rounded', Arial, sans-serif;
+    font-weight: 500;
+    margin-bottom: 1em;
+
+    &:focus {
+        border-color: $orange;
+    }
+}
+
+textarea.w-input {
+    line-height: 1.35;
+}
+
+.w-checkbox, .w-radio {
+    display: flex;
+    align-items: center;
+    line-height: 1;
+    padding-left: 0;
+    margin-bottom: 1em;
+
+    .w-form-label {
+        line-height: 1;
+    }
+}
+
+.w-checkbox-input, .w-radio-input {
+    margin: 0;
+    margin-right: ptr(6);
+    width: ptr(16);
+    height: ptr(16);
+    border: 1px solid #dcdcdc;
+    background-color: #f9f9f9;
+    border-radius: ptr(4);
+}
+
+.w-checkbox-input--inputType-custom.w--redirected-checked {
+    background-color: $orange;
+    border-color: $orange;
+
+    &.w--redirected-focus {
+        box-shadow: 0 0 3px 0px $orange;
+    }
+}
+
+.w-form-formradioinput--inputType-custom.w--redirected-checked {
+    border: 4px solid $orange;
+
+    &.w--redirected-focus {
+        box-shadow: 0 0 3px 0px $orange;
+    }
+}
+
+.w-radio-input {
+    border-radius: 999em;
+}
+
+.w-select {
+    border-radius: ptr(7);
+    border: 1px solid #dcdcdc;
+    background-color: #f9f9f9;
+    font-size: ptr(16);
+    padding: ptr(10) ptr(10);
+    line-height: 1;
+    height: auto;
+    color: $text-2;
+    margin-bottom: 1em;
+
+    &:focus {
+        border-color: $orange;
+    }
+
+    // Style hovered/selected options with an orange background
+    option:hover,
+    option:checked,
+    option:focus {
+        background-color: $orange !important;
+        color: white !important;
+    }
+}
+
+.w-button {
+    background-color: $yellow;
+    border-radius: ptr(10);
+    display: inline-block;
+    padding: ptr(10) ptr(38);
+    text-decoration: none;
+    font-size: ptr(16);
+    line-height: ptr(24);
+    height: ptr(46);
+    font-weight: 700;
+    gap: ptr(6);
+    color: $text-1;
+    display: flex;
+    justify-content: center;
+    border: none;
+    text-align: center;
+    cursor: pointer;
+    position: relative;	
+    z-index: 1;
+
+    &:hover:before {
+        transform: scale(1.2);
+    }
+
+    &:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: inherit;
+        border-radius: 999em;
+        background-color: $yellow;
+        z-index: -1;
+        // Transition that mimics elastic.out(1, 0.3)
+        transition: transform 1s cubic-bezier(0.060, 0.770, 0.000, 1.615);
+    }
+
+    &.disabled:before {
+        background-color: $border-1;
+    }
+
+    &.small {
+        padding: ptr(10) ptr(20);
+    }
+
+    &.blocky {
+        border-radius: ptr(13);
+
+        &:before {
+            border-radius: inherit;
+        }
+    }
+}
+

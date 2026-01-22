@@ -9855,6 +9855,31 @@
     }
   };
 
+  // js/SearchResults.js
+  var SearchResults = class {
+    constructor(element) {
+      this.element = element;
+      this.elements();
+      this.create();
+    }
+    elements() {
+      this.title = this.element.querySelector(".posts-search-title");
+      this.posts = this.element.querySelectorAll(".posts-search-list");
+    }
+    create() {
+      if (window.location.search.split("?query=")[1]) {
+        const postSearchTerm = document.createElement("span");
+        postSearchTerm.classList.add("post-search-term");
+        postSearchTerm.innerHTML = window.location.search.split("?query=")[1];
+        this.title.insertAdjacentElement("beforeend", postSearchTerm);
+      }
+      const postCount = document.createElement("span");
+      postCount.classList.add("post-count");
+      postCount.innerHTML = ` (${this.posts.length})`;
+      this.title.insertAdjacentElement("beforeend", postCount);
+    }
+  };
+
   // js/ShrinkText.js
   var ShrinkText = class {
     constructor(element) {
@@ -10068,6 +10093,11 @@
       const interactiveHexElements = document.querySelectorAll("[data-animation='interactivehex']");
       interactiveHexElements.forEach((element) => {
         new InteractiveHex(element);
+      });
+      const searchResultsElements = document.querySelectorAll("[search-results]");
+      searchResultsElements.forEach((element) => {
+        console.log("one");
+        new SearchResults(element);
       });
     });
   }

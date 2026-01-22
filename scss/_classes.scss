@@ -78,6 +78,10 @@
     &-blood-orange { background-color: #C53000; &:is(.button):before { background-color: #C53000; } }
     &-light-gray { background-color: #CED0D3; &:is(.button):before { background-color: #CED0D3; } }
     &-gray { background-color: $gray; &:is(.button):before { background-color: $gray; } }
+    &-graycta {
+        background-color: #FAFAFA;
+        border: 1px solid #E9E9E9;
+    }
     &-mid-gray { background-color: #767E83; &:is(.button):before { background-color: #767E83; } }
     &-dark-gray { background-color: #373737; &:is(.button):before { background-color: #373737; } }
     &-dark-gray-2 { background-color: #1F1F1F; &:is(.button):before { background-color: #1F1F1F; } }
@@ -176,6 +180,7 @@
 
 .pv {
     &-s { padding-top: $padding-s-15; padding-bottom: $padding-s-15; }
+    &-r { padding-top: ptr(35); padding-bottom: ptr(35); }
     &-m { padding-top: $padding-m-45; padding-bottom: $padding-m-45; }
     &-l { padding-top: $padding-l-80; padding-bottom: $padding-l-80; }
     &-xl { padding-top: $margin-l-100; padding-bottom: $margin-l-100; }
@@ -184,8 +189,10 @@
 
 .ph {
     &-s { padding-left: $padding-s-15; padding-right: $padding-s-15; }
+    &-r { padding-left: ptr(35); padding-right: ptr(35); }
     &-m { padding-left: $padding-m-45; padding-right: $padding-m-45; }
     &-l { padding-left: $padding-l-80; padding-right: $padding-l-80; }
+    &-xl { padding-left: ptr(100); padding-right: ptr(100); }
 }
 
 .radius {
@@ -299,4 +306,8 @@ $weights: 400, 500, 600, 700, 800;
 
 .pull-slot {
     margin-top: ptr(-210);
+}
+
+.wrap-balance {
+    text-wrap: balance;
 }

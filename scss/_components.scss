@@ -194,3 +194,16 @@
         max-height: ptr(65);
     }
 }
+
+[search-results] {
+    .post-search-term {
+        color: $orange;
+    }
+
+    .post-count {
+        font-size: ptr(24);
+        line-height: ptr(41);
+        font-weight: 400;
+        color: #8A8A8A;
+    }
+}
