@@ -7133,18 +7133,15 @@
       this.menuLinks = this.element.querySelectorAll("[megamenu-link='1']");
       this.menuTargets = this.element.querySelectorAll("[megamenu-target]");
       this.megamenuWrapper = this.element.querySelector(".header-megamenu");
-      console.log(this.menuLinks, this.menuTargets);
       gsapWithCSS.set(this.menuTargets, {
         opacity: 0
       });
     }
     binds() {
-      console.log("binds");
       this.menuLinks.forEach((link, index) => {
         link.addEventListener("mouseenter", () => {
           if (!this.isShowing) {
             this.isShowing = true;
-            console.log("show menu");
             this.showMegamenu(true);
           }
           link.classList.add("active");
@@ -7158,7 +7155,6 @@
       this.element.addEventListener("mouseleave", () => {
         if (!this.isShowing) return;
         this.isShowing = false;
-        console.log("hide menu");
         this.showMegamenu(false);
         if (this.currentTarget !== null) {
           this.menuLinks[this.currentTarget].classList.remove("active");
@@ -7168,7 +7164,6 @@
         link.addEventListener("mouseenter", () => {
           if (!this.isShowing) return;
           this.isShowing = false;
-          console.log("hide menu");
           this.showMegamenu(false);
           if (this.currentTarget !== null) {
             this.menuLinks[this.currentTarget].classList.remove("active");
@@ -7188,7 +7183,6 @@
     sizing() {
       this.left = this.megamenuWrapper.getBoundingClientRect().left;
       this.top = this.megamenuWrapper.getBoundingClientRect().top;
-      console.log(this.left, this.top);
     }
     spotlight() {
       this.spotlight = document.createElement("div");
@@ -9730,7 +9724,6 @@
       this.wrapperHeight = this.wrapper.offsetHeight;
       this.imageHeight = this.image.getBoundingClientRect().height;
       this.travelDistance = this.imageHeight - this.wrapperHeight;
-      console.log("wrapperHeight", this.wrapperHeight, "imageHeight", this.imageHeight, "travelDistance", this.travelDistance);
     }
     animate() {
       gsapWithCSS.set(this.image, {
@@ -9910,6 +9903,7 @@
       this.bind();
     }
     elements() {
+      this.currentBreakpoint = null;
       this.currentPage = null;
       this.testimonials = this.element.querySelectorAll(".testimonial");
       this.next = this.element.querySelector(".testimonials-controls-next");
@@ -9920,18 +9914,22 @@
       this.breakpoint = window.innerWidth < 768 ? "mobile" : window.innerWidth < 992 ? "tablet" : "desktop";
       this.itemsPerPage = this.breakpoint === "mobile" ? 1 : this.breakpoint === "tablet" ? 2 : 3;
       this.totalPages = Math.ceil(this.testimonials.length / this.itemsPerPage);
-      this.indicators.innerHTML = "";
       this.testimonialWidth = this.testimonials[0].getBoundingClientRect().width;
       this.testimonialGap = parseInt(getComputedStyle(this.wrapper).columnGap);
-      for (let i = 0; i < this.totalPages; i++) {
-        const indicator = document.createElement("div");
-        indicator.classList.add("testimonials-bullet");
-        this.indicators.appendChild(indicator);
-      }
-      this.indicatorsBullets = this.indicators.querySelectorAll(".testimonials-bullet");
-      this.indicatorsBullets[0].classList.add("active");
+      const changePagesCount = () => {
+        this.indicators.innerHTML = "";
+        for (let i = 0; i < this.totalPages; i++) {
+          const indicator = document.createElement("div");
+          console.log("happens");
+          indicator.classList.add("testimonials-bullet");
+          this.indicators.appendChild(indicator);
+        }
+        this.indicatorsBullets = this.indicators.querySelectorAll(".testimonials-bullet");
+        this.indicatorsBullets[0].classList.add("active", "from-left");
+      };
       if (this.breakpoint !== this.currentBreakpoint) {
         this.currentBreakpoint = this.breakpoint;
+        changePagesCount();
         this.update(0);
       }
     }
@@ -9961,6 +9959,7 @@
     }
     update(newPage) {
       let page = Math.min(this.testimonials.length - this.itemsPerPage, newPage * this.itemsPerPage);
+      console.log(page);
       this.indicatorsBullets[newPage].classList.add("active", newPage > this.currentPage ? "from-left" : "from-right");
       if (this.currentPage !== null) {
         this.indicatorsBullets[this.currentPage].classList.remove("active", "from-left", "from-right");

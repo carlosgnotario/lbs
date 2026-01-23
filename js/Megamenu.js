@@ -26,7 +26,6 @@ export class Megamenu {
         this.menuLinks = this.element.querySelectorAll("[megamenu-link='1']");
         this.menuTargets = this.element.querySelectorAll("[megamenu-target]");
         this.megamenuWrapper = this.element.querySelector(".header-megamenu");
-        console.log(this.menuLinks, this.menuTargets);
 
         gsap.set(this.menuTargets, {
             opacity: 0
@@ -34,13 +33,10 @@ export class Megamenu {
     }
 
     binds() {
-        console.log("binds");
-        
         this.menuLinks.forEach((link, index) => {
             link.addEventListener("mouseenter", () => {                
                 if (!this.isShowing) {
                     this.isShowing = true;
-                    console.log("show menu");
                     this.showMegamenu(true);
                 }
                 link.classList.add("active");
@@ -55,7 +51,6 @@ export class Megamenu {
         this.element.addEventListener("mouseleave", () => {
             if (!this.isShowing) return;
             this.isShowing = false;
-            console.log("hide menu");
             this.showMegamenu(false);
             if (this.currentTarget !== null) {
                 this.menuLinks[this.currentTarget].classList.remove("active");
@@ -66,7 +61,6 @@ export class Megamenu {
             link.addEventListener("mouseenter", () => {
                 if (!this.isShowing) return;
                 this.isShowing = false;
-                console.log("hide menu");
                 this.showMegamenu(false);
                 if (this.currentTarget !== null) {
                     this.menuLinks[this.currentTarget].classList.remove("active");
@@ -90,7 +84,6 @@ export class Megamenu {
     sizing() {
         this.left = this.megamenuWrapper.getBoundingClientRect().left;
         this.top = this.megamenuWrapper.getBoundingClientRect().top;
-        console.log(this.left, this.top);
     }
 
     spotlight() {

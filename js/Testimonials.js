@@ -12,6 +12,7 @@ export class Testimonials {
     }
 
     elements() {
+        this.currentBreakpoint = null;
         this.currentPage = null;
         this.testimonials = this.element.querySelectorAll(".testimonial");
         this.next = this.element.querySelector(".testimonials-controls-next");
@@ -23,21 +24,25 @@ export class Testimonials {
         this.breakpoint = window.innerWidth < 768 ? "mobile" : window.innerWidth < 992 ? "tablet" : "desktop";
         this.itemsPerPage = this.breakpoint === "mobile" ? 1 : this.breakpoint === "tablet" ? 2 : 3;
         this.totalPages = Math.ceil((this.testimonials.length) / this.itemsPerPage);
-        this.indicators.innerHTML = "";
         this.testimonialWidth = this.testimonials[0].getBoundingClientRect().width;
         this.testimonialGap = parseInt(getComputedStyle(this.wrapper).columnGap);
         
-        for (let i = 0; i < this.totalPages; i++) {
-            const indicator = document.createElement("div");
-            indicator.classList.add("testimonials-bullet");
-            this.indicators.appendChild(indicator);
+        const changePagesCount = () => {
+            this.indicators.innerHTML = "";
+            for (let i = 0; i < this.totalPages; i++) {
+                const indicator = document.createElement("div");
+                console.log("happens");
+                
+                indicator.classList.add("testimonials-bullet");
+                this.indicators.appendChild(indicator);
+            }
+            this.indicatorsBullets = this.indicators.querySelectorAll(".testimonials-bullet");
+            this.indicatorsBullets[0].classList.add("active", "from-left");
         }
-        this.indicatorsBullets = this.indicators.querySelectorAll(".testimonials-bullet");
-        this.indicatorsBullets[0].classList.add("active");
 
-        // Detect a change in breakpoint
         if (this.breakpoint !== this.currentBreakpoint) {
             this.currentBreakpoint = this.breakpoint;
+            changePagesCount();
             this.update(0);
         }
     }
@@ -69,6 +74,8 @@ export class Testimonials {
 
     update(newPage) {
         let page = Math.min(this.testimonials.length - this.itemsPerPage, newPage * this.itemsPerPage);
+        console.log(page);
+        
         this.indicatorsBullets[newPage].classList.add("active", newPage > this.currentPage ? "from-left" : "from-right");
         if (this.currentPage !== null) {
             this.indicatorsBullets[this.currentPage].classList.remove("active", "from-left", "from-right");        

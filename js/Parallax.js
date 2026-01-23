@@ -43,7 +43,6 @@ export class Parallax {
         this.wrapperHeight = this.wrapper.offsetHeight;
         this.imageHeight = this.image.getBoundingClientRect().height;
         this.travelDistance = this.imageHeight - this.wrapperHeight;
-        console.log("wrapperHeight", this.wrapperHeight, "imageHeight", this.imageHeight, "travelDistance", this.travelDistance);
     }
 
     animate() {
