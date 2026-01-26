@@ -3,7 +3,6 @@
 @use 'scss/modules' as *;
 @use 'scss/classes' as *;
 @use 'scss/components' as *;
-@use 'scss/forms' as *;
 
 html {
     --fontSize: min(calc(1680 / 1290 * 16px), calc(100vw / 1290 * 16));    
@@ -13,7 +12,7 @@ html {
     }
     
     @include breakpoint(small) {
-        --fontSize: min(calc(1680 / 767 * 24px), calc(100vw / 767 * 24));
+        --fontSize: max(12px, min(calc(1680 / 767 * 16px), calc(100vw / 767 * 16)));
     }
 
     font-size: var(--fontSize);
@@ -31,6 +30,10 @@ html.wf-design-mode {
 
 html:not(.wf-design-mode) {
     @import 'scss/site';
+}
+
+form:not(.search) {
+    @import 'scss/forms';
 }
 
 a {

@@ -122,6 +122,14 @@ $heading-s-22: var(--_sizes---heading-s-22);
     @return #{$px-value / 16}rem;
 }
 
+// Responsive sizing mixin - applies desktop value and small breakpoint scaling
+@mixin responsive-size($property, $px-value) {
+    #{$property}: ptr($px-value);
+    @include breakpoint(small) {
+        #{$property}: ptr(11 + ($px-value - 12) * 49 / 88);
+    }
+}
+
 // Breakpoints
 @mixin breakpoint($class) {
     @if $class == landscape {
