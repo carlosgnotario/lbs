@@ -7045,67 +7045,86 @@
     constructor(element) {
       gsapWithCSS.registerPlugin(CustomEase, CustomBounce);
       this.element = element;
-      this.direction = element.getAttribute("diction");
-      this.color1 = getComputedStyle(element).getPropertyValue("--diction-color1");
-      this.color2 = getComputedStyle(element).getPropertyValue("--diction-color2");
+      this.elements();
       this.create();
-      this.split();
-      this.animate();
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(() => {
+          this.split();
+          this.animate();
+        });
+      } else {
+        this.split();
+        this.animate();
+      }
+    }
+    elements() {
+      this.text = this.element.querySelector(".anim-diction");
+      console.log(this.text);
+      this.color1 = getComputedStyle(this.text).getPropertyValue("--color1");
+      this.color2 = getComputedStyle(this.text).getPropertyValue("--color2");
     }
     create() {
       this.dot = document.createElement("div");
       this.dot.classList.add("dot");
-      this.element.appendChild(this.dot);
+      this.text.appendChild(this.dot);
     }
     split() {
-      this.splitText = new SplitText(this.element, {
-        type: "chars"
+      this.splitText = new SplitText(this.text, {
+        type: "words, chars",
+        classes: "char"
       });
+      splitTextGradient(this.text, this.splitText.chars);
     }
     animate() {
-      gsapWithCSS.from(this.splitText.chars, {
-        opacity: 0,
-        duration: 1,
-        transformOrigin: this.direction === "over" ? "center top" : "center bottom",
-        scaleY: 0,
-        ease: "elastic.out(1, 0.7)",
-        delay: 1,
-        stagger: {
-          amount: 1
-        }
-      });
-      const tl = gsapWithCSS.timeline();
       gsapWithCSS.set(this.dot, {
         autoAlpha: 0,
         backgroundColor: this.color1
       });
+      gsapWithCSS.set(this.splitText.chars, {
+        opacity: 0,
+        scaleY: 0,
+        transformOrigin: this.direction === "over" ? "center top" : "center bottom"
+      });
+      const tl = gsapWithCSS.timeline({
+        scrollTrigger: {
+          trigger: this.text,
+          start: "top 90%",
+          end: "bottom 30%",
+          scrub: true
+        }
+      });
+      tl.to(this.splitText.chars, {
+        opacity: 1,
+        scaleY: 1,
+        duration: 1,
+        stagger: {
+          amount: 1
+        },
+        ease: "elastic.out(1, 0.7)"
+      }, 0);
       tl.to(this.dot, {
         autoAlpha: 1,
         duration: 0.2,
-        ease: "none",
-        delay: 1
-      });
+        ease: "none"
+      }, 0);
       tl.to(this.dot, {
         left: "calc(100% - 0.5rem)",
         backgroundColor: this.color2,
         duration: 2,
         // ease: "none",
-        ease: "power1.out",
-        delay: 1
+        ease: "power1.out"
       }, 0);
       tl.fromTo(this.dot, {
         top: this.direction === "over" ? "-40%" : "140%"
       }, {
         top: this.direction === "over" ? "20%" : "80%",
         duration: 4,
-        ease: "bounce({strength:4, endAtStart:false})",
-        delay: 1
+        ease: "bounce({strength:4, endAtStart:false})"
       }, 0);
       tl.to(this.dot, {
         autoAlpha: 0,
         duration: 0.2,
-        ease: "none",
-        delay: 1
+        ease: "none"
       }, 1.8);
     }
   };
@@ -7306,6 +7325,551 @@
         }
       });
       this.open = false;
+    }
+  };
+
+  // js/Parallax.js
+  var Parallax = class {
+    constructor(element) {
+      this.element = element;
+      this.elements();
+      const initiate = () => {
+        this.sizing();
+        this.animate();
+        g.scrollTrigger.refresh();
+      };
+      if (this.image.complete) {
+        initiate();
+      } else {
+        this.image.addEventListener("load", () => {
+          initiate();
+        });
+      }
+      window.addEventListener("resize", () => {
+        this.sizing();
+        g.scrollTrigger.refresh();
+      });
+    }
+    elements() {
+      if (this.element.tagName.toLowerCase() === "img") {
+        this.wrapper = this.element.parentElement;
+      } else {
+        this.wrapper = this.element;
+      }
+      if (this.element.tagName.toLowerCase() === "img") {
+        this.image = this.element;
+      } else {
+        this.image = this.element.querySelector("img");
+      }
+      this.direction = this.image.getAttribute("data-parallax-image") === "down" ? "up" : "up";
+    }
+    sizing() {
+      this.wrapperHeight = this.wrapper.offsetHeight;
+      this.imageHeight = this.image.getBoundingClientRect().height;
+      this.travelDistance = this.imageHeight - this.wrapperHeight;
+    }
+    animate() {
+      gsapWithCSS.set(this.image, {
+        y: this.direction === "up" ? -this.travelDistance : 0
+      });
+      this.scrollTrigger = gsapWithCSS.to(this.image, {
+        y: this.direction === "up" ? 0 : -this.travelDistance,
+        ease: "none",
+        scrollTrigger: {
+          trigger: this.wrapper,
+          start: "top bottom",
+          end: "bottom top",
+          markers: true,
+          scrub: true
+        }
+      });
+    }
+  };
+
+  // js/Memberships.js
+  var Memberships = class {
+    constructor(element) {
+      this.element = element;
+      this.currentTab = null;
+      this.elements();
+      this.bind();
+      this.showTab(0);
+    }
+    elements() {
+      this.togglerLinks = this.element.querySelectorAll(".memberships-toggler div:not(.memberships-indicator");
+      this.tabs = this.element.querySelectorAll(".memberships-tab");
+      this.indicator = this.element.querySelector(".memberships-indicator");
+      this.tabs.forEach((tab) => {
+        tab.items = tab.querySelectorAll(".membership-plan");
+        tab.items.forEach((item) => {
+          item.numeral = item.querySelector(".membership-pricing-number");
+          item.originalNumber = item.numeral.textContent;
+        });
+      });
+      console.log(this.togglerLinks);
+    }
+    bind() {
+      this.togglerLinks.forEach((item, index) => {
+        item.addEventListener("click", () => {
+          if (this.currentTab === index) return;
+          this.showTab(index);
+        });
+      });
+    }
+    showTab(index) {
+      const currentTab = this.tabs[index];
+      const left = index > this.currentTab ? true : false;
+      const bgcolors = ["#FFDF10", "#72BEE0"];
+      const textcolors = ["#404040", "#FFFFFF", "#A9A9A9"];
+      if (this.currentTab !== null) {
+        const previousTab = this.tabs[this.currentTab];
+        gsapWithCSS.to(previousTab.items, {
+          autoAlpha: 0,
+          duration: 1,
+          ease: "elastic.out(1, 0.7)",
+          xPercent: left ? 20 : -20,
+          stagger: left ? -0.2 : 0.2
+        });
+        gsapWithCSS.set(previousTab, {
+          autoAlpha: 0,
+          duration: 1,
+          delay: 1
+        });
+      }
+      const tl = gsapWithCSS.timeline();
+      tl.to(this.indicator, {
+        xPercent: -50,
+        duration: 1,
+        left: 50 + index * 100 + "%",
+        ease: "power4.out"
+      }, 0);
+      tl.to(this.indicator, {
+        width: "20%",
+        duration: 0.5,
+        ease: "power4.out"
+      }, 0);
+      tl.to(this.indicator, {
+        width: "100%",
+        duration: 2,
+        ease: "elastic.out(1, 1.3)",
+        backgroundColor: bgcolors[index]
+      }, 0.2);
+      this.togglerLinks.forEach((item, i) => {
+        gsapWithCSS.to(item, {
+          color: i === index ? textcolors[index] : textcolors[2],
+          duration: 1,
+          ease: "power4.out"
+        });
+      });
+      gsapWithCSS.to(currentTab, {
+        autoAlpha: 1,
+        duration: 1,
+        ease: "power4.inOut"
+      });
+      gsapWithCSS.fromTo(currentTab.items, {
+        autoAlpha: 0,
+        xPercent: left ? -20 : 20
+      }, {
+        autoAlpha: 1,
+        xPercent: 0,
+        duration: 1,
+        ease: "elastic.out(1, 0.7)",
+        stagger: left ? -0.2 : 0.2,
+        delay: 0.5
+      });
+      currentTab.items.forEach((item) => {
+        gsapWithCSS.fromTo(item.numeral, {
+          textContent: 0
+        }, {
+          textContent: item.originalNumber,
+          duration: 2,
+          snap: { textContent: 1 },
+          ease: "power2.out",
+          delay: 0.5
+        });
+      });
+      this.currentTab = index;
+    }
+  };
+
+  // js/SearchResults.js
+  var SearchResults = class {
+    constructor(element) {
+      this.element = element;
+      this.elements();
+      this.create();
+    }
+    elements() {
+      this.title = this.element.querySelector(".posts-search-title");
+      this.posts = this.element.querySelectorAll(".posts-search-list");
+    }
+    create() {
+      if (window.location.search.split("?query=")[1]) {
+        const postSearchTerm = document.createElement("span");
+        postSearchTerm.classList.add("post-search-term");
+        postSearchTerm.innerHTML = window.location.search.split("?query=")[1];
+        this.title.insertAdjacentElement("beforeend", postSearchTerm);
+      }
+      const postCount = document.createElement("span");
+      postCount.classList.add("post-count");
+      postCount.innerHTML = ` (${this.posts.length})`;
+      this.title.insertAdjacentElement("beforeend", postCount);
+    }
+  };
+
+  // js/ShrinkText.js
+  var ShrinkText = class {
+    constructor(element) {
+      this.element = element;
+      this.sizing();
+    }
+    sizing() {
+      let newFontSize = 18 / 16;
+      this.ticker = () => {
+        const containerHeight = this.element.clientHeight;
+        const scrollHeight = this.element.scrollHeight;
+        if (scrollHeight > containerHeight) {
+          newFontSize = newFontSize - 0.01;
+          this.element.style.fontSize = `${newFontSize}rem`;
+        }
+      };
+      gsapWithCSS.ticker.add(this.ticker);
+    }
+  };
+
+  // js/Testimonials.js
+  var Testimonials = class {
+    constructor(element) {
+      this.element = element;
+      this.wrapper = this.element.querySelector(".testimonials-wrapper");
+      this.elements();
+      this.sizing();
+      this.bind();
+    }
+    elements() {
+      this.currentBreakpoint = null;
+      this.currentPage = null;
+      this.testimonials = this.element.querySelectorAll(".testimonial");
+      this.next = this.element.querySelector(".testimonials-controls-next");
+      this.prev = this.element.querySelector(".testimonials-controls-prev");
+      this.indicators = this.element.querySelector(".testimonials-bullets");
+    }
+    sizing() {
+      this.breakpoint = window.innerWidth < 768 ? "mobile" : window.innerWidth < 992 ? "tablet" : "desktop";
+      this.itemsPerPage = this.breakpoint === "mobile" ? 1 : this.breakpoint === "tablet" ? 2 : 3;
+      this.totalPages = Math.ceil(this.testimonials.length / this.itemsPerPage);
+      this.testimonialWidth = this.testimonials[0].getBoundingClientRect().width;
+      this.testimonialGap = parseInt(getComputedStyle(this.wrapper).columnGap);
+      const changePagesCount = () => {
+        this.indicators.innerHTML = "";
+        for (let i = 0; i < this.totalPages; i++) {
+          const indicator = document.createElement("div");
+          console.log("happens");
+          indicator.classList.add("testimonials-bullet");
+          this.indicators.appendChild(indicator);
+        }
+        this.indicatorsBullets = this.indicators.querySelectorAll(".testimonials-bullet");
+        this.indicatorsBullets[0].classList.add("active", "from-left");
+      };
+      if (this.breakpoint !== this.currentBreakpoint) {
+        this.currentBreakpoint = this.breakpoint;
+        changePagesCount();
+        this.update(0);
+      }
+    }
+    create() {
+      const testimonialOriginal = this.element.querySelector(".testimonial");
+      for (let i = 0; i < 8; i++) {
+        const testimonial = testimonialOriginal.cloneNode(true);
+        this.wrapper.appendChild(testimonial);
+      }
+    }
+    bind() {
+      this.next.addEventListener("click", () => {
+        if (this.currentPage === this.totalPages - 1) {
+          return;
+        }
+        this.update(Math.min(this.totalPages - 1, this.currentPage + 1));
+      });
+      this.prev.addEventListener("click", () => {
+        if (this.currentPage === 0) {
+          return;
+        }
+        this.update(Math.max(0, this.currentPage - 1));
+      });
+      window.addEventListener("resize", () => {
+        this.sizing();
+      });
+    }
+    update(newPage) {
+      let page = Math.min(this.testimonials.length - this.itemsPerPage, newPage * this.itemsPerPage);
+      console.log(page);
+      this.indicatorsBullets[newPage].classList.add("active", newPage > this.currentPage ? "from-left" : "from-right");
+      if (this.currentPage !== null) {
+        this.indicatorsBullets[this.currentPage].classList.remove("active", "from-left", "from-right");
+      }
+      gsapWithCSS.to(this.testimonials, {
+        x: page * (this.testimonialWidth + this.testimonialGap) * -1,
+        ease: "elastic.out(1, 0.9)",
+        duration: 2
+      });
+      this.currentPage = newPage;
+    }
+  };
+
+  // js/FaqElements.js
+  var FaqElements = class {
+    constructor(element) {
+      this.element = element;
+      this.open = false;
+      this.elements();
+      this.bind();
+    }
+    elements() {
+      this.items = this.element.querySelectorAll(".faq-item");
+    }
+    bind() {
+      this.items.forEach((item) => {
+        item.addEventListener("click", () => {
+          this.toggle(item);
+        });
+      });
+    }
+    toggle(item) {
+      this.open = !this.open;
+      if (this.open) {
+        item.classList.add("active");
+      } else {
+        item.classList.remove("active");
+      }
+    }
+  };
+
+  // js/Stagger.js
+  var Stagger = class {
+    constructor(element) {
+      this.element = element;
+      this.elements();
+      this.animate();
+    }
+    elements() {
+      this.directChildren = Array.from(this.element.children).filter(
+        (child) => !child.classList.contains("stagger") && !child.classList.contains("stagger-left") && !child.classList.contains("stagger-right")
+      );
+      const staggerLeftChildren = this.element.querySelectorAll(".stagger-left > *");
+      const staggerRightChildren = this.element.querySelectorAll(".stagger-right > *");
+      const staggerChildren = this.element.querySelectorAll(".stagger > *");
+      if (staggerLeftChildren.length > 0) {
+        this.staggerType = "left";
+        this.indirectChildren = staggerLeftChildren;
+      } else if (staggerRightChildren.length > 0) {
+        this.staggerType = "right";
+        this.indirectChildren = staggerRightChildren;
+      } else {
+        this.staggerType = "normal";
+        this.indirectChildren = staggerChildren;
+      }
+      this.allChildren = [...this.directChildren, ...this.indirectChildren];
+    }
+    animate() {
+      if (this.directChildren.length > 0) {
+        gsapWithCSS.set(this.directChildren, {
+          opacity: 0,
+          y: "2rem"
+        });
+        gsapWithCSS.to(this.directChildren, {
+          opacity: 1,
+          y: 0,
+          duration: 2,
+          ease: "elastic.out(1, 0.7)",
+          scrollTrigger: {
+            trigger: this.directChildren[0],
+            start: "top bottom",
+            end: "bottom top",
+            toggleActions: "play none none reset"
+          },
+          stagger: {
+            amount: 0.5
+          }
+        });
+      }
+      if (this.indirectChildren.length > 0) {
+        const xValue = this.staggerType === "left" ? "-2rem" : this.staggerType === "right" ? "2rem" : 0;
+        const yValue = this.staggerType === "normal" ? "2rem" : 0;
+        gsapWithCSS.set(this.indirectChildren, {
+          opacity: 0,
+          y: yValue,
+          x: xValue
+        });
+        gsapWithCSS.to(this.indirectChildren, {
+          opacity: 1,
+          y: 0,
+          x: 0,
+          duration: 2,
+          ease: "elastic.out(1, 0.7)",
+          scrollTrigger: {
+            trigger: this.indirectChildren[0],
+            start: "top bottom",
+            end: "bottom top",
+            toggleActions: "play none none reset"
+          },
+          stagger: {
+            amount: 0.5
+          }
+        });
+      }
+    }
+  };
+
+  // js/HeadingWave.js
+  var HeadingWave = class {
+    constructor(element) {
+      this.element = element;
+      this.elements();
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(() => {
+          this.split();
+          this.animate();
+        });
+      } else {
+        this.split();
+        this.animate();
+      }
+    }
+    elements() {
+      this.heading = Array.from(this.element.querySelectorAll(".heading-unit")).filter(
+        (el) => {
+          const text = el.textContent.replace(/[\u200B-\u200D\uFEFF\u00A0\s]/g, "");
+          return text.length > 0;
+        }
+      );
+      console.log(this.heading);
+      this.image = this.element.querySelector("img");
+      this.text = this.element.querySelector(".media-content");
+      this.slot = this.element.querySelector(".media-slot");
+    }
+    split() {
+      this.splitText = new g.splitText(this.heading, {
+        type: "words, chars, lines",
+        linesClass: "line",
+        charsClass: "char",
+        smartWrap: true
+      });
+      this.splitText.lines.forEach((line) => {
+        splitTextGradient(line, line.querySelectorAll(".char"));
+      });
+    }
+    animate() {
+      this.splitText.chars && gsapWithCSS.set(this.splitText.chars, {
+        opacity: 0,
+        scaleY: 0,
+        transformOrigin: "center bottom"
+      });
+      this.image && gsapWithCSS.set(this.image, {
+        opacity: 0,
+        y: "2rem"
+      });
+      this.text && gsapWithCSS.set(this.text, {
+        opacity: 0,
+        y: "2rem"
+      });
+      this.slot && gsapWithCSS.set(this.slot, {
+        opacity: 0,
+        y: "2rem"
+      });
+      this.image && gsapWithCSS.to(this.image, {
+        opacity: 1,
+        duration: 1,
+        y: 0,
+        ease: "power4.inOut",
+        scrollTrigger: {
+          trigger: this.image,
+          start: "top bottom",
+          end: "bottom top",
+          toggleActions: "play none none reset"
+        }
+      });
+      this.text && gsapWithCSS.to(this.text, {
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        ease: "power4.inOut",
+        scrollTrigger: {
+          trigger: this.text,
+          start: "top bottom",
+          end: "bottom top",
+          toggleActions: "play none none reset"
+        }
+      });
+      this.slot && gsapWithCSS.to(this.slot, {
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        ease: "power4.inOut",
+        scrollTrigger: {
+          trigger: this.slot,
+          start: "top bottom",
+          end: "bottom top",
+          toggleActions: "play none none reset"
+        }
+      });
+      this.splitText.chars && gsapWithCSS.to(this.splitText.chars, {
+        opacity: 1,
+        scaleY: 1,
+        ease: "elastic.out(1, 0.7)",
+        stagger: {
+          amount: 1
+        },
+        scrollTrigger: {
+          trigger: this.splitText.chars,
+          start: "top bottom",
+          end: "bottom top",
+          toggleActions: "play none none reset"
+        }
+      });
+    }
+  };
+
+  // js/Image.js
+  var Image = class {
+    constructor(element) {
+      this.element = element;
+      this.elements();
+      this.animate();
+    }
+    elements() {
+      this.image = this.element.querySelector("img");
+    }
+    animate() {
+      gsapWithCSS.set(this.element, {
+        clipPath: "inset(100% 0% 0% 0%)"
+      });
+      gsapWithCSS.set(this.image, {
+        scale: 0.8
+      });
+      gsapWithCSS.to(this.element, {
+        clipPath: "inset(0% 0% 0% 0%)",
+        duration: 1,
+        ease: "power4.inOut",
+        scrollTrigger: {
+          trigger: this.element,
+          start: "top bottom",
+          end: "top top",
+          scrub: true
+        }
+      });
+      gsapWithCSS.to(this.image, {
+        scale: 1,
+        duration: 1,
+        ease: "power4.inOut",
+        scrollTrigger: {
+          trigger: this.element,
+          start: "top bottom",
+          end: "top top",
+          scrub: true,
+          markers: true
+        }
+      });
     }
   };
 
@@ -9691,323 +10255,14 @@
   };
   _getGSAP7() && gsap6.registerPlugin(ScrollTrigger2);
 
-  // js/Parallax.js
-  var Parallax = class {
-    constructor(element) {
-      this.element = element;
-      this.elements();
-      const initiate = () => {
-        this.sizing();
-        this.animate();
-        g.scrollTrigger.refresh();
-      };
-      if (this.image.complete) {
-        console.log("image loaded");
-        initiate();
-      } else {
-        this.image.addEventListener("load", () => {
-          console.log("image loaded");
-          initiate();
-        });
-      }
-      window.addEventListener("resize", () => {
-        this.sizing();
-        g.scrollTrigger.refresh();
-      });
-    }
-    elements() {
-      this.wrapper = this.element.querySelector("[data-parallax='wrapper']");
-      this.image = this.element.querySelector("[data-parallax-image]");
-      this.direction = this.image.getAttribute("data-parallax-image") === "down" ? "up" : "up";
-    }
-    sizing() {
-      this.wrapperHeight = this.wrapper.offsetHeight;
-      this.imageHeight = this.image.getBoundingClientRect().height;
-      this.travelDistance = this.imageHeight - this.wrapperHeight;
-    }
-    animate() {
-      gsapWithCSS.set(this.image, {
-        y: this.direction === "up" ? -this.travelDistance : 0
-      });
-      this.scrollTrigger = gsapWithCSS.to(this.image, {
-        y: this.direction === "up" ? 0 : -this.travelDistance,
-        ease: "none",
-        scrollTrigger: {
-          trigger: this.wrapper,
-          start: "top bottom",
-          end: "bottom top",
-          scrub: true
-        }
-      });
-    }
-  };
-
-  // js/Memberships.js
-  var Memberships = class {
-    constructor(element) {
-      this.element = element;
-      this.currentTab = null;
-      this.elements();
-      this.bind();
-      this.showTab(0);
-    }
-    elements() {
-      this.togglerLinks = this.element.querySelectorAll(".memberships-toggler div:not(.memberships-indicator");
-      this.tabs = this.element.querySelectorAll(".memberships-tab");
-      this.indicator = this.element.querySelector(".memberships-indicator");
-      this.tabs.forEach((tab) => {
-        tab.items = tab.querySelectorAll(".membership-plan");
-        tab.items.forEach((item) => {
-          item.numeral = item.querySelector(".membership-pricing-number");
-          item.originalNumber = item.numeral.textContent;
-        });
-      });
-      console.log(this.togglerLinks);
-    }
-    bind() {
-      this.togglerLinks.forEach((item, index) => {
-        item.addEventListener("click", () => {
-          if (this.currentTab === index) return;
-          this.showTab(index);
-        });
-      });
-    }
-    showTab(index) {
-      const currentTab = this.tabs[index];
-      const left = index > this.currentTab ? true : false;
-      const bgcolors = ["#FFDF10", "#72BEE0"];
-      const textcolors = ["#404040", "#FFFFFF", "#A9A9A9"];
-      if (this.currentTab !== null) {
-        const previousTab = this.tabs[this.currentTab];
-        gsapWithCSS.to(previousTab.items, {
-          autoAlpha: 0,
-          duration: 1,
-          ease: "elastic.out(1, 0.7)",
-          xPercent: left ? 20 : -20,
-          stagger: left ? -0.2 : 0.2
-        });
-        gsapWithCSS.set(previousTab, {
-          autoAlpha: 0,
-          duration: 1,
-          delay: 1
-        });
-      }
-      const tl = gsapWithCSS.timeline();
-      tl.to(this.indicator, {
-        xPercent: -50,
-        duration: 1,
-        left: 50 + index * 100 + "%",
-        ease: "power4.out"
-      }, 0);
-      tl.to(this.indicator, {
-        width: "20%",
-        duration: 0.5,
-        ease: "power4.out"
-      }, 0);
-      tl.to(this.indicator, {
-        width: "100%",
-        duration: 2,
-        ease: "elastic.out(1, 1.3)",
-        backgroundColor: bgcolors[index]
-      }, 0.2);
-      this.togglerLinks.forEach((item, i) => {
-        gsapWithCSS.to(item, {
-          color: i === index ? textcolors[index] : textcolors[2],
-          duration: 1,
-          ease: "power4.out"
-        });
-      });
-      gsapWithCSS.to(currentTab, {
-        autoAlpha: 1,
-        duration: 1,
-        ease: "power4.inOut"
-      });
-      gsapWithCSS.fromTo(currentTab.items, {
-        autoAlpha: 0,
-        xPercent: left ? -20 : 20
-      }, {
-        autoAlpha: 1,
-        xPercent: 0,
-        duration: 1,
-        ease: "elastic.out(1, 0.7)",
-        stagger: left ? -0.2 : 0.2,
-        delay: 0.5
-      });
-      currentTab.items.forEach((item) => {
-        gsapWithCSS.fromTo(item.numeral, {
-          textContent: 0
-        }, {
-          textContent: item.originalNumber,
-          duration: 2,
-          snap: { textContent: 1 },
-          ease: "power2.out",
-          delay: 0.5
-        });
-      });
-      this.currentTab = index;
-    }
-  };
-
-  // js/SearchResults.js
-  var SearchResults = class {
-    constructor(element) {
-      this.element = element;
-      this.elements();
-      this.create();
-    }
-    elements() {
-      this.title = this.element.querySelector(".posts-search-title");
-      this.posts = this.element.querySelectorAll(".posts-search-list");
-    }
-    create() {
-      if (window.location.search.split("?query=")[1]) {
-        const postSearchTerm = document.createElement("span");
-        postSearchTerm.classList.add("post-search-term");
-        postSearchTerm.innerHTML = window.location.search.split("?query=")[1];
-        this.title.insertAdjacentElement("beforeend", postSearchTerm);
-      }
-      const postCount = document.createElement("span");
-      postCount.classList.add("post-count");
-      postCount.innerHTML = ` (${this.posts.length})`;
-      this.title.insertAdjacentElement("beforeend", postCount);
-    }
-  };
-
-  // js/ShrinkText.js
-  var ShrinkText = class {
-    constructor(element) {
-      this.element = element;
-      this.sizing();
-    }
-    sizing() {
-      let newFontSize = 18 / 16;
-      this.ticker = () => {
-        const containerHeight = this.element.clientHeight;
-        const scrollHeight = this.element.scrollHeight;
-        if (scrollHeight > containerHeight) {
-          newFontSize = newFontSize - 0.01;
-          this.element.style.fontSize = `${newFontSize}rem`;
-        }
-      };
-      gsapWithCSS.ticker.add(this.ticker);
-    }
-  };
-
-  // js/Testimonials.js
-  var Testimonials = class {
-    constructor(element) {
-      this.element = element;
-      this.wrapper = this.element.querySelector(".testimonials-wrapper");
-      this.elements();
-      this.sizing();
-      this.bind();
-    }
-    elements() {
-      this.currentBreakpoint = null;
-      this.currentPage = null;
-      this.testimonials = this.element.querySelectorAll(".testimonial");
-      this.next = this.element.querySelector(".testimonials-controls-next");
-      this.prev = this.element.querySelector(".testimonials-controls-prev");
-      this.indicators = this.element.querySelector(".testimonials-bullets");
-    }
-    sizing() {
-      this.breakpoint = window.innerWidth < 768 ? "mobile" : window.innerWidth < 992 ? "tablet" : "desktop";
-      this.itemsPerPage = this.breakpoint === "mobile" ? 1 : this.breakpoint === "tablet" ? 2 : 3;
-      this.totalPages = Math.ceil(this.testimonials.length / this.itemsPerPage);
-      this.testimonialWidth = this.testimonials[0].getBoundingClientRect().width;
-      this.testimonialGap = parseInt(getComputedStyle(this.wrapper).columnGap);
-      const changePagesCount = () => {
-        this.indicators.innerHTML = "";
-        for (let i = 0; i < this.totalPages; i++) {
-          const indicator = document.createElement("div");
-          console.log("happens");
-          indicator.classList.add("testimonials-bullet");
-          this.indicators.appendChild(indicator);
-        }
-        this.indicatorsBullets = this.indicators.querySelectorAll(".testimonials-bullet");
-        this.indicatorsBullets[0].classList.add("active", "from-left");
-      };
-      if (this.breakpoint !== this.currentBreakpoint) {
-        this.currentBreakpoint = this.breakpoint;
-        changePagesCount();
-        this.update(0);
-      }
-    }
-    create() {
-      const testimonialOriginal = this.element.querySelector(".testimonial");
-      for (let i = 0; i < 8; i++) {
-        const testimonial = testimonialOriginal.cloneNode(true);
-        this.wrapper.appendChild(testimonial);
-      }
-    }
-    bind() {
-      this.next.addEventListener("click", () => {
-        if (this.currentPage === this.totalPages - 1) {
-          return;
-        }
-        this.update(Math.min(this.totalPages - 1, this.currentPage + 1));
-      });
-      this.prev.addEventListener("click", () => {
-        if (this.currentPage === 0) {
-          return;
-        }
-        this.update(Math.max(0, this.currentPage - 1));
-      });
-      window.addEventListener("resize", () => {
-        this.sizing();
-      });
-    }
-    update(newPage) {
-      let page = Math.min(this.testimonials.length - this.itemsPerPage, newPage * this.itemsPerPage);
-      console.log(page);
-      this.indicatorsBullets[newPage].classList.add("active", newPage > this.currentPage ? "from-left" : "from-right");
-      if (this.currentPage !== null) {
-        this.indicatorsBullets[this.currentPage].classList.remove("active", "from-left", "from-right");
-      }
-      gsapWithCSS.to(this.testimonials, {
-        x: page * (this.testimonialWidth + this.testimonialGap) * -1,
-        ease: "elastic.out(1, 0.9)",
-        duration: 2
-      });
-      this.currentPage = newPage;
-    }
-  };
-
-  // js/FaqElements.js
-  var FaqElements = class {
-    constructor(element) {
-      this.element = element;
-      this.open = false;
-      this.elements();
-      this.bind();
-    }
-    elements() {
-      this.items = this.element.querySelectorAll(".faq-item");
-    }
-    bind() {
-      this.items.forEach((item) => {
-        item.addEventListener("click", () => {
-          this.toggle(item);
-        });
-      });
-    }
-    toggle(item) {
-      this.open = !this.open;
-      if (this.open) {
-        item.classList.add("active");
-      } else {
-        item.classList.remove("active");
-      }
-    }
-  };
-
   // js/modules.js
   if (typeof document !== "undefined") {
     document.addEventListener("DOMContentLoaded", () => {
-      gsapWithCSS.registerPlugin(ScrollTrigger2);
+      gsapWithCSS.registerPlugin(ScrollTrigger2, SplitText);
       const g2 = {};
       window.g = g2;
       g2.scrollTrigger = ScrollTrigger2;
+      g2.splitText = SplitText;
       g2.pxToRem = (px) => {
         return px / 16 * 1 + "rem";
       };
@@ -10070,7 +10325,7 @@
       movingHexAnimationElements.forEach((element) => {
         new MovingHex(element);
       });
-      const dictionElements = document.querySelectorAll("[diction]");
+      const dictionElements = document.querySelectorAll("[data-animation='diction']");
       dictionElements.forEach((element) => {
         new Diction(element);
       });
@@ -10094,6 +10349,18 @@
       interactiveHexElements.forEach((element) => {
         new InteractiveHex(element);
       });
+      const staggerElements = document.querySelectorAll("[data-animation='stagger']");
+      staggerElements.forEach((element) => {
+        new Stagger(element);
+      });
+      const headingWaveElements = document.querySelectorAll("[data-animation='headingWave']");
+      headingWaveElements.forEach((element) => {
+        new HeadingWave(element);
+      });
+      const imageElements = document.querySelectorAll("[data-animation='image']");
+      imageElements.forEach((element) => {
+        new Image(element);
+      });
       const searchResultsElements = document.querySelectorAll("[search-results]");
       searchResultsElements.forEach((element) => {
         console.log("one");
@@ -10111,6 +10378,14 @@
     lazyImages.forEach((img, i) => {
       lazyMode || (img.loading = "eager");
       img.naturalWidth ? onImgLoad() : img.addEventListener("load", onImgLoad);
+    });
+  }
+  function splitTextGradient(parent, chars) {
+    const color1 = getComputedStyle(parent).getPropertyValue("--color1");
+    const color2 = getComputedStyle(parent).getPropertyValue("--color2");
+    const color = gsapWithCSS.utils.interpolate(color1, color2);
+    gsapWithCSS.set(chars, {
+      color: (index, target, targets) => color(index / (targets.length - 1))
     });
   }
 })();

@@ -1,6 +1,5 @@
 // Parallax class
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 export class Parallax {
     constructor(element) {
@@ -16,12 +15,9 @@ export class Parallax {
         
         // wait for the image to load or check if it's loaded
         if (this.image.complete) {
-            console.log("image loaded");
-            
             initiate();
         } else {
             this.image.addEventListener("load", () => {
-                console.log("image loaded");
                 initiate();
             });
         }
@@ -33,10 +29,17 @@ export class Parallax {
     }
 
     elements() {
-        this.wrapper = this.element.querySelector("[data-parallax='wrapper']");
-        this.image = this.element.querySelector("[data-parallax-image]");
-        this.direction = this.image.getAttribute("data-parallax-image") === "down" ? "up" : "up";
-        
+        if (this.element.tagName.toLowerCase() === "img") {
+            this.wrapper = this.element.parentElement;
+        } else {
+            this.wrapper = this.element;
+        }
+        if (this.element.tagName.toLowerCase() === "img") {
+            this.image = this.element;
+        } else {
+            this.image = this.element.querySelector("img");
+        }
+        this.direction = this.image.getAttribute("data-parallax-image") === "down" ? "up" : "up";        
     }
 
     sizing() {
@@ -61,6 +64,7 @@ export class Parallax {
                 trigger: this.wrapper,
                 start: "top bottom",
                 end: "bottom top",
+                markers: true,
                 scrub: true
             }
         });

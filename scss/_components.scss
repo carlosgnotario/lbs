@@ -166,6 +166,12 @@
     }
 }
 
+#two-apps {
+    .hex-wrapper {
+        top: 55rem;
+    }
+}
+
 [slot="children"] {
     display: contents;
 }

@@ -323,6 +323,7 @@
 .center {
     margin-left: auto;
     margin-right: auto;
+    justify-self: center;
 }
 
 .padded {
@@ -387,6 +388,9 @@
     .ml-#{$i} { margin-left: #{$i}rem; }
     .mb-#{$i} { margin-bottom: #{$i}rem; }
     .mt-#{$i} { margin-top: #{$i}rem; }
+    // in ptr
+    .ph-#{$i} { padding-left: ptr($i); padding-right: ptr($i); }
+    .pv-#{$i} { padding-top: ptr($i); padding-bottom: ptr($i); }
 
     .mw-sm-#{$i} { @include breakpoint(small) { max-width: #{$i}rem!important; } }
     .mr-sm-#{$i} { @include breakpoint(small) { margin-right: #{$i}rem!important; } }

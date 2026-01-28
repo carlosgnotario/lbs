@@ -50,8 +50,6 @@ body {
 }
 
 .team-member-image {
-    outline: 1px solid red;
-
     > * {
         transition: transform 1s cubic-bezier(0.60, 0.770, 0.000, 1.2);
         backface-visibility: hidden;
@@ -98,4 +96,13 @@ body {
             height: 100%;
         }
     }
+}
+
+[data-animation="diction"] .anim-diction, [data-animation="headingWave"] .media-heading {
+    display: inline-block;
+    background: none;
+    webkit-background-clip: unset;
+    background-clip: unset;
+    mix-blend-mode: unset;
+    -webkit-text-fill-color: unset;
 }

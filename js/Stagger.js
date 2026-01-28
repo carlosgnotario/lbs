@@ -1,0 +1,93 @@
+// Stagger class
+import gsap from "gsap";
+
+export class Stagger {
+    constructor(element) {
+        this.element = element;
+        
+        this.elements();
+        this.animate();
+    }
+    
+    elements() {
+        // Initialize elements here
+        this.directChildren = Array.from(this.element.children).filter(
+            child => !child.classList.contains("stagger") && 
+                     !child.classList.contains("stagger-left") && 
+                     !child.classList.contains("stagger-right")
+        );
+        
+        // Get indirect children from different stagger types
+        const staggerLeftChildren = this.element.querySelectorAll(".stagger-left > *");
+        const staggerRightChildren = this.element.querySelectorAll(".stagger-right > *");
+        const staggerChildren = this.element.querySelectorAll(".stagger > *");
+        
+        // Determine staggerType based on which type of children exist
+        if (staggerLeftChildren.length > 0) {
+            this.staggerType = "left";
+            this.indirectChildren = staggerLeftChildren;
+        } else if (staggerRightChildren.length > 0) {
+            this.staggerType = "right";
+            this.indirectChildren = staggerRightChildren;
+        } else {
+            this.staggerType = "normal";
+            this.indirectChildren = staggerChildren;
+        }
+
+        this.allChildren = [...this.directChildren, ...this.indirectChildren];
+    }
+
+    animate() {
+        // Animation logic here
+        // Direct children always use normal animation
+        if (this.directChildren.length > 0) {
+            gsap.set(this.directChildren, {
+                opacity: 0,
+                y: "2rem",
+            });
+            gsap.to(this.directChildren, {
+                opacity: 1,
+                y: 0,
+                duration: 2,
+                ease: "elastic.out(1, 0.7)",
+                scrollTrigger: {
+                    trigger: this.directChildren[0],
+                    start: "top bottom",
+                    end: "bottom top",
+                    toggleActions: "play none none reset",
+                },
+                stagger: {
+                    amount: 0.5,
+                }
+            });
+        }
+
+        // Indirect children use animations based on staggerType
+        if (this.indirectChildren.length > 0) {
+            const xValue = this.staggerType === "left" ? "-2rem" : this.staggerType === "right" ? "2rem" : 0;
+            const yValue = this.staggerType === "normal" ? "2rem" : 0;
+            
+            gsap.set(this.indirectChildren, {
+                opacity: 0,
+                y: yValue,
+                x: xValue,
+            });
+            gsap.to(this.indirectChildren, {
+                opacity: 1,
+                y: 0,
+                x: 0,
+                duration: 2,
+                ease: "elastic.out(1, 0.7)",
+                scrollTrigger: {
+                    trigger: this.indirectChildren[0],
+                    start: "top bottom",
+                    end: "bottom top",
+                    toggleActions: "play none none reset",
+                },
+                stagger: {
+                    amount: 0.5,
+                }
+            });
+        }
+    }
+}

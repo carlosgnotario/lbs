@@ -14,16 +14,21 @@ import { SearchResults } from "./SearchResults.js";
 import { ShrinkText } from "./ShrinkText.js";
 import { Testimonials } from "./Testimonials.js";
 import { FaqElements } from "./FaqElements.js";
+import { Stagger } from "./Stagger.js";
+import { HeadingWave } from "./HeadingWave.js";
+import { Image } from "./Image.js";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { SplitText } from "gsap/SplitText";
 
 if (typeof document !== "undefined") {
     document.addEventListener("DOMContentLoaded", () => {
-        gsap.registerPlugin(ScrollTrigger);
+        gsap.registerPlugin(ScrollTrigger, SplitText);
         const g = {}
         window.g = g;
         
         g.scrollTrigger = ScrollTrigger;
+        g.splitText = SplitText;
         g.pxToRem = (px) => {
             return ( px / 16 * 1 ) + "rem";
         }
@@ -103,7 +108,7 @@ if (typeof document !== "undefined") {
             new MovingHex(element);
         });
 
-        const dictionElements = document.querySelectorAll("[diction]");
+        const dictionElements = document.querySelectorAll("[data-animation='diction']");
         dictionElements.forEach(element => {
             new Diction(element);
         });
@@ -133,6 +138,21 @@ if (typeof document !== "undefined") {
             new InteractiveHex(element);
         });
 
+        const staggerElements = document.querySelectorAll("[data-animation='stagger']");
+        staggerElements.forEach(element => {
+            new Stagger(element);
+        });
+
+        const headingWaveElements = document.querySelectorAll("[data-animation='headingWave']");
+        headingWaveElements.forEach(element => {
+            new HeadingWave(element);
+        });
+
+        const imageElements = document.querySelectorAll("[data-animation='image']");
+        imageElements.forEach(element => {
+            new Image(element);
+        });
+
         const searchResultsElements = document.querySelectorAll("[search-results]");
         searchResultsElements.forEach(element => {
             console.log("one");
@@ -160,3 +180,16 @@ function handleLazyLoad(config={}) {
       img.naturalWidth ? onImgLoad() : img.addEventListener("load", onImgLoad);
     });
 }
+
+export function splitTextGradient(parent, chars) {
+    const color1 = getComputedStyle(parent).getPropertyValue('--color1');
+    const color2 = getComputedStyle(parent).getPropertyValue('--color2');
+
+    const color = gsap.utils.interpolate(color1, color2);
+    
+    gsap.set(chars, {
+        color: (index, target, targets) => color(index / (targets.length - 1))
+    })
+    
+}
+    
