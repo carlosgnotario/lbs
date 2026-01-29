@@ -186,8 +186,8 @@
 }
 .text-gradient-orange {
   --color1: var(--_colors---orange);
-  --color2: var(--_colors---yellow);
-  background: linear-gradient(to right, var(--_colors---orange), var(--_colors---yellow));
+  --color2: #FFB700;
+  background: linear-gradient(to right, var(--_colors---orange), #FFB700);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   line-height: 1.1;

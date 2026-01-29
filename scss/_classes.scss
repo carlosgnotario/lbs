@@ -31,7 +31,7 @@
     &-note { color: #FFFBDE; }
 
     &-gradient {
-        &-orange { @include gradient-text($orange, $yellow); }
+        &-orange { @include gradient-text($orange, #FFB700); }
         &-purple { @include gradient-text(#52A6E0, #F379E7); }
         &-yellow { @include gradient-text(#FFB700, $yellow); }
         &-purple-vertical { @include gradient-text(#B57DC1, #9A7DC1); }
