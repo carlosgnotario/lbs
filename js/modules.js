@@ -18,7 +18,7 @@ import { Stagger } from "./Stagger.js";
 import { HeadingWave } from "./HeadingWave.js";
 import { Image } from "./Image.js";
 import { Balls } from "./Balls.js";
-import { Annotations } from "./annotations.js";
+import { Annotations } from "./Annotations.js";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";

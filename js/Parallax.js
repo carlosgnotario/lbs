@@ -64,7 +64,6 @@ export class Parallax {
                 trigger: this.wrapper,
                 start: "top bottom",
                 end: "bottom top",
-                markers: true,
                 scrub: true
             }
         });

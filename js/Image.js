@@ -42,7 +42,6 @@ export class Image {
                 start: "top bottom",
                 end: "top top",
                 scrub: true,
-                markers: true,
             }
         })
     }

@@ -7379,7 +7379,6 @@
           trigger: this.wrapper,
           start: "top bottom",
           end: "bottom top",
-          markers: true,
           scrub: true
         }
       });
@@ -7861,8 +7860,7 @@
           trigger: this.element,
           start: "top bottom",
           end: "top top",
-          scrub: true,
-          markers: true
+          scrub: true
         }
       });
     }
@@ -10647,7 +10645,7 @@
     return new p(t2, e2);
   }
 
-  // js/annotations.js
+  // js/Annotations.js
   var Annotations = class {
     constructor(element) {
       this.element = element;
