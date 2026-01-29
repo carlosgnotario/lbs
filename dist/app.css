@@ -10314,4 +10314,8 @@ section > img {
   margin-top: -13.125rem;
 }
 
+.rough-annotation {
+  z-index: -1;
+}
+
 /*# sourceMappingURL=app.css.map */

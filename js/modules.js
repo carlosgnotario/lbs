@@ -18,6 +18,7 @@ import { Stagger } from "./Stagger.js";
 import { HeadingWave } from "./HeadingWave.js";
 import { Image } from "./Image.js";
 import { Balls } from "./Balls.js";
+import { Annotations } from "./annotations.js";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
@@ -157,6 +158,11 @@ if (typeof document !== "undefined") {
         const ballsElements = document.querySelectorAll("[data-animation='balls']");
         ballsElements.forEach(element => {
             new Balls(element);
+        });
+
+        const annotationElements = document.querySelectorAll("[data-annotation]");
+        annotationElements.forEach(element => {
+            new Annotations(element);
         });
 
         const searchResultsElements = document.querySelectorAll("[search-results]");
