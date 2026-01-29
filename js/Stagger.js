@@ -40,25 +40,23 @@ export class Stagger {
     animate() {
         // Animation logic here
         // Direct children always use normal animation
-        if (this.directChildren.length > 0) {
+        if (this.directChildren.length > 0) {            
             gsap.set(this.directChildren, {
                 opacity: 0,
                 y: "2rem",
             });
-            gsap.to(this.directChildren, {
-                opacity: 1,
-                y: 0,
-                duration: 2,
-                ease: "elastic.out(1, 0.7)",
-                scrollTrigger: {
-                    trigger: this.directChildren[0],
-                    start: "top bottom",
-                    end: "bottom top",
-                    toggleActions: "play none none reset",
-                },
-                stagger: {
-                    amount: 0.5,
-                }
+            gsap.utils.toArray(this.directChildren).forEach(child => {
+                gsap.to(child, {
+                    opacity: 1,
+                    y: 0,
+                    duration: 2,
+                    ease: "elastic.out(1, 0.7)",
+                    scrollTrigger: {
+                        trigger: child,
+                        start: "top bottom",
+                        toggleActions: "play none none reset"
+                    }
+                });
             });
         }
 

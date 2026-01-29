@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Classes Reference</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'TASA Explorer',serif;background:#1D1D1D;color:#fff;padding:2rem;line-height:1.6}
+        .cr-s{margin-bottom:3rem;padding:2rem;background:#fff3;border-radius:8px;border:1px solid #fff2}
+        .cr-st{font-size:1.5rem;font-weight:700;margin-bottom:1.5rem;color:#FFAC00;text-transform:uppercase;letter-spacing:0.1em}
+        .cr-desc{font-size:13px;color:#fffb;line-height:1.5;margin-bottom:1.5rem;font-style:italic}
+        .cr-selector{display:flex;align-items:center;gap:1rem;margin-bottom:1rem;flex-wrap:wrap}
+        .cr-selector label{font-size:14px;color:#fffc;font-weight:600}
+        .cr-selector select{background:#fff2;border:1px solid #fff3;border-radius:4px;padding:8px 12px;color:#fff;font-size:14px;font-family:'TASA Explorer',serif;min-width:200px;cursor:pointer}
+        .cr-selector select:focus{outline:none;border-color:#FFAC00;background:#fff4}
+        .cr-preview{min-height:120px;padding:2rem;background:#fff1;border-radius:6px;border:1px solid #fff2;display:flex;align-items:center;justify-content:center;margin-bottom:1rem}
+        .cr-info{font-size:12px;color:#fff9;margin-bottom:0.5rem;font-family:monospace}
+        .cr-cb{background:#FFAC0033;border:1px solid #FFAC0066;color:#FFAC00;padding:6px 12px;border-radius:4px;font-size:12px;cursor:pointer;text-transform:uppercase;letter-spacing:0.05em;font-weight:600;transition:all 0.2s ease}
+        .cr-cb:hover{background:#FFAC004D;border-color:#FFAC0099}
+        .cr-cb.copied{background:#46C99833;border-color:#46C99866;color:#46C998}
+        .cr-sample{font-size:18px}
+    </style>
+    <script>
+        function copyClass(className,button){
+            const classToCopy=className.startsWith('.')?className.substring(1):className;
+            navigator.clipboard.writeText(classToCopy).then(function(){
+                const originalText=button.textContent;
+                button.textContent='Copied!';
+                button.classList.add('copied');
+                setTimeout(function(){button.textContent=originalText;button.classList.remove('copied')},2000)
+            }).catch(function(err){console.error('Failed to copy:',err);alert('Failed to copy to clipboard')})
+        }
+        function updateSample(selectId,previewId,infoId,btnId,type){
+            const select=document.getElementById(selectId);
+            const preview=document.getElementById(previewId);
+            const info=document.getElementById(infoId);
+            const btn=document.getElementById(btnId);
+            const className='.'+select.value;
+            const sample=preview.querySelector('.cr-sample')||preview;
+            sample.className='cr-sample '+select.value;
+            if(type==='bg'||type==='bg-gradient'){sample.style.minHeight='80px';sample.style.width='100%';sample.style.display='flex';sample.style.alignItems='center';sample.style.justifyContent='center'}
+            info.textContent='Class: '+className;
+            btn.setAttribute('onclick',"copyClass('"+className+"',this)")
+        }
+    </script>
+</head>
+<body>
+    <h1 style="font-size:3rem;margin-bottom:2rem;text-align:center;color:#FFAC00">CSS Classes Reference</h1>
+    <p style="text-align:center;margin-bottom:3rem;opacity:0.7">Select a class to preview and copy</p>
+
+    <!-- Text Colors -->
+    <div class="cr-s">
+        <h2 class="cr-st">Text Colors</h2>
+        <p class="cr-desc">Apply text colors using .text-{color} classes. These set the color property of text elements.</p>
+        <div class="cr-selector">
+            <label>Select Color:</label>
+            <select id="text-color-select" onchange="updateSample('text-color-select','text-color-preview','text-color-info','text-color-btn','text')">
+                <option value="text-1">text-1 (Primary)</option>
+                <option value="text-2">text-2 (Secondary)</option>
+                <option value="text-dark-1">text-dark-1</option>
+                <option value="text-dark-2">text-dark-2</option>
+                <option value="text-orange">text-orange</option>
+                <option value="text-pink">text-pink</option>
+                <option value="text-neon-red">text-neon-red</option>
+                <option value="text-yellow">text-yellow</option>
+                <option value="text-half-way-orange">text-half-way-orange</option>
+                <option value="text-gray">text-gray</option>
+                <option value="text-blue">text-blue</option>
+                <option value="text-black">text-black</option>
+                <option value="text-teal">text-teal</option>
+                <option value="text-emerald">text-emerald</option>
+                <option value="text-sea-blue">text-sea-blue</option>
+                <option value="text-violet">text-violet</option>
+                <option value="text-baby-blue">text-baby-blue</option>
+                <option value="text-white">text-white</option>
+                <option value="text-green">text-green</option>
+                <option value="text-blood-orange">text-blood-orange</option>
+                <option value="text-light-gray">text-light-gray</option>
+                <option value="text-dark-gray">text-dark-gray</option>
+                <option value="text-dark-gray-2">text-dark-gray-2</option>
+                <option value="text-honey">text-honey</option>
+                <option value="text-mid-gray">text-mid-gray</option>
+                <option value="text-light-blue">text-light-blue</option>
+                <option value="text-pastel-blue">text-pastel-blue</option>
+                <option value="text-note">text-note</option>
+            </select>
+        </div>
+        <div class="cr-preview" id="text-color-preview">
+            <div class="cr-sample text-1">Sample Text</div>
+        </div>
+        <div class="cr-info" id="text-color-info">Class: .text-1</div>
+        <button class="cr-cb" onclick="copyClass('.text-1',this)" id="text-color-btn">Copy Class</button>
+    </div>
+
+    <!-- Text Gradients -->
+    <div class="cr-s">
+        <h2 class="cr-st">Text Gradient Colors</h2>
+        <p class="cr-desc">Apply gradient text effects using .text-gradient-{name} classes. These create colorful gradient overlays on text.</p>
+        <div class="cr-selector">
+            <label>Select Gradient:</label>
+            <select id="text-gradient-select" onchange="updateSample('text-gradient-select','text-gradient-preview','text-gradient-info','text-gradient-btn','text')">
+                <option value="text-gradient-orange">text-gradient-orange</option>
+                <option value="text-gradient-purple">text-gradient-purple</option>
+                <option value="text-gradient-yellow">text-gradient-yellow</option>
+                <option value="text-gradient-purple-vertical">text-gradient-purple-vertical</option>
+                <option value="text-gradient-gray-vertical">text-gradient-gray-vertical</option>
+            </select>
+        </div>
+        <div class="cr-preview" id="text-gradient-preview">
+            <div class="cr-sample text-gradient-orange">Gradient Text</div>
+        </div>
+        <div class="cr-info" id="text-gradient-info">Class: .text-gradient-orange</div>
+        <button class="cr-cb" onclick="copyClass('.text-gradient-orange',this)" id="text-gradient-btn">Copy Class</button>
+    </div>
+
+    <!-- Background Colors -->
+    <div class="cr-s">
+        <h2 class="cr-st">Background Colors</h2>
+        <p class="cr-desc">Apply background colors using .bg-{color} classes. These set the background-color property of elements.</p>
+        <div class="cr-selector">
+            <label>Select Background:</label>
+            <select id="bg-color-select" onchange="updateSample('bg-color-select','bg-color-preview','bg-color-info','bg-color-btn','bg')">
+                <option value="bg-1">bg-1 (Primary)</option>
+                <option value="bg-2">bg-2 (Secondary)</option>
+                <option value="bg-dark-1">bg-dark-1</option>
+                <option value="bg-dark-2">bg-dark-2</option>
+                <option value="bg-orange">bg-orange</option>
+                <option value="bg-pink">bg-pink</option>
+                <option value="bg-neon-red">bg-neon-red</option>
+                <option value="bg-yellow">bg-yellow</option>
+                <option value="bg-green">bg-green</option>
+                <option value="bg-honey">bg-honey</option>
+                <option value="bg-half-way-orange">bg-half-way-orange</option>
+                <option value="bg-blood-orange">bg-blood-orange</option>
+                <option value="bg-light-gray">bg-light-gray</option>
+                <option value="bg-gray">bg-gray</option>
+                <option value="bg-graycta">bg-graycta</option>
+                <option value="bg-gray-label">bg-gray-label</option>
+                <option value="bg-mid-gray">bg-mid-gray</option>
+                <option value="bg-dark-gray">bg-dark-gray</option>
+                <option value="bg-dark-gray-2">bg-dark-gray-2</option>
+                <option value="bg-dark-gray-3">bg-dark-gray-3</option>
+                <option value="bg-blue">bg-blue</option>
+                <option value="bg-light-blue">bg-light-blue</option>
+                <option value="bg-black">bg-black</option>
+                <option value="bg-teal">bg-teal</option>
+                <option value="bg-emerald">bg-emerald</option>
+                <option value="bg-sea-blue">bg-sea-blue</option>
+                <option value="bg-pastel-blue">bg-pastel-blue</option>
+                <option value="bg-violet">bg-violet</option>
+                <option value="bg-baby-blue">bg-baby-blue</option>
+                <option value="bg-white">bg-white</option>
+                <option value="bg-note">bg-note</option>
+            </select>
+        </div>
+        <div class="cr-preview" id="bg-color-preview">
+            <div class="cr-sample bg-1" style="min-height:80px;width:100%;display:flex;align-items:center;justify-content:center">Background Sample</div>
+        </div>
+        <div class="cr-info" id="bg-color-info">Class: .bg-1</div>
+        <button class="cr-cb" onclick="copyClass('.bg-1',this)" id="bg-color-btn">Copy Class</button>
+    </div>
+
+    <!-- Background Gradients -->
+    <div class="cr-s">
+        <h2 class="cr-st">Background Gradients</h2>
+        <p class="cr-desc">Apply gradient backgrounds using .bg-gradient-{name} classes. These create colorful gradient backgrounds.</p>
+        <div class="cr-selector">
+            <label>Select Gradient:</label>
+            <select id="bg-gradient-select" onchange="updateSample('bg-gradient-select','bg-gradient-preview','bg-gradient-info','bg-gradient-btn','bg-gradient')">
+                <option value="bg-gradient-orange">bg-gradient-orange</option>
+                <option value="bg-gradient-orange-swap">bg-gradient-orange-swap</option>
+                <option value="bg-gradient-yellow">bg-gradient-yellow</option>
+                <option value="bg-gradient-purple">bg-gradient-purple</option>
+                <option value="bg-gradient-purple-vertical">bg-gradient-purple-vertical</option>
+                <option value="bg-gradient-gray-vertical">bg-gradient-gray-vertical</option>
+                <option value="bg-gradient-spanish">bg-gradient-spanish</option>
+            </select>
+        </div>
+        <div class="cr-preview" id="bg-gradient-preview">
+            <div class="cr-sample bg-gradient-orange" style="min-height:80px;width:100%;display:flex;align-items:center;justify-content:center">Gradient Background</div>
+        </div>
+        <div class="cr-info" id="bg-gradient-info">Class: .bg-gradient-orange</div>
+        <button class="cr-cb" onclick="copyClass('.bg-gradient-orange',this)" id="bg-gradient-btn">Copy Class</button>
+    </div>
+
+    <!-- Text Sizes -->
+    <div class="cr-s">
+        <h2 class="cr-st">Text Sizes</h2>
+        <p class="cr-desc">Control font sizes using .text-{size} classes. Standard sizes: .text-s, .text-m, .text-l, .text-xl, .text-xxl. Custom sizes: .text-10 through .text-100 (in pixels, converted to rem).</p>
+        <div class="cr-selector">
+            <label>Select Size:</label>
+            <select id="text-size-select" onchange="updateSample('text-size-select','text-size-preview','text-size-info','text-size-btn','text')">
+                <option value="text-s">text-s (13px)</option>
+                <option value="text-m">text-m (16px)</option>
+                <option value="text-l">text-l (19px)</option>
+                <option value="text-xl">text-xl (22px)</option>
+                <option value="text-xxl">text-xxl (26px)</option>
+                <option value="text-hs">text-hs (22px heading)</option>
+                <option value="text-hm">text-hm (32px heading)</option>
+                <option value="text-hl">text-hl (44px heading)</option>
+                <option value="text-hxl">text-hxl (60px heading)</option>
+            </select>
+        </div>
+        <div class="cr-preview" id="text-size-preview">
+            <div class="cr-sample text-s">Sample Text</div>
+        </div>
+        <div class="cr-info" id="text-size-info">Class: .text-s</div>
+        <button class="cr-cb" onclick="copyClass('.text-s',this)" id="text-size-btn">Copy Class</button>
+    </div>
+
+    <!-- Custom Text Size Generator -->
+    <div class="cr-s">
+        <h2 class="cr-st">Custom Text Sizes (10-100)</h2>
+        <p class="cr-desc">Generate custom text sizes from 10px to 100px. Values are converted to rem units automatically.</p>
+        <div class="cr-selector">
+            <label>Size (px):</label>
+            <input type="number" id="text-custom-value" min="10" max="100" value="24" style="background:#fff2;border:1px solid #fff3;border-radius:4px;padding:8px 12px;color:#fff;font-size:14px;font-family:'TASA Explorer',serif;width:100px" oninput="updateCustomText()">
+        </div>
+        <div class="cr-preview" id="text-custom-preview">
+            <div class="cr-sample text-24">Sample Text</div>
+        </div>
+        <div class="cr-info" id="text-custom-info">Class: .text-24</div>
+        <button class="cr-cb" onclick="copyClass('.text-24',this)" id="text-custom-btn">Copy Class</button>
+    </div>
+
+    <!-- Text Alignment -->
+    <div class="cr-s">
+        <h2 class="cr-st">Text Alignment</h2>
+        <p class="cr-desc">Control text alignment using .text-center, .text-left, or .text-right classes.</p>
+        <div class="cr-selector">
+            <label>Select Alignment:</label>
+            <select id="text-align-select" onchange="updateSample('text-align-select','text-align-preview','text-align-info','text-align-btn','text')">
+                <option value="text-center">text-center</option>
+                <option value="text-left">text-left</option>
+                <option value="text-right">text-right</option>
+            </select>
+        </div>
+        <div class="cr-preview" id="text-align-preview" style="width:100%">
+            <div class="cr-sample text-center" style="width:100%">Centered Text</div>
+        </div>
+        <div class="cr-info" id="text-align-info">Class: .text-center</div>
+        <button class="cr-cb" onclick="copyClass('.text-center',this)" id="text-align-btn">Copy Class</button>
+    </div>
+
+    <!-- Line Heights -->
+    <div class="cr-s">
+        <h2 class="cr-st">Line Heights</h2>
+        <p class="cr-desc">Control line height using .lh-{size} classes. Standard: .lh-s (1), .lh-m (1.35), .lh-l (1.5), .lh-xl (2). Custom: .lh-10 through .lh-100 (in pixels, converted to rem).</p>
+        <div class="cr-selector">
+            <label>Select Line Height:</label>
+            <select id="lh-select" onchange="updateSample('lh-select','lh-preview','lh-info','lh-btn','text')">
+                <option value="lh-s">lh-s (1)</option>
+                <option value="lh-m">lh-m (1.35)</option>
+                <option value="lh-l">lh-l (1.5)</option>
+                <option value="lh-xl">lh-xl (2)</option>
+            </select>
+        </div>
+        <div class="cr-preview" id="lh-preview" style="max-width:400px">
+            <div class="cr-sample lh-s">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</div>
+        </div>
+        <div class="cr-info" id="lh-info">Class: .lh-s</div>
+        <button class="cr-cb" onclick="copyClass('.lh-s',this)" id="lh-btn">Copy Class</button>
+    </div>
+
+    <!-- Custom Line Height Generator -->
+    <div class="cr-s">
+        <h2 class="cr-st">Custom Line Heights (10-100)</h2>
+        <p class="cr-desc">Generate custom line heights from 10px to 100px. Values are converted to rem units automatically.</p>
+        <div class="cr-selector">
+            <label>Line Height (px):</label>
+            <input type="number" id="lh-custom-value" min="10" max="100" value="24" style="background:#fff2;border:1px solid #fff3;border-radius:4px;padding:8px 12px;color:#fff;font-size:14px;font-family:'TASA Explorer',serif;width:100px" oninput="updateCustomLH()">
+        </div>
+        <div class="cr-preview" id="lh-custom-preview" style="max-width:400px">
+            <div class="cr-sample lh-24">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</div>
+        </div>
+        <div class="cr-info" id="lh-custom-info">Class: .lh-24</div>
+        <button class="cr-cb" onclick="copyClass('.lh-24',this)" id="lh-custom-btn">Copy Class</button>
+    </div>
+
+    <!-- Margins -->
+    <div class="cr-s">
+        <h2 class="cr-st">Margins</h2>
+        <p class="cr-desc">Apply margins using .m{side}-{size} classes. Sides: t (top), b (bottom), l (left), r (right). Standard sizes: 0, xxs, xs, s, r, m, l. Custom: .mt-1 through .mt-100, .mb-1 through .mb-100, etc. (in rem).</p>
+        <div class="cr-selector">
+            <label>Type:</label>
+            <select id="margin-type" style="background:#fff2;border:1px solid #fff3;border-radius:4px;padding:8px 12px;color:#fff;font-size:14px;font-family:'TASA Explorer',serif;min-width:150px" onchange="updateMarginSample()">
+                <option value="mt">mt (margin-top)</option>
+                <option value="mb">mb (margin-bottom)</option>
+                <option value="ml">ml (margin-left)</option>
+                <option value="mr">mr (margin-right)</option>
+            </select>
+            <label>Size:</label>
+            <select id="margin-size" onchange="updateMarginSample()">
+                <option value="0">0 (no margin)</option>
+                <option value="xxs">xxs (12px)</option>
+                <option value="xs">xs (18px)</option>
+                <option value="s">s (30px)</option>
+                <option value="r">r (60px)</option>
+                <option value="m">m (75px)</option>
+                <option value="l">l (100px)</option>
+            </select>
+        </div>
+        <div class="cr-preview" id="margin-preview">
+            <div style="background:#fff1;padding:1rem;border-radius:4px" id="margin-sample">Sample Element</div>
+        </div>
+        <div class="cr-info" id="margin-info">Class: .mt-0</div>
+        <button class="cr-cb" onclick="copyClass('.mt-0',this)" id="margin-btn">Copy Class</button>
+    </div>
+
+    <!-- Custom Margin Generator -->
+    <div class="cr-s">
+        <h2 class="cr-st">Custom Margins (1-100)</h2>
+        <p class="cr-desc">Generate custom margin values from 1rem to 100rem. Use .mt-{number}, .mb-{number}, .ml-{number}, or .mr-{number}.</p>
+        <div class="cr-selector">
+            <label>Type:</label>
+            <select id="margin-custom-type" style="background:#fff2;border:1px solid #fff3;border-radius:4px;padding:8px 12px;color:#fff;font-size:14px;font-family:'TASA Explorer',serif;min-width:150px" onchange="updateCustomMargin()">
+                <option value="mt">mt (margin-top)</option>
+                <option value="mb">mb (margin-bottom)</option>
+                <option value="ml">ml (margin-left)</option>
+                <option value="mr">mr (margin-right)</option>
+            </select>
+            <label>Value:</label>
+            <input type="number" id="margin-custom-value" min="1" max="100" value="20" style="background:#fff2;border:1px solid #fff3;border-radius:4px;padding:8px 12px;color:#fff;font-size:14px;font-family:'TASA Explorer',serif;width:100px" oninput="updateCustomMargin()">
+        </div>
+        <div class="cr-preview" id="margin-custom-preview">
+            <div style="background:#fff1;padding:1rem;border-radius:4px" id="margin-custom-sample">Sample Element</div>
+        </div>
+        <div class="cr-info" id="margin-custom-info">Class: .mt-20</div>
+        <button class="cr-cb" onclick="copyClass('.mt-20',this)" id="margin-custom-btn">Copy Class</button>
+    </div>
+
+    <!-- Padding -->
+    <div class="cr-s">
+        <h2 class="cr-st">Padding</h2>
+        <p class="cr-desc">Apply padding using .p{side}-{size} classes. Sides: v (vertical/top+bottom), h (horizontal/left+right). Standard sizes: xs, s, r, m, l, xl, hero. Custom: .ph-1 through .ph-100, .pv-1 through .pv-100 (in pixels, converted to rem).</p>
+        <div class="cr-selector">
+            <label>Type:</label>
+            <select id="padding-type" style="background:#fff2;border:1px solid #fff3;border-radius:4px;padding:8px 12px;color:#fff;font-size:14px;font-family:'TASA Explorer',serif;min-width:150px" onchange="updatePaddingSample()">
+                <option value="pv">pv (padding vertical)</option>
+                <option value="ph">ph (padding horizontal)</option>
+            </select>
+            <label>Size:</label>
+            <select id="padding-size" onchange="updatePaddingSample()">
+                <option value="xs">xs (12px)</option>
+                <option value="s">s (15px)</option>
+                <option value="r">r (35px)</option>
+                <option value="m">m (45px)</option>
+                <option value="l">l (80px)</option>
+                <option value="xl">xl (100px)</option>
+            </select>
+        </div>
+        <div class="cr-preview" id="padding-preview">
+            <div style="background:#fff1;border-radius:4px" id="padding-sample">Sample Element</div>
+        </div>
+        <div class="cr-info" id="padding-info">Class: .pv-xs</div>
+        <button class="cr-cb" onclick="copyClass('.pv-xs',this)" id="padding-btn">Copy Class</button>
+    </div>
+
+    <!-- Custom Padding Generator -->
+    <div class="cr-s">
+        <h2 class="cr-st">Custom Padding (1-100)</h2>
+        <p class="cr-desc">Generate custom padding values from 1px to 100px (converted to rem). Use .ph-{number} or .pv-{number}.</p>
+        <div class="cr-selector">
+            <label>Type:</label>
+            <select id="padding-custom-type" style="background:#fff2;border:1px solid #fff3;border-radius:4px;padding:8px 12px;color:#fff;font-size:14px;font-family:'TASA Explorer',serif;min-width:150px" onchange="updateCustomPadding()">
+                <option value="ph">ph (padding horizontal)</option>
+                <option value="pv">pv (padding vertical)</option>
+            </select>
+            <label>Value:</label>
+            <input type="number" id="padding-custom-value" min="1" max="100" value="20" style="background:#fff2;border:1px solid #fff3;border-radius:4px;padding:8px 12px;color:#fff;font-size:14px;font-family:'TASA Explorer',serif;width:100px" oninput="updateCustomPadding()">
+        </div>
+        <div class="cr-preview" id="padding-custom-preview">
+            <div style="background:#fff1;border-radius:4px" id="padding-custom-sample">Sample Element</div>
+        </div>
+        <div class="cr-info" id="padding-custom-info">Class: .ph-20</div>
+        <button class="cr-cb" onclick="copyClass('.ph-20',this)" id="padding-custom-btn">Copy Class</button>
+    </div>
+
+    <!-- Border Radius -->
+    <div class="cr-s">
+        <h2 class="cr-st">Border Radius</h2>
+        <p class="cr-desc">Apply border radius using .radius-{size} classes. Available sizes: s (10px), m (18px), l (40px), xl (80px).</p>
+        <div class="cr-selector">
+            <label>Select Radius:</label>
+            <select id="radius-select" onchange="updateSample('radius-select','radius-preview','radius-info','radius-btn','bg')">
+                <option value="radius-s">radius-s (10px)</option>
+                <option value="radius-m">radius-m (18px)</option>
+                <option value="radius-l">radius-l (40px)</option>
+                <option value="radius-xl">radius-xl (80px)</option>
+            </select>
+        </div>
+        <div class="cr-preview" id="radius-preview">
+            <div class="cr-sample bg-orange radius-s" style="min-height:80px;width:200px;display:flex;align-items:center;justify-content:center">Rounded Box</div>
+        </div>
+        <div class="cr-info" id="radius-info">Class: .radius-s</div>
+        <button class="cr-cb" onclick="copyClass('.radius-s',this)" id="radius-btn">Copy Class</button>
+    </div>
+
+    <!-- Font Weights -->
+    <div class="cr-s">
+        <h2 class="cr-st">Font Weights</h2>
+        <p class="cr-desc">Control font weight using .fw-{weight} classes. Available weights: 400, 500, 600, 700, 800.</p>
+        <div class="cr-selector">
+            <label>Select Weight:</label>
+            <select id="fw-select" onchange="updateSample('fw-select','fw-preview','fw-info','fw-btn','text')">
+                <option value="fw-400">fw-400 (normal)</option>
+                <option value="fw-500">fw-500 (medium)</option>
+                <option value="fw-600">fw-600 (semi-bold)</option>
+                <option value="fw-700">fw-700 (bold)</option>
+                <option value="fw-800">fw-800 (extra bold)</option>
+            </select>
+        </div>
+        <div class="cr-preview" id="fw-preview">
+            <div class="cr-sample fw-400">Sample Text</div>
+        </div>
+        <div class="cr-info" id="fw-info">Class: .fw-400</div>
+        <button class="cr-cb" onclick="copyClass('.fw-400',this)" id="fw-btn">Copy Class</button>
+    </div>
+
+    <!-- Max Width -->
+    <div class="cr-s">
+        <h2 class="cr-st">Max Width</h2>
+        <p class="cr-desc">Control maximum width using .mw-{number} classes. Values from 1rem to 100rem. Use .mw-1 through .mw-100.</p>
+        <div class="cr-selector">
+            <label>Max Width (rem):</label>
+            <input type="number" id="mw-value" min="1" max="100" value="50" style="background:#fff2;border:1px solid #fff3;border-radius:4px;padding:8px 12px;color:#fff;font-size:14px;font-family:'TASA Explorer',serif;width:100px" oninput="updateMaxWidth()">
+        </div>
+        <div class="cr-preview" id="mw-preview" style="width:100%">
+            <div class="cr-sample bg-orange mw-50" style="padding:1rem;border-radius:4px;margin:0 auto">Sample Element with Max Width</div>
+        </div>
+        <div class="cr-info" id="mw-info">Class: .mw-50</div>
+        <button class="cr-cb" onclick="copyClass('.mw-50',this)" id="mw-btn">Copy Class</button>
+    </div>
+
+    <!-- Gaps -->
+    <div class="cr-s">
+        <h2 class="cr-st">Gaps</h2>
+        <p class="cr-desc">Control gap spacing for flex/grid layouts using .gap-{size} classes. Available sizes: s (24px), m (34px), l (72px), xl (120px).</p>
+        <div class="cr-selector">
+            <label>Select Gap:</label>
+            <select id="gap-select" onchange="updateGapSample()">
+                <option value="gap-s">gap-s (24px)</option>
+                <option value="gap-m">gap-m (34px)</option>
+                <option value="gap-l">gap-l (72px)</option>
+                <option value="gap-xl">gap-xl (120px)</option>
+            </select>
+        </div>
+        <div class="cr-preview" id="gap-preview" style="display:grid;grid-template-columns:repeat(3,1fr)">
+            <div style="background:#fff1;padding:1rem;border-radius:4px">Item 1</div>
+            <div style="background:#fff1;padding:1rem;border-radius:4px">Item 2</div>
+            <div style="background:#fff1;padding:1rem;border-radius:4px">Item 3</div>
+        </div>
+        <div class="cr-info" id="gap-info">Class: .gap-s</div>
+        <button class="cr-cb" onclick="copyClass('.gap-s',this)" id="gap-btn">Copy Class</button>
+    </div>
+
+    <!-- Shadows -->
+    <div class="cr-s">
+        <h2 class="cr-st">Shadows</h2>
+        <p class="cr-desc">Apply box shadows using .shadow or .shadow-top classes for depth effects.</p>
+        <div class="cr-selector">
+            <label>Select Shadow:</label>
+            <select id="shadow-select" onchange="updateSample('shadow-select','shadow-preview','shadow-info','shadow-btn','bg')">
+                <option value="shadow">shadow (standard)</option>
+                <option value="shadow-top">shadow-top</option>
+            </select>
+        </div>
+        <div class="cr-preview" id="shadow-preview">
+            <div class="cr-sample bg-white shadow" style="min-height:100px;width:200px;display:flex;align-items:center;justify-content:center">Shadow Box</div>
+        </div>
+        <div class="cr-info" id="shadow-info">Class: .shadow</div>
+        <button class="cr-cb" onclick="copyClass('.shadow',this)" id="shadow-btn">Copy Class</button>
+    </div>
+
+    <!-- Utility Classes -->
+    <div class="cr-s">
+        <h2 class="cr-st">Utility Classes</h2>
+        <p class="cr-desc">Various utility classes for layout and styling: .full-w (100% width), .center (auto margins), .padded (max-width container), .no-overflow (hide overflow), .marginless (remove child margins), .mb-remove (remove bottom margins), .wrap-balance (text wrap balance), .font-rounded (rounded font), .pull-slot (negative margin).</p>
+        <div class="cr-selector">
+            <label>Select Utility:</label>
+            <select id="utility-select" onchange="updateUtilitySample()">
+                <option value="full-w">full-w (100% width)</option>
+                <option value="center">center (auto margins)</option>
+                <option value="padded">padded (max-width container)</option>
+                <option value="no-overflow">no-overflow</option>
+            </select>
+        </div>
+        <div class="cr-preview" id="utility-preview">
+            <div class="cr-sample bg-orange full-w" style="padding:1rem;border-radius:4px">Full Width Element</div>
+        </div>
+        <div class="cr-info" id="utility-info">Class: .full-w</div>
+        <button class="cr-cb" onclick="copyClass('.full-w',this)" id="utility-btn">Copy Class</button>
+    </div>
+
+    <script>
+        function updateCustomText(){
+            const value=document.getElementById('text-custom-value').value;
+            const className='.text-'+value;
+            const sample=document.getElementById('text-custom-preview').querySelector('.cr-sample');
+            const info=document.getElementById('text-custom-info');
+            const btn=document.getElementById('text-custom-btn');
+            sample.className='cr-sample text-'+value;
+            info.textContent='Class: '+className;
+            btn.setAttribute('onclick',"copyClass('"+className+"',this)")
+        }
+        function updateCustomLH(){
+            const value=document.getElementById('lh-custom-value').value;
+            const className='.lh-'+value;
+            const sample=document.getElementById('lh-custom-preview').querySelector('.cr-sample');
+            const info=document.getElementById('lh-custom-info');
+            const btn=document.getElementById('lh-custom-btn');
+            sample.className='cr-sample lh-'+value;
+            sample.style.maxWidth='400px';
+            info.textContent='Class: '+className;
+            btn.setAttribute('onclick',"copyClass('"+className+"',this)")
+        }
+        function updateMarginSample(){
+            const type=document.getElementById('margin-type').value;
+            const size=document.getElementById('margin-size').value;
+            const className='.'+type+'-'+size;
+            const sample=document.getElementById('margin-sample');
+            const info=document.getElementById('margin-info');
+            const btn=document.getElementById('margin-btn');
+            sample.className='';
+            sample.style.background='#fff1';
+            sample.style.padding='1rem';
+            sample.style.borderRadius='4px';
+            sample.classList.add(type+'-'+size);
+            info.textContent='Class: '+className;
+            btn.setAttribute('onclick',"copyClass('"+className+"',this)")
+        }
+        function updateCustomMargin(){
+            const type=document.getElementById('margin-custom-type').value;
+            const value=document.getElementById('margin-custom-value').value;
+            const className='.'+type+'-'+value;
+            const sample=document.getElementById('margin-custom-sample');
+            const info=document.getElementById('margin-custom-info');
+            const btn=document.getElementById('margin-custom-btn');
+            sample.className='';
+            sample.style.background='#fff1';
+            sample.style.padding='1rem';
+            sample.style.borderRadius='4px';
+            sample.classList.add(type+'-'+value);
+            info.textContent='Class: '+className;
+            btn.setAttribute('onclick',"copyClass('"+className+"',this)")
+        }
+        function updatePaddingSample(){
+            const type=document.getElementById('padding-type').value;
+            const size=document.getElementById('padding-size').value;
+            const className='.'+type+'-'+size;
+            const sample=document.getElementById('padding-sample');
+            const info=document.getElementById('padding-info');
+            const btn=document.getElementById('padding-btn');
+            sample.className='';
+            sample.style.background='#fff1';
+            sample.style.borderRadius='4px';
+            sample.classList.add(type+'-'+size);
+            info.textContent='Class: '+className;
+            btn.setAttribute('onclick',"copyClass('"+className+"',this)")
+        }
+        function updateCustomPadding(){
+            const type=document.getElementById('padding-custom-type').value;
+            const value=document.getElementById('padding-custom-value').value;
+            const className='.'+type+'-'+value;
+            const sample=document.getElementById('padding-custom-sample');
+            const info=document.getElementById('padding-custom-info');
+            const btn=document.getElementById('padding-custom-btn');
+            sample.className='';
+            sample.style.background='#fff1';
+            sample.style.borderRadius='4px';
+            sample.classList.add(type+'-'+value);
+            info.textContent='Class: '+className;
+            btn.setAttribute('onclick',"copyClass('"+className+"',this)")
+        }
+        function updateMaxWidth(){
+            const value=document.getElementById('mw-value').value;
+            const className='.mw-'+value;
+            const sample=document.getElementById('mw-preview').querySelector('.cr-sample');
+            const info=document.getElementById('mw-info');
+            const btn=document.getElementById('mw-btn');
+            sample.className='cr-sample bg-orange mw-'+value;
+            sample.style.padding='1rem';
+            sample.style.borderRadius='4px';
+            sample.style.margin='0 auto';
+            info.textContent='Class: '+className;
+            btn.setAttribute('onclick',"copyClass('"+className+"',this)")
+        }
+        function updateGapSample(){
+            const select=document.getElementById('gap-select');
+            const preview=document.getElementById('gap-preview');
+            const info=document.getElementById('gap-info');
+            const btn=document.getElementById('gap-btn');
+            const className='.'+select.value;
+            preview.className='cr-preview '+select.value;
+            preview.style.display='grid';
+            preview.style.gridTemplateColumns='repeat(3,1fr)';
+            info.textContent='Class: '+className;
+            btn.setAttribute('onclick',"copyClass('"+className+"',this)")
+        }
+        function updateUtilitySample(){
+            const select=document.getElementById('utility-select');
+            const preview=document.getElementById('utility-preview');
+            const info=document.getElementById('utility-info');
+            const btn=document.getElementById('utility-btn');
+            const className='.'+select.value;
+            const sample=preview.querySelector('.cr-sample');
+            sample.className='cr-sample bg-orange '+select.value;
+            sample.style.padding='1rem';
+            sample.style.borderRadius='4px';
+            if(select.value==='center'){sample.style.width='fit-content';sample.style.margin='0 auto'}
+            else if(select.value==='full-w'){sample.style.width='100%'}
+            info.textContent='Class: '+className;
+            btn.setAttribute('onclick',"copyClass('"+className+"',this)")
+        }
+        document.addEventListener('DOMContentLoaded',function(){
+            updateMarginSample();
+            updatePaddingSample();
+            updateGapSample();
+            updateUtilitySample();
+        })
+    </script>
+</body>
+</html>

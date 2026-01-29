@@ -7677,20 +7677,18 @@
           opacity: 0,
           y: "2rem"
         });
-        gsapWithCSS.to(this.directChildren, {
-          opacity: 1,
-          y: 0,
-          duration: 2,
-          ease: "elastic.out(1, 0.7)",
-          scrollTrigger: {
-            trigger: this.directChildren[0],
-            start: "top bottom",
-            end: "bottom top",
-            toggleActions: "play none none reset"
-          },
-          stagger: {
-            amount: 0.5
-          }
+        gsapWithCSS.utils.toArray(this.directChildren).forEach((child) => {
+          gsapWithCSS.to(child, {
+            opacity: 1,
+            y: 0,
+            duration: 2,
+            ease: "elastic.out(1, 0.7)",
+            scrollTrigger: {
+              trigger: child,
+              start: "top bottom",
+              toggleActions: "play none none reset"
+            }
+          });
         });
       }
       if (this.indirectChildren.length > 0) {
@@ -7737,25 +7735,22 @@
       }
     }
     elements() {
-      this.heading = Array.from(this.element.querySelectorAll(".heading-unit")).filter(
-        (el) => {
-          const text = el.textContent.replace(/[\u200B-\u200D\uFEFF\u00A0\s]/g, "");
-          return text.length > 0;
-        }
-      );
-      console.log(this.heading);
+      this.heading = this.element.querySelector(".heading");
+      this.headingUnits = this.heading.querySelectorAll(".heading-unit");
+      this.hasColor = getComputedStyle(this.heading).getPropertyValue("--color1") !== "" && getComputedStyle(this.heading).getPropertyValue("--color2") !== "";
       this.image = this.element.querySelector("img");
       this.text = this.element.querySelector(".media-content");
       this.slot = this.element.querySelector(".media-slot");
     }
     split() {
-      this.splitText = new g.splitText(this.heading, {
-        type: "words, chars, lines",
+      this.splitText = new g.splitText(this.headingUnits, {
+        type: this.hasColor ? "words, chars, lines" : "words, chars",
         linesClass: "line",
         charsClass: "char",
         smartWrap: true
       });
-      this.splitText.lines.forEach((line) => {
+      console.log(this.splitText.chars.length);
+      this.hasColor && this.splitText.lines.forEach((line) => {
         splitTextGradient(line, line.querySelectorAll(".char"));
       });
     }
@@ -10255,6 +10250,41 @@
   };
   _getGSAP7() && gsap6.registerPlugin(ScrollTrigger2);
 
+  // js/Balls.js
+  var Balls = class {
+    constructor(element) {
+      this.element = element;
+      this.elements();
+      this.animate();
+    }
+    elements() {
+      this.balls = this.element.querySelectorAll("[data-target='ball']");
+    }
+    animate() {
+      gsapWithCSS.set(this.balls, {
+        xPercent: -100,
+        autoAlpha: 0,
+        rotate: -180
+      });
+      gsapWithCSS.to(this.balls, {
+        xPercent: 0,
+        rotate: 0,
+        autoAlpha: 1,
+        duration: 2,
+        ease: "elastic.out(1, 0.7)",
+        stagger: {
+          each: 0.3
+        },
+        scrollTrigger: {
+          trigger: this.element,
+          start: "top bottom",
+          end: "bottom top",
+          toggleActions: "play none none reset"
+        }
+      });
+    }
+  };
+
   // js/modules.js
   if (typeof document !== "undefined") {
     document.addEventListener("DOMContentLoaded", () => {
@@ -10360,6 +10390,10 @@
       const imageElements = document.querySelectorAll("[data-animation='image']");
       imageElements.forEach((element) => {
         new Image(element);
+      });
+      const ballsElements = document.querySelectorAll("[data-animation='balls']");
+      ballsElements.forEach((element) => {
+        new Balls(element);
       });
       const searchResultsElements = document.querySelectorAll("[search-results]");
       searchResultsElements.forEach((element) => {

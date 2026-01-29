@@ -20,14 +20,9 @@ export class HeadingWave {
     
     elements() {
         // Initialize elements here
-        this.heading = Array.from(this.element.querySelectorAll(".heading-unit")).filter(
-            el => {
-                // Remove zero-width characters and whitespace, then check if there's actual content
-                const text = el.textContent.replace(/[\u200B-\u200D\uFEFF\u00A0\s]/g, '');
-                return text.length > 0;
-            }
-        );
-        console.log(this.heading);
+        this.heading = this.element.querySelector(".heading");
+        this.headingUnits = this.heading.querySelectorAll(".heading-unit")
+        this.hasColor = getComputedStyle(this.heading).getPropertyValue("--color1") !== '' && getComputedStyle(this.heading).getPropertyValue("--color2") !== '';
         
         this.image = this.element.querySelector("img");
         this.text = this.element.querySelector(".media-content");
@@ -35,13 +30,15 @@ export class HeadingWave {
     }
 
     split() {
-        this.splitText = new g.splitText(this.heading, {
-            type: "words, chars, lines",
+        this.splitText = new g.splitText(this.headingUnits, {
+            type: this.hasColor ? "words, chars, lines" : "words, chars",
             linesClass: "line",
             charsClass: "char",
             smartWrap: true
         });
-        this.splitText.lines.forEach(line => {
+        console.log(this.splitText.chars.length);
+        
+        this.hasColor && this.splitText.lines.forEach(line => {
             splitTextGradient(line, line.querySelectorAll(".char"));
         });
     }

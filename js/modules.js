@@ -17,6 +17,7 @@ import { FaqElements } from "./FaqElements.js";
 import { Stagger } from "./Stagger.js";
 import { HeadingWave } from "./HeadingWave.js";
 import { Image } from "./Image.js";
+import { Balls } from "./Balls.js";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
@@ -151,6 +152,11 @@ if (typeof document !== "undefined") {
         const imageElements = document.querySelectorAll("[data-animation='image']");
         imageElements.forEach(element => {
             new Image(element);
+        });
+
+        const ballsElements = document.querySelectorAll("[data-animation='balls']");
+        ballsElements.forEach(element => {
+            new Balls(element);
         });
 
         const searchResultsElements = document.querySelectorAll("[search-results]");

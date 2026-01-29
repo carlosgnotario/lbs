@@ -1,0 +1,49 @@
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'TASA Explorer',serif;background:#1D1D1D;color:#fff;padding:2rem;line-height:1.6}
+.cr-s{margin-bottom:3rem;padding:2rem;background:#fff3;border-radius:8px;border:1px solid #fff2}
+.cr-st{font-size:1.5rem;font-weight:700;margin-bottom:1.5rem;color:#FFAC00;text-transform:uppercase;letter-spacing:0.1em}
+.cr-desc{font-size:13px;color:#fffb;line-height:1.5;margin-bottom:1.5rem;font-style:italic}
+.cr-selector{display:flex;align-items:center;gap:1rem;margin-bottom:1rem;flex-wrap:wrap}
+.cr-selector label{font-size:14px;color:#fffc;font-weight:600}
+.cr-selector select{background:#fff2;border:1px solid #fff3;border-radius:4px;padding:8px 12px;color:#fff;font-size:14px;font-family:'TASA Explorer',serif;min-width:200px;cursor:pointer}
+.cr-selector select:focus{outline:none;border-color:#FFAC00;background:#fff4}
+.cr-preview{min-height:120px;padding:2rem;background:#fff1;border-radius:6px;border:1px solid #fff2;display:flex;align-items:center;justify-content:center;margin-bottom:1rem}
+.cr-info{font-size:12px;color:#fff9;margin-bottom:0.5rem;font-family:monospace}
+.cr-cb{background:#FFAC0033;border:1px solid #FFAC0066;color:#FFAC00;padding:6px 12px;border-radius:4px;font-size:12px;cursor:pointer;text-transform:uppercase;letter-spacing:0.05em;font-weight:600;transition:all 0.2s ease}
+.cr-cb:hover{background:#FFAC004D;border-color:#FFAC0099}
+.cr-cb.copied{background:#46C99833;border-color:#46C99866;color:#46C998}
+.cr-sample{font-size:18px}
+</style>
+<script>
+function copyClass(className,button){
+const classToCopy=className.startsWith('.')?className.substring(1):className;
+if(navigator.clipboard&&navigator.clipboard.writeText){
+navigator.clipboard.writeText(classToCopy).then(function(){
+const originalText=button.textContent;
+button.textContent='Copied!';
+button.classList.add('copied');
+setTimeout(function(){button.textContent=originalText;button.classList.remove('copied')},2000)
+}).catch(function(err){console.error('Failed to copy:',err);alert('Failed to copy to clipboard')})
+}else{
+const textArea=document.createElement('textarea');
+textArea.value=classToCopy;
+document.body.appendChild(textArea);
+textArea.select();
+try{document.execCommand('copy');const originalText=button.textContent;button.textContent='Copied!';button.classList.add('copied');setTimeout(function(){button.textContent=originalText;button.classList.remove('copied')},2000)}catch(err){alert('Failed to copy')}
+document.body.removeChild(textArea)
+}
+}
+function updateSample(selectId,previewId,infoId,btnId,type){
+const select=document.getElementById(selectId);
+const preview=document.getElementById(previewId);
+const info=document.getElementById(infoId);
+const btn=document.getElementById(btnId);
+const className='.'+select.value;
+const sample=preview.querySelector('.cr-sample')||preview;
+sample.className='cr-sample '+select.value;
+if(type==='bg'||type==='bg-gradient'){sample.style.minHeight='80px';sample.style.width='100%';sample.style.display='flex';sample.style.alignItems='center';sample.style.justifyContent='center'}
+info.textContent='Class: '+className;
+btn.setAttribute('onclick',"copyClass('"+className+"',this)")
+}
+</script>
