@@ -7151,7 +7151,8 @@
       this.links = this.element.querySelectorAll("[megamenu-link='0']");
       this.menuLinks = this.element.querySelectorAll("[megamenu-link='1']");
       this.menuTargets = this.element.querySelectorAll("[megamenu-target]");
-      this.megamenuWrapper = this.element.querySelector(".header-megamenu");
+      this.megamenu = this.element.querySelector(".header-megamenu");
+      this.megamenuWrapper = this.element.querySelector(".header-megamenu-wrapper");
       gsapWithCSS.set(this.menuTargets, {
         opacity: 0
       });
@@ -7200,8 +7201,8 @@
       resizeObserver.observe(this.element);
     }
     sizing() {
-      this.left = this.megamenuWrapper.getBoundingClientRect().left;
-      this.top = this.megamenuWrapper.getBoundingClientRect().top;
+      this.left = this.megamenu.getBoundingClientRect().left;
+      this.top = this.megamenu.getBoundingClientRect().top;
     }
     spotlight() {
       this.spotlight = document.createElement("div");
@@ -7242,14 +7243,14 @@
       this.currentTarget = newIndex;
     }
     showMegamenu(show) {
-      gsapWithCSS.set(this.megamenuWrapper, {
+      gsapWithCSS.set(this.megamenu, {
         autoAlpha: show ? 0 : 1,
-        y: show ? 100 : 0
+        y: show ? 0 : -100
       });
-      gsapWithCSS.to(this.megamenuWrapper, {
+      gsapWithCSS.to(this.megamenu, {
         autoAlpha: show ? 1 : 0,
         duration: 1,
-        y: show ? 0 : 100,
+        y: show ? -100 : 0,
         ease: "power4.out"
       });
       this.megamenuShowing = show;

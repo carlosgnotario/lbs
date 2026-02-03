@@ -4,6 +4,7 @@ label {
     font-size: ptr(12);
     color: $text-2;
     font-weight: 500;
+    margin-bottom: 0;
 }
 
 .w-input {
@@ -16,7 +17,7 @@ label {
     height: auto;
     font-family: 'Sf Pro Rounded', Arial, sans-serif;
     font-weight: 500;
-    margin-bottom: 1em;
+    margin-bottom: 0;
 
     &:focus {
         border-color: $orange;
@@ -32,7 +33,7 @@ textarea.w-input {
     align-items: center;
     line-height: 1;
     padding-left: 0;
-    margin-bottom: 1em;
+    margin-bottom: 0;
 
     .w-form-label {
         line-height: 1;
@@ -79,7 +80,7 @@ textarea.w-input {
     line-height: 1;
     height: auto;
     color: $text-2;
-    margin-bottom: 1em;
+    margin-bottom: 0;
 
     &:focus {
         border-color: $orange;
@@ -149,4 +150,3 @@ textarea.w-input {
         }
     }
 }
-

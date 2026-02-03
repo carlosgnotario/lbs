@@ -47,7 +47,7 @@ section {
     }
 }
 
-.button {
+.button, button.primary {
     display: inline-block;
     padding: ptr(15) ptr(38);
     text-decoration: none;
@@ -392,8 +392,25 @@ section {
     position: relative;
     overflow: hidden;
 
-    > * {
+    .megamenu {
         z-index: 1;
+    }
+
+    .header-megamenu-wrapper {
+        overflow: hidden;
+        position: relative;
+    }
+
+    .megamenu-icon {
+        img {
+            transition: transform 1s cubic-bezier(0.060, 0.770, 0.000, 1.615);
+        }
+
+        &:hover {
+            img {
+                transform: scale(1.2);
+            }
+        }
     }
 
     .spotlight {
@@ -477,4 +494,83 @@ section {
 
 .rough-annotation {
     z-index: -1;
+}
+
+.footer .footer-newsletter .ml-embedded #mlb2-32455705.ml-form-embedContainer .ml-form-embedWrapper {
+    width: 100%;
+    max-width: 75rem;
+    display: flex!important;
+    justify-content: space-between!important;
+
+    .ml-form-embedContent {
+        display: flex;
+        flex-grow: 1;
+        width: 100%;
+        gap: ptr(4);
+        margin-bottom: 0;
+
+        &:after {
+            content: "›";
+            color: #FFB000;
+            font-size: ptr(18);
+            font-weight: 800;
+            margin: 0;
+            line-height: ptr(24);
+            margin-left: ptr(4);
+            white-space: nowrap;
+        }
+    }
+    
+
+    .row-form {
+        display: flex;
+        gap: ptr(45);
+        align-items: center;
+        padding: 0;
+        width: 100%;
+    }
+
+    h4, p {
+        font-family: 'Sf Pro Rounded', Arial, sans-serif;
+        font-size: ptr(18);
+        font-weight: 800;
+        margin: 0;
+        line-height: ptr(24);
+        white-space: nowrap;
+    }
+
+    .ml-input-horizontal {
+        width: auto!important;
+    }
+
+    .ml-form-horizontalRow {
+        display: flex;
+        gap: ptr(18);
+        justify-content: flex-end;
+    }
+
+    .horozintalForm {
+        padding-bottom: 0;
+    }
+
+    input {
+        width: ptr(325);
+        height: ptr(42);
+        padding: ptr(8) ptr(27);
+        border-radius: ptr(21);
+    }
+
+    .horizontal-fields {
+        padding: 0;
+    }
+
+    button {
+        height: ptr(42);
+        border-radius: ptr(21);
+        line-height: ptr(42);
+        padding: 0!important;
+        &:before {
+            background-color: #000000;
+        }
+    }
 }
