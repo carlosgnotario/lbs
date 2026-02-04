@@ -33,15 +33,19 @@ export class Video {
         });
     }
 
+    getYouTubeVideoId(url) {
+        if (url.includes("youtu.be/")) {
+            return url.split("youtu.be/")[1].split("?")[0];
+        }
+        const match = url.match(/[?&]v=([^&]+)/);
+        return match ? match[1] : url.split("v=")[1]?.split("&")[0];
+    }
+
     openModal() {
-        // let embedUrl = video.includes("vimeo.com")
-        //     ? `https://player.vimeo.com/video/${video.split("/").pop()}?autoplay=1`
-        //     : `https://www.youtube.com/embed/${video.split("v=")[1]}?autoplay=1`;
-        // this.testimonialModal.innerHTML = `<iframe width="560" height="315" src="${embedUrl}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen style="pointer-events: auto; touch-action: auto;"></iframe>`;
         // Append Video
         const embedUrl = this.videoURL.includes("vimeo.com")
-            ? `https://player.vimeo.com/video/${this.videoURL.split("/").pop()}?autoplay=1`
-            : `https://www.youtube.com/embed/${this.videoURL.split("v=")[1]}?autoplay=1`;
+            ? `https://player.vimeo.com/video/${this.videoURL.split("/").pop().split("?")[0]}?autoplay=1`
+            : `https://www.youtube.com/embed/${this.getYouTubeVideoId(this.videoURL)}?autoplay=1`;
         this.videoWrapper.innerHTML = `<iframe width="100%" height="100%" src="${embedUrl}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen style="pointer-events: auto; touch-action: auto;"></iframe>`;
         gsap.to(this.modal, {
             autoAlpha: 1,
