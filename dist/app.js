@@ -7306,8 +7306,15 @@
         e2.stopPropagation();
       });
     }
+    getYouTubeVideoId(url) {
+      if (url.includes("youtu.be/")) {
+        return url.split("youtu.be/")[1].split("?")[0];
+      }
+      const match = url.match(/[?&]v=([^&]+)/);
+      return match ? match[1] : url.split("v=")[1]?.split("&")[0];
+    }
     openModal() {
-      const embedUrl = this.videoURL.includes("vimeo.com") ? `https://player.vimeo.com/video/${this.videoURL.split("/").pop()}?autoplay=1` : `https://www.youtube.com/embed/${this.videoURL.split("v=")[1]}?autoplay=1`;
+      const embedUrl = this.videoURL.includes("vimeo.com") ? `https://player.vimeo.com/video/${this.videoURL.split("/").pop().split("?")[0]}?autoplay=1` : `https://www.youtube.com/embed/${this.getYouTubeVideoId(this.videoURL)}?autoplay=1`;
       this.videoWrapper.innerHTML = `<iframe width="100%" height="100%" src="${embedUrl}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen style="pointer-events: auto; touch-action: auto;"></iframe>`;
       gsapWithCSS.to(this.modal, {
         autoAlpha: 1,
