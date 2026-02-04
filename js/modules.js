@@ -47,6 +47,12 @@ if (typeof document !== "undefined") {
             smoothTouch: false,
             touchMultiplier: 2,
             infinite: false,
+            prevent: (node) => {
+                if (node.classList.contains("header-mobile-wrapper")) {
+                    return true;
+                }
+                return false;
+            },
         });
 
         function raf(time) {

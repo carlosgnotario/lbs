@@ -10744,7 +10744,13 @@
         wheelMultiplier: 1,
         smoothTouch: false,
         touchMultiplier: 2,
-        infinite: false
+        infinite: false,
+        prevent: (node) => {
+          if (node.classList.contains("header-mobile-wrapper")) {
+            return true;
+          }
+          return false;
+        }
       });
       function raf(time) {
         lenis.raf(time);
