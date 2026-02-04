@@ -23,6 +23,8 @@ export class HeadingWave {
         this.heading = this.element.querySelector(".heading");
         this.headingUnits = this.heading.querySelectorAll(".heading-unit")
         this.hasColor = getComputedStyle(this.heading).getPropertyValue("--color1") !== '' && getComputedStyle(this.heading).getPropertyValue("--color2") !== '';
+        console.log(this.element, this.hasColor);
+        
         
         this.image = this.element.querySelector("img");
         this.text = this.element.querySelector(".media-content");

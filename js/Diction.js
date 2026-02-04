@@ -63,7 +63,6 @@ export class Diction {
                 trigger: this.text,
                 start: "top 90%",
                 end: "bottom 30%",
-                scrub: true,
             },
         });
         tl.to(this.splitText.chars, {
