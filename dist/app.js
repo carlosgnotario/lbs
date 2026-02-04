@@ -7280,6 +7280,9 @@
     constructor(element) {
       this.element = element;
       this.open = false;
+      if (!this.element.dataset.video) {
+        return;
+      }
       this.elements();
       this.bind();
     }
@@ -7290,7 +7293,8 @@
       this.videoURL = this.element.dataset.video;
     }
     bind() {
-      this.element.addEventListener("click", () => {
+      this.element.addEventListener("click", (e2) => {
+        e2.preventDefault();
         if (this.open) {
           return;
         }

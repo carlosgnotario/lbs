@@ -5,6 +5,8 @@ export class Video {
     constructor(element) {
         this.element = element;
         this.open = false;
+        // this.element.dataset.video empty = return
+        if (!this.element.dataset.video) { return; }
 
         this.elements();
         this.bind();
@@ -18,7 +20,8 @@ export class Video {
     }
 
     bind() {
-        this.element.addEventListener("click", () => {
+        this.element.addEventListener("click", (e) => {
+            e.preventDefault();
             if (this.open) { return; }
             this.openModal()
         });
