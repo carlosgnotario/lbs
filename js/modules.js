@@ -37,37 +37,34 @@ if (typeof document !== "undefined") {
         handleLazyLoad();
 
         // Initialize Lenis smooth scroll
-        const lenis = new Lenis({
-            duration: 1.2,
-            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-            orientation: 'vertical',
-            gestureOrientation: 'vertical',
-            smoothWheel: true,
-            wheelMultiplier: 1,
-            smoothTouch: false,
-            touchMultiplier: 2,
-            infinite: false,
-            prevent: (node) => {
-                if (node.classList.contains("header-mobile-wrapper")) {
-                    return true;
-                }
-                return false;
-            },
-        });
+        // const lenis = new Lenis({
+        //     duration: 1.2,
+        //     easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        //     orientation: 'vertical',
+        //     gestureOrientation: 'vertical',
+        //     smoothWheel: true,
+        //     wheelMultiplier: 1,
+        //     smoothTouch: false,
+        //     touchMultiplier: 2,
+        //     infinite: false,
+        //     prevent: (node) => node.id === "mobile-menu",
+        // });
+        console.log("mm?");
+        
 
-        function raf(time) {
-            lenis.raf(time);
-            requestAnimationFrame(raf);
-        }
-        requestAnimationFrame(raf);
+        // function raf(time) {
+        //     lenis.raf(time);
+        //     requestAnimationFrame(raf);
+        // }
+        // requestAnimationFrame(raf);
 
         //stop lenis 
-        lenis.stop();
+        // lenis.stop();
 
         //reload lenis animations
-        $(document).ready(function(){lenis.start();})
+        // $(document).ready(function(){lenis.start();})
 
-        window.lenis = lenis;
+        // window.lenis = lenis;
 
         getFontSize();
         window.addEventListener('resize', () => {

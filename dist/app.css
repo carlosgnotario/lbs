@@ -9237,6 +9237,19 @@
   font-family: "Sf Pro Rounded", Arial, sans-serif;
 }
 
+.header-mobile-products-wrapper {
+  interpolate-size: allow-keywords;
+  height: 0;
+  transition: all 1s cubic-bezier(0.77, 0, 0.175, 1);
+  padding: 0rem 1rem;
+  margin-top: 0rem;
+}
+.header-mobile-products-wrapper.active {
+  margin-top: 1rem;
+  height: auto;
+  padding: 1rem 1rem;
+}
+
 [data-wf--media-block--variant=list-item] p {
   margin-bottom: 0;
 }
@@ -9772,7 +9785,6 @@ html:not(.wf-design-mode) [megamenu] {
   z-index: 2;
   left: 50%;
   transform: translateX(-50%);
-  pointer-events: none;
 }
 html:not(.wf-design-mode) [megamenu] .header-menu-link {
   pointer-events: all;

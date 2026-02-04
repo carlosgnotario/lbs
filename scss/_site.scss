@@ -30,7 +30,6 @@ body {
     z-index: 2;
     left: 50%;
     transform: translateX(-50%);
-    pointer-events: none;
 
     .header-menu-link {
         pointer-events: all;

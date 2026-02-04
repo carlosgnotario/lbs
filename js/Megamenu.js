@@ -6,6 +6,7 @@ export class Megamenu {
         this.element = element;
         this.isShowing = false;
         this.currentTarget = null;
+        this.isMobileMenuOpen = false;
 
         this.elements();
         this.binds();
@@ -22,6 +23,10 @@ export class Megamenu {
         this.wrapper = this.element.querySelector(".header-megamenu");
         this.logo = this.element.querySelector(".header-logo");
         this.menu = this.element.querySelector(".header-menu");
+        this.productsMobile = this.element.querySelector(".header-mobile-products-wrapper");
+        this.productsMobileLink = this.element.querySelector(".mobile-products-link");
+        this.mobileToggler = this.element.querySelector(".header-toggler");
+        this.mobileMenu = this.element.querySelector(".header-mobile");
         this.links = this.element.querySelectorAll("[megamenu-link='0']");
         this.menuLinks = this.element.querySelectorAll("[megamenu-link='1']");
         this.menuTargets = this.element.querySelectorAll("[megamenu-target]");
@@ -30,6 +35,13 @@ export class Megamenu {
 
         gsap.set(this.menuTargets, {
             opacity: 0
+        });
+        console.log("why not");
+        
+        gsap.set(this.mobileMenu, {
+            scale: 0.5,
+            transformOrigin: "top center",
+            autoAlpha: 0,
         });
     }
 
@@ -69,6 +81,14 @@ export class Megamenu {
             });
         });
 
+        this.productsMobileLink.addEventListener("click", () => {
+            this.productsMobile.classList.toggle("active");
+        });
+
+        this.mobileToggler.addEventListener("click", () => {
+            this.openMobileMenu(!this.isMobileMenuOpen);
+        });
+
         this.menu.addEventListener("mouseenter", (e) => {
             e.preventDefault();
         });
@@ -88,6 +108,7 @@ export class Megamenu {
     }
 
     spotlight() {
+        if (window.innerWidth < 1024) { return; }
         this.spotlight = document.createElement("div");
         this.spotlight.classList.add("spotlight");
         this.megamenuWrapper.appendChild(this.spotlight);
@@ -134,6 +155,8 @@ export class Megamenu {
     }
 
     showMegamenu(show) {
+        console.log("showing");
+        
         gsap.set(this.megamenu, {
             autoAlpha: show ? 0 : 1,
             y: show ? 0 : -100,
@@ -165,6 +188,29 @@ export class Megamenu {
                 })
             }
         }
-        gsap.ticker.add(this.ticker);
+        // gsap.ticker.add(this.ticker);
+    }
+
+    openMobileMenu(open) {
+        if (open) {
+            gsap.set(this.mobileMenu, {
+                scale: 0.5,
+                autoAlpha: 0,
+            });
+            gsap.to(this.mobileMenu, {
+                height: "auto",
+                duration: 1,
+                scale: 1,
+                autoAlpha: 1,
+                ease: "power4.out"
+            });
+        } else {
+            gsap.to(this.mobileMenu, {
+                autoAlpha: 0,
+                duration: 1,
+                ease: "power4.inOut"
+            });
+        }
+        this.isMobileMenuOpen = !this.isMobileMenuOpen;
     }
 }
