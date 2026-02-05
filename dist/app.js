@@ -7152,6 +7152,8 @@
       this.productsMobileLink = this.element.querySelector(".mobile-products-link");
       this.mobileToggler = this.element.querySelector(".header-toggler");
       this.mobileMenu = this.element.querySelector(".header-mobile");
+      this.mobileOpen = this.element.querySelector(".header-toggler-open");
+      this.mobileClose = this.element.querySelector(".header-toggler-close");
       this.links = this.element.querySelectorAll("[megamenu-link='0']");
       this.menuLinks = this.element.querySelectorAll("[megamenu-link='1']");
       this.menuTargets = this.element.querySelectorAll("[megamenu-target]");
@@ -7161,8 +7163,7 @@
         opacity: 0
       });
       gsapWithCSS.set(this.mobileMenu, {
-        scale: 0.5,
-        transformOrigin: "top center",
+        scale: 1,
         autoAlpha: 0
       });
     }
@@ -7201,6 +7202,10 @@
       });
       this.productsMobileLink.addEventListener("click", () => {
         this.productsMobile.classList.toggle("active");
+        const open = this.productsMobile.classList.contains("active");
+        gsapWithCSS.to(this.productsMobileLink.querySelector("div"), {
+          scaleY: open ? -1 : 1
+        });
       });
       this.mobileToggler.addEventListener("click", () => {
         this.openMobileMenu(!this.isMobileMenuOpen);
@@ -7293,19 +7298,38 @@
       gsapWithCSS.ticker.add(this.ticker);
     }
     openMobileMenu(open) {
-      gsapWithCSS.set(this.mobileMenu, {
-        scale: open ? 0.5 : 1,
+      gsapWithCSS.set(this.mobileClose, {
         autoAlpha: open ? 0 : 1,
+        scale: open ? 0 : 1,
+        yPercent: open ? 100 : 0,
+        overwrite: true,
+        rotate: open ? 45 : 0
+      });
+      gsapWithCSS.to(this.mobileOpen, {
+        scaleX: open ? 0 : 1,
+        transformOrigin: "right center",
+        duration: 1,
+        ease: "power4.inOut"
+      });
+      gsapWithCSS.to(this.mobileClose, {
+        autoAlpha: open ? 1 : 0,
+        duration: 1,
+        scale: open ? 1 : 0,
+        yPercent: open ? 0 : 100,
+        ease: "elastic.out(1, 0.7)",
+        delay: open ? 0.6 : 0,
+        rotate: open ? 0 : 45
+      });
+      gsapWithCSS.set(this.mobileMenu, {
+        clipPath: open ? "inset(0% 0% 100% 0%)" : "inset(0% 0% 0% 0%)",
+        autoAlpha: open ? 1 : 1,
         overwrite: true
       });
       gsapWithCSS.to(this.mobileMenu, {
         duration: 1,
-        scale: open ? 1 : 1,
+        clipPath: open ? "inset(0% 0% 0% 0%)" : "inset(100% 0% 0% 0%)",
         autoAlpha: open ? 1 : 0,
-        ease: "power4.out"
-      });
-      gsapWithCSS.to(this.productsMobileLink.querySelector("div"), {
-        scaleY: open ? -1 : 1
+        ease: "power4.inOut"
       });
       this.isMobileMenuOpen = !this.isMobileMenuOpen;
     }
