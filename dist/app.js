@@ -7199,6 +7199,11 @@
             this.menuLinks[this.currentTarget].classList.remove("active");
           }
         });
+        link.addEventListener("click", (e2) => {
+          if (this.isMobileMenuOpen) {
+            this.openMobileMenu(false);
+          }
+        });
       });
       this.productsMobileLink.addEventListener("click", () => {
         this.productsMobile.classList.toggle("active");

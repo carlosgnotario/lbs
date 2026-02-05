@@ -79,6 +79,11 @@ export class Megamenu {
                     this.menuLinks[this.currentTarget].classList.remove("active");
                 }
             });
+            link.addEventListener("click", (e) => {
+                if (this.isMobileMenuOpen) {
+                    this.openMobileMenu(false);
+                }
+            });
         });
 
         this.productsMobileLink.addEventListener("click", () => {

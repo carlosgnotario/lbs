@@ -69,6 +69,10 @@ section {
 
     &:hover:before {
         transform: scale(1.2);
+        @include breakpoint(medium) {
+            transform: scale(1);
+            filter: brightness(1.3);
+        }
     }
 
     &:before {
