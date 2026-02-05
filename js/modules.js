@@ -37,34 +37,42 @@ if (typeof document !== "undefined") {
         handleLazyLoad();
 
         // Initialize Lenis smooth scroll
-        // const lenis = new Lenis({
-        //     duration: 1.2,
-        //     easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-        //     orientation: 'vertical',
-        //     gestureOrientation: 'vertical',
-        //     smoothWheel: true,
-        //     wheelMultiplier: 1,
-        //     smoothTouch: false,
-        //     touchMultiplier: 2,
-        //     infinite: false,
-        //     prevent: (node) => node.id === "mobile-menu",
-        // });
+        const lenis = new Lenis({
+            duration: 1.2,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            orientation: 'vertical',
+            gestureOrientation: 'vertical',
+            smoothWheel: true,
+            wheelMultiplier: 1,
+            smoothTouch: false,
+            touchMultiplier: 2,
+            infinite: false,
+        });
         console.log("mm?");
         
 
-        // function raf(time) {
-        //     lenis.raf(time);
-        //     requestAnimationFrame(raf);
-        // }
-        // requestAnimationFrame(raf);
+        function raf(time) {
+            if (window.innerWidth < 992 && lenis.isStopped) {
+                lenis.stop();
+                console.log("stop lenis");
+                
+            } else if (window.innerWidth >= 992 && lenis.isStarted) {
+                lenis.start();
+                console.log("start lenis");
+                
+            }
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
 
         //stop lenis 
-        // lenis.stop();
+        lenis.stop();
 
         //reload lenis animations
-        // $(document).ready(function(){lenis.start();})
+        $(document).ready(function(){lenis.start();})
 
-        // window.lenis = lenis;
+        window.lenis = lenis;
 
         getFontSize();
         window.addEventListener('resize', () => {
@@ -180,7 +188,7 @@ if (typeof document !== "undefined") {
 
 function getFontSize() {
     const breakpoint = window.innerWidth < 768 ? "small" : window.innerWidth < 992 ? "medium" : "desktop";
-    let fontSize = breakpoint === "small" ?  document.body.clientWidth / 767 * 16 : breakpoint === "medium" ? document.body.clientWidth / 991 * 16 : Math.min(document.body.clientWidth / 1290 * 16, 1680 / 1290 * 16);
+    let fontSize = breakpoint === "small" ?  Math.max(9, document.body.clientWidth / 767 * 16) : breakpoint === "medium" ? Math.max(14, document.body.clientWidth / 991 * 16) : Math.max(14, Math.min(document.body.clientWidth / 1290 * 16, 1680 / 1290 * 16));
     document.documentElement.style.setProperty('--fontSize', fontSize + 'px');
 }
 

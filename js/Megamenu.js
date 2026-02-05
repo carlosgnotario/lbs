@@ -36,7 +36,6 @@ export class Megamenu {
         gsap.set(this.menuTargets, {
             opacity: 0
         });
-        console.log("why not");
         
         gsap.set(this.mobileMenu, {
             scale: 0.5,
@@ -188,29 +187,26 @@ export class Megamenu {
                 })
             }
         }
-        // gsap.ticker.add(this.ticker);
+        gsap.ticker.add(this.ticker);
     }
 
     openMobileMenu(open) {
-        if (open) {
-            gsap.set(this.mobileMenu, {
-                scale: 0.5,
-                autoAlpha: 0,
-            });
-            gsap.to(this.mobileMenu, {
-                height: "auto",
-                duration: 1,
-                scale: 1,
-                autoAlpha: 1,
-                ease: "power4.out"
-            });
-        } else {
-            gsap.to(this.mobileMenu, {
-                autoAlpha: 0,
-                duration: 1,
-                ease: "power4.inOut"
-            });
-        }
+        gsap.set(this.mobileMenu, {
+            scale: open ? 0.5 : 1,
+            autoAlpha: open ? 0 : 1,
+            overwrite: true,
+        });
+
+        gsap.to(this.mobileMenu, {
+            duration: 1,
+            scale: open ? 1 : 1,
+            autoAlpha: open ? 1 : 0,
+            ease: "power4.out"
+        });
+        gsap.to(this.productsMobileLink.querySelector("div"), {
+            scaleY: open ? -1 : 1 
+        })
+
         this.isMobileMenuOpen = !this.isMobileMenuOpen;
     }
 }

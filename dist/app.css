@@ -9419,16 +9419,16 @@
 }
 
 html {
-  --fontSize: min(calc(1680 / 1290 * 16px), calc(100vw / 1290 * 16));
+  --fontSize: 14px;
 }
 @media (max-width: 991px) {
   html {
-    --fontSize: min(calc(1680 / 991 * 24px), calc(100vw / 991 * 24));
+    --fontSize: 14px;
   }
 }
 @media (max-width: 767px) {
   html {
-    --fontSize: max(12px, min(calc(1680 / 767 * 16px), calc(100vw / 767 * 16)));
+    --fontSize: 14px;
   }
 }
 html {
@@ -9998,6 +9998,7 @@ section > img {
   background: transparent !important;
   z-index: 1;
   justify-self: revert !important;
+  min-height: 40px;
 }
 .button:hover:before, button.primary:hover:before {
   transform: scale(1.2);
