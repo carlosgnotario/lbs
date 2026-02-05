@@ -30,6 +30,10 @@
     }
 }
 
+.page-loader {
+    visibility: hidden;
+}
+
 .testimonials {   
     &-title {
         @include editor-notice;

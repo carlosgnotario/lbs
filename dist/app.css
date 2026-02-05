@@ -9599,6 +9599,9 @@ html.wf-design-mode .enroll-roller img {
   max-width: 300px;
   object-fit: contain;
 }
+html.wf-design-mode .page-loader {
+  visibility: hidden;
+}
 html.wf-design-mode .testimonials-title:before {
   content: "This module looks different in editor mode to facilitate the addition of new items";
   font-family: "TASA Explorer", serif;
