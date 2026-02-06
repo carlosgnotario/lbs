@@ -9419,16 +9419,16 @@
 }
 
 html {
-  --fontSize: 14px;
+  --fontSize: min(calc(1680 / 1290 * 16px), calc(100vw / 1290 * 16));
 }
 @media (max-width: 991px) {
   html {
-    --fontSize: 14px;
+    --fontSize: min(calc(1680 / 991 * 24px), calc(100vw / 991 * 24));
   }
 }
 @media (max-width: 767px) {
   html {
-    --fontSize: 14px;
+    --fontSize: max(12px, min(calc(1680 / 767 * 16px), calc(100vw / 767 * 16)));
   }
 }
 html {

@@ -5,14 +5,14 @@
 @use 'scss/components' as *;
 
 html {
-    --fontSize: 14px;
+    --fontSize: min(calc(1680 / 1290 * 16px), calc(100vw / 1290 * 16));    
     
     @include breakpoint(medium) {
-        --fontSize: 14px;
+        --fontSize: min(calc(1680 / 991 * 24px), calc(100vw / 991 * 24));
     }
     
     @include breakpoint(small) {
-        --fontSize: 14px;
+        --fontSize: max(12px, min(calc(1680 / 767 * 16px), calc(100vw / 767 * 16)));
     }
 
     font-size: var(--fontSize);
