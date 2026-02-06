@@ -9978,6 +9978,14 @@ form:not(.search) .w-button.blocky:before {
 a {
   color: var(--_colors---half-way-orange);
 }
+a:not(.w-button, .button, button) {
+  --color: currentcolor;
+  filter: brightness(1);
+  transition: color 1s cubic-bezier(0.06, 0.77, 0, 1.615);
+}
+a:not(.w-button, .button, button):hover {
+  color: color-mix(in srgb, var(--color) 65%, white);
+}
 
 section > img {
   mask-image: linear-gradient(to bottom, black 0%, black 50%, transparent 70%);

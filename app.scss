@@ -38,6 +38,15 @@ form:not(.search) {
 
 a {
     color: $half-way-orange;
+
+    &:not(.w-button, .button, button) {
+        --color: currentcolor;
+        filter: brightness(1);
+        transition: color 1s cubic-bezier(0.060, 0.770, 0.000, 1.615);
+        &:hover {
+            color: color-mix(in srgb, var(--color) 65%, white);
+        }
+    }
 }
 
 section {

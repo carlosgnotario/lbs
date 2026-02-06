@@ -78,6 +78,7 @@ if (typeof document !== "undefined") {
         window.addEventListener('resize', () => {
             getFontSize();
         });
+        getLinkColor();
         // Classes
         const buttonElements = document.querySelectorAll("[data-button-text]");
         buttonElements.forEach(element => {
@@ -215,4 +216,12 @@ export function splitTextGradient(parent, chars) {
     })
     
 }
+
+function getLinkColor() {
+    const links = document.querySelectorAll("a");
+    links.forEach(link => {
+        const color = getComputedStyle(link).getPropertyValue('color');
+        link.style.setProperty('--color', color);
+    });
     
+}

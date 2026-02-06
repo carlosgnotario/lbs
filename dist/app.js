@@ -10834,6 +10834,7 @@
       window.addEventListener("resize", () => {
         getFontSize();
       });
+      getLinkColor();
       const buttonElements = document.querySelectorAll("[data-button-text]");
       buttonElements.forEach((element) => {
         new Button(element);
@@ -10936,6 +10937,13 @@
     const color = gsapWithCSS.utils.interpolate(color1, color2);
     gsapWithCSS.set(chars, {
       color: (index, target, targets) => color(index / (targets.length - 1))
+    });
+  }
+  function getLinkColor() {
+    const links = document.querySelectorAll("a");
+    links.forEach((link) => {
+      const color = getComputedStyle(link).getPropertyValue("color");
+      link.style.setProperty("--color", color);
     });
   }
 })();
