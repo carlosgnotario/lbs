@@ -12,10 +12,10 @@ label {
     border: 1px solid #dcdcdc;
     background-color: #f9f9f9;
     font-size: ptr(16);
-    padding: ptr(10) ptr(10);
+    padding: ptr(12) ptr(10);
     line-height: 1;
     height: auto;
-    font-family: 'Sf Pro Rounded', Arial, sans-serif;
+    font-family: 'Inter', Arial, sans-serif;
     font-weight: 500;
     margin-bottom: 0;
 
@@ -30,13 +30,14 @@ textarea.w-input {
 
 .w-checkbox, .w-radio {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     line-height: 1;
     padding-left: 0;
     margin-bottom: 0;
 
     .w-form-label {
         line-height: 1;
+        margin-top: ptr(-2);
     }
 }
 

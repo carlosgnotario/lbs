@@ -9858,10 +9858,10 @@ form:not(.search) .w-input {
   border: 1px solid #dcdcdc;
   background-color: #f9f9f9;
   font-size: 1rem;
-  padding: 0.625rem 0.625rem;
+  padding: 0.75rem 0.625rem;
   line-height: 1;
   height: auto;
-  font-family: "Sf Pro Rounded", Arial, sans-serif;
+  font-family: "Inter", Arial, sans-serif;
   font-weight: 500;
   margin-bottom: 0;
 }
@@ -9873,13 +9873,14 @@ form:not(.search) textarea.w-input {
 }
 form:not(.search) .w-checkbox, form:not(.search) .w-radio {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   line-height: 1;
   padding-left: 0;
   margin-bottom: 0;
 }
 form:not(.search) .w-checkbox .w-form-label, form:not(.search) .w-radio .w-form-label {
   line-height: 1;
+  margin-top: -0.125rem;
 }
 form:not(.search) .w-checkbox-input, form:not(.search) .w-radio-input {
   margin: 0;
@@ -9973,6 +9974,16 @@ form:not(.search) .w-button.blocky {
 }
 form:not(.search) .w-button.blocky:before {
   border-radius: inherit;
+}
+form:not(.search):has(#terms-checkbox input:not(:checked)) input[type=submit] {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+form:not(.search):has(#terms-checkbox input:checked) input[type=submit] {
+  opacity: 1;
+  pointer-events: auto;
+  cursor: pointer;
 }
 
 a {
