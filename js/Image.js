@@ -1,9 +1,8 @@
 // Image class
-import gsap from "gsap";
-
 export class Image {
     constructor(element) {
         this.element = element;
+        return;
         
         this.elements();
         this.animate();

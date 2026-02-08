@@ -1,6 +1,4 @@
 // VideoModal class
-import gsap from "gsap";
-
 export class Video {
     constructor(element) {
         this.element = element;

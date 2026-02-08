@@ -1,6 +1,4 @@
 // Megamenu class
-import gsap from "gsap";
-
 export class Megamenu {
     constructor(element) {
         this.element = element;
@@ -12,7 +10,6 @@ export class Megamenu {
         this.binds();
         this.update();
         this.sizing();
-        this.spotlight();
 
         window.addEventListener("resize", () => {
             this.sizing();
@@ -116,24 +113,6 @@ export class Megamenu {
         this.top = this.megamenu.getBoundingClientRect().top;
     }
 
-    spotlight() {
-        if (window.innerWidth < 1024) { return; }
-        this.spotlight = document.createElement("div");
-        this.spotlight.classList.add("spotlight");
-        this.megamenuWrapper.appendChild(this.spotlight);
-
-        const xPos = gsap.quickTo(this.spotlight, "x");
-        const yPos = gsap.quickTo(this.spotlight, "y");
-
-        const interaction = (event) => {
-            const x = event.clientX;
-            const y = event.clientY;
-            xPos(x - this.left);
-            yPos(y - this.top);
-        }
-        window.addEventListener("mousemove", interaction);
-    }
-
     showMenu(newIndex) {
         const targetElement = this.menuTargets[newIndex];
         const previousTarget = this.menuTargets[this.currentTarget];
@@ -168,12 +147,12 @@ export class Megamenu {
         
         gsap.set(this.megamenu, {
             autoAlpha: show ? 0 : 1,
-            y: show ? 0 : -100,
+            y: show ? 0 : -30,
         });
-        gsap.to(this.megamenu, {
+        gsap.set(this.megamenu, {
             autoAlpha: show ? 1 : 0,
-            duration: 1,
-            y: show ? -100 : 0,
+            duration: 0.5,
+            y: show ? -30 : 0,
             ease: "power4.out"
         });
         

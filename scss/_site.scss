@@ -50,26 +50,26 @@ body {
 
 .team-member-image {
     > * {
-        transition: transform 1s cubic-bezier(0.60, 0.770, 0.000, 1.2);
+        transition: transform 1s cubic-bezier(0.23, 1, 0.32, 1); // GSAP Power4.out
         backface-visibility: hidden;
     }
 
     &:hover {
         .team-member-picture {
-            transform: perspective(10rem) rotateY(0deg) scale(1);
+            transform: perspective(40rem) rotateY(0deg) scale(1);
         }
 
         .team-member-illustration {
-            transform: perspective(10rem) rotateY(-180deg) scale(0.3);
+            transform: perspective(40rem) rotateY(-180deg) scale(1);
         }
     }
 
     .team-member-picture {
-        transform: perspective(10rem) rotateY(180deg) scale(0.3);
+        transform: perspective(40rem) rotateY(180deg) scale(1);
     }
 
     .team-member-illustration {
-        transform: perspective(10rem) rotateY(0deg) scale(1);
+        transform: perspective(40rem) rotateY(0deg) scale(1);
 
     }
 }

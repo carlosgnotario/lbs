@@ -1,6 +1,4 @@
 // MovingHex class
-import gsap from "gsap";
-
 export class MovingHex {
     constructor(element) {
         this.element = element;

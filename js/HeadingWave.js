@@ -1,5 +1,4 @@
 // HeadingWave class
-import gsap from "gsap";
 import { splitTextGradient } from "./modules.js";
 
 export class HeadingWave {
@@ -9,12 +8,14 @@ export class HeadingWave {
         this.elements();
         if (document.fonts && document.fonts.ready) {
             document.fonts.ready.then(() => {
-                this.split();
-                this.animate();
+                // this.split();
+                // this.animate();
+                this.animateLow();
             });
         } else {
-            this.split();
-            this.animate();
+            // this.split();
+            // this.animate();
+            this.animateLow();
         }
     }
     
@@ -23,9 +24,6 @@ export class HeadingWave {
         this.heading = this.element.querySelector(".heading");
         this.headingUnits = this.heading.querySelectorAll(".heading-unit")
         this.hasColor = getComputedStyle(this.heading).getPropertyValue("--color1") !== '' && getComputedStyle(this.heading).getPropertyValue("--color2") !== '';
-        console.log(this.element, this.hasColor);
-        
-        
         this.image = this.element.querySelector("img");
         this.text = this.element.querySelector(".media-content");
         this.slot = this.element.querySelector(".media-slot");
@@ -37,9 +35,7 @@ export class HeadingWave {
             linesClass: "line",
             charsClass: "char",
             smartWrap: true
-        });
-        console.log(this.splitText.chars.length);
-        
+        });        
         this.hasColor && this.splitText.lines.forEach(line => {
             splitTextGradient(line, line.querySelectorAll(".char"));
         });
@@ -116,5 +112,25 @@ export class HeadingWave {
             },
         });
         
+    }
+
+    animateLow() {
+        gsap.set(this.element, {
+            opacity: 0,
+            y: 30,
+        })        
+        gsap.to(this.element, {
+            opacity: 1,
+            y: 0,
+            duration: 1,
+            delay: 0.2,
+            ease: "power4.out",
+            scrollTrigger: {
+                trigger: this.element,
+                start: "top bottom",
+                end: "bottom top",
+                toggleActions: "play none none reset",
+            },
+        })
     }
 }

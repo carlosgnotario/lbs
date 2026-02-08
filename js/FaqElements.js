@@ -2,8 +2,6 @@
 export class FaqElements {
     constructor(element) {
         this.element = element;
-        this.open = false;
-
         this.elements();
         this.bind();        
     }
@@ -14,19 +12,22 @@ export class FaqElements {
 
     bind() {
         this.items.forEach(item => {
+            item.open = false;
+
             item.addEventListener("click", () => {
                 this.toggle(item);
+                console.log("clicked", item);        
             });
         });
     }
 
     toggle(item) {
-        this.open = !this.open;
-        if (this.open) {
+        if (!item.open) {
             item.classList.add("active");
         } else {
             item.classList.remove("active");
         }
+        item.open = !item.open;
     }
 }
 

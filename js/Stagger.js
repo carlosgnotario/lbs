@@ -1,10 +1,7 @@
 // Stagger class
-import gsap from "gsap";
-
 export class Stagger {
     constructor(element) {
         this.element = element;
-        
         this.elements();
         this.animate();
     }
@@ -50,6 +47,7 @@ export class Stagger {
                     opacity: 1,
                     y: 0,
                     duration: 2,
+                    delay: 0.2,
                     ease: "elastic.out(1, 0.7)",
                     scrollTrigger: {
                         trigger: child,
@@ -61,20 +59,16 @@ export class Stagger {
         }
 
         // Indirect children use animations based on staggerType
-        if (this.indirectChildren.length > 0) {
-            const xValue = this.staggerType === "left" ? "-2rem" : this.staggerType === "right" ? "2rem" : 0;
-            const yValue = this.staggerType === "normal" ? "2rem" : 0;
-            
+        if (this.indirectChildren.length > 0) {            
             gsap.set(this.indirectChildren, {
                 opacity: 0,
-                y: yValue,
-                x: xValue,
+                y: 30,
             });
             gsap.to(this.indirectChildren, {
                 opacity: 1,
                 y: 0,
-                x: 0,
                 duration: 2,
+                delay: 0.2,
                 ease: "elastic.out(1, 0.7)",
                 scrollTrigger: {
                     trigger: this.indirectChildren[0],

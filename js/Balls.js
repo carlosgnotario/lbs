@@ -1,13 +1,11 @@
 // Balls class
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
 export class Balls {
     constructor(element) {
         this.element = element;
 
         this.elements();
-        this.animate();
+        // this.animate();
+        this.animateLow();
     }
     
     elements() {
@@ -31,6 +29,26 @@ export class Balls {
             stagger: {
                 each: 0.3
             },
+            scrollTrigger: {
+                trigger: this.element,
+                start: "top bottom",
+                end: "bottom top",
+                toggleActions: "play none none reset",
+            }
+        })
+    }
+
+    animateLow() {
+        gsap.set(this.balls, {
+            y: 30,
+            autoAlpha: 0,
+        })
+        gsap.to(this.balls, {
+            y: 0,
+            autoAlpha: 1,
+            duration: 1,
+            ease: "power4.out",
+            delay: 0.2,
             scrollTrigger: {
                 trigger: this.element,
                 start: "top bottom",

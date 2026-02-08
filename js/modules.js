@@ -19,7 +19,6 @@ import { HeadingWave } from "./HeadingWave.js";
 import { Image } from "./Image.js";
 import { Balls } from "./Balls.js";
 import { Annotations } from "./Annotations.js";
-import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
 
@@ -97,8 +96,6 @@ if (typeof document !== "undefined") {
 
         const shrinkText = document.querySelectorAll("[data-shrink]");
         shrinkText.forEach(element => {
-            console.log("shrink text");
-            
             new ShrinkText(element);
         });
 
@@ -189,7 +186,7 @@ if (typeof document !== "undefined") {
 
 function getFontSize() {
     const breakpoint = window.innerWidth < 768 ? "small" : window.innerWidth < 992 ? "medium" : "desktop";
-    let fontSize = breakpoint === "small" ?  Math.max(9, document.body.clientWidth / 767 * 16) : breakpoint === "medium" ? Math.max(14, document.body.clientWidth / 991 * 16) : Math.max(14, Math.min(document.body.clientWidth / 1290 * 16, 1680 / 1290 * 16));
+    let fontSize = breakpoint === "small" ?  Math.max(9, document.body.clientWidth / 767 * 16) : breakpoint === "medium" ? Math.max(14, document.body.clientWidth / 991 * 16) : Math.max(14, Math.min(document.body.clientWidth / 1290 * 16, 16));
     document.documentElement.style.setProperty('--fontSize', fontSize + 'px');
 }
 

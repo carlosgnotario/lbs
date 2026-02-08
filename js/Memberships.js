@@ -1,5 +1,4 @@
 // Memberships class
-import gsap from "gsap";
 export class Memberships {
     constructor(element) {
         this.element = element;
@@ -44,15 +43,15 @@ export class Memberships {
             const previousTab = this.tabs[this.currentTab];
             gsap.to(previousTab.items, {
                 autoAlpha: 0,
-                duration: 1,
-                ease: "elastic.out(1, 0.7)",
+                duration: 0.5,
+                ease: "power4.out",
                 xPercent: left ? 20 : -20,
-                stagger: left ? -0.2 : 0.2
+                stagger: left ? -0.05 : 0.05
             });
             gsap.set(previousTab, {
                 autoAlpha: 0,
-                duration: 1,
-                delay: 1
+                duration: 0.5,
+                delay: 0.5
             });
         }
 
@@ -60,7 +59,7 @@ export class Memberships {
         const tl = gsap.timeline();
         tl.to(this.indicator, {
             xPercent: -50,
-            duration: 1,
+            duration: 0.5,
             left: 50 + index * 100 + "%",
             ease: "power4.out"
         }, 0);
@@ -71,7 +70,7 @@ export class Memberships {
         }, 0);
         tl.to(this.indicator, {
             width: "100%",
-            duration: 2,
+            duration: 1,
             ease: "elastic.out(1, 1.3)",
             backgroundColor: bgcolors[index],
         }, 0.2);
@@ -87,7 +86,7 @@ export class Memberships {
 
         gsap.to(currentTab, {
             autoAlpha: 1,
-            duration: 1,
+            duration: 0.5,
             ease: "power4.inOut"
         });
         gsap.fromTo(currentTab.items, {
@@ -96,21 +95,10 @@ export class Memberships {
         }, {
             autoAlpha: 1,
             xPercent: 0,
-            duration: 1,
-            ease: "elastic.out(1, 0.7)",
-            stagger: left ? -0.2 : 0.2,
-            delay: 0.5
-        });
-        currentTab.items.forEach(item => {
-            gsap.fromTo(item.numeral, {
-                textContent: 0,
-            }, {
-                textContent: item.originalNumber,
-                duration: 2,
-                snap: { textContent: 1 },
-                ease: "power2.out",
-                delay: 0.5
-            });
+            duration: 0.5,
+            ease: "power4.out",
+            stagger: left ? -0.05 : 0.05,
+            delay: 0.25
         });
         
         this.currentTab = index;

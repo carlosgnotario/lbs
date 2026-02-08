@@ -1,9 +1,4 @@
-// Diction class
-import gsap from "gsap";
-import SplitText from "gsap/SplitText";
 // custombounce
-import CustomEase from "gsap/CustomEase";
-import CustomBounce from "gsap/CustomBounce";
 import { splitTextGradient } from "./modules.js";
 
 export class Diction {

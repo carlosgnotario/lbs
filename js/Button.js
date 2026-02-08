@@ -1,9 +1,3 @@
-import { gsap } from "gsap";
-import { SplitText } from "gsap/SplitText.js";
-
-// Register SplitText with GSAP
-gsap.registerPlugin(SplitText);
-
 // Button class
 export class Button {
     constructor(element) {

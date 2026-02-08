@@ -1,6 +1,4 @@
 // Hex class
-import gsap from "gsap";
-
 export class Hex {
     constructor(element) {
         this.element = element;
@@ -21,7 +19,9 @@ export class Hex {
         this.bgWrapper = document.createElement("div");
         this.bgWrapper.classList.add("bg-wrapper");
         this.bg.classList.add("bg");
+        console.log(this.element.querySelector(".trial-bg"));
         this.element.appendChild(this.bgWrapper);
+        
         this.bgWrapper.appendChild(this.bg);
     }
 
@@ -64,8 +64,7 @@ export class Hex {
     }
 
     animate() {
-        const tl = gsap.timeline();
-        tl.from(this.hexes, {
+        gsap.from(this.hexes, {
             opacity: 0,
             scale: 0.7,
             duration: 2,
@@ -87,13 +86,15 @@ export class Hex {
             },
             delay: 2
         })
+        
+        const tl = gsap.timeline({repeat: -1, repeatRefresh: true, delay: 2});
         tl.to(this.hexes, {
             opacity: 0,
-            yoyo: true,
-            repeat: -1,
+            // yoyo: true,
             ease: "power2.inOut",
             duration: "random(0.5, 5)",
-            delay: "random(0, 2)"
+            delay: "random(1.3, 2)",
+            repeatDelay: "random(1.3, 2)",
         })
     }
 }

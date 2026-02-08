@@ -1,6 +1,6 @@
 @use 'variables' as *;
 
-.text {
+*.text {
     &-1 { color: $text-1; }
     &-2 { color: $text-2; }
     &-dark-1 { color: $text-dark-1; }
@@ -126,6 +126,10 @@
         &-gray-vertical { background: linear-gradient(to bottom, $background-2, $background-1); &:is(.button):before { background: linear-gradient(to bottom, $background-2, $background-1); } }
         &-spanish { background: linear-gradient(to bottom, #F92B2B, #FFB400); &:is(.button):before { background: linear-gradient(to right, #F92B2B, #FFB400); } }
     }
+
+    // BG colors used scarcely
+    &-3B3B3B { background-color: #3B3B3B; }
+    &-D45703 { background-color: #D45703; &:is(.button):before { background-color: #D45703; } }
 }
 
 .overlay {
@@ -382,15 +386,17 @@
     overflow: hidden;
 }
 
-@for $i from 1 through 100 {
+@for $i from 1 through 120 {
     .mw-#{$i} { max-width: #{$i}rem; }
-    .mr-#{$i} { margin-right: #{$i}rem; }
-    .ml-#{$i} { margin-left: #{$i}rem; }
-    .mb-#{$i} { margin-bottom: #{$i}rem; }
-    .mt-#{$i} { margin-top: #{$i}rem; }
-    // in ptr
+    .mr-#{$i} { margin-right: ptr($i); }
+    .ml-#{$i} { margin-left: ptr($i); }
+    .mb-#{$i} { margin-bottom: ptr($i); }
+    .mt-#{$i} { margin-top: ptr($i); }
     .ph-#{$i} { padding-left: ptr($i); padding-right: ptr($i); }
     .pv-#{$i} { padding-top: ptr($i); padding-bottom: ptr($i); }
+    .pb-#{$i} { padding-bottom: ptr($i); }
+    .pt-#{$i} { padding-top: ptr($i); }
+    .height-#{$i} { height: ptr($i); }
 
     .mw-sm-#{$i} { @include breakpoint(small) { max-width: #{$i}rem!important; } }
     .mr-sm-#{$i} { @include breakpoint(small) { margin-right: #{$i}rem!important; } }
@@ -433,5 +439,3 @@ $weights: 400, 500, 600, 700, 800;
         padding: 1rem 1rem;
     }
 }
-
-    

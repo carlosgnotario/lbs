@@ -1,4 +1,3 @@
-import gsap from "gsap";
 // Testimonial class
 export class Testimonials {
     constructor(element) {

@@ -1,4 +1,3 @@
-import gsap from "gsap";
 // Roller class
 export class Roller {
     constructor(element) {        

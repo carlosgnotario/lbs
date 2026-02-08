@@ -1,11 +1,10 @@
 @use 'scss/variables' as *;
 @use 'scss/helpers' as *;
 @use 'scss/modules' as *;
-@use 'scss/classes' as *;
 @use 'scss/components' as *;
 
 html {
-    --fontSize: min(calc(1680 / 1290 * 16px), calc(100vw / 1290 * 16));    
+    --fontSize: min(16px, calc(100vw / 1290 * 16));    
     
     @include breakpoint(medium) {
         --fontSize: min(calc(1680 / 991 * 24px), calc(100vw / 991 * 24));
@@ -48,6 +47,24 @@ form:not(.search) {
     }
 }
 
+
+
+.categories-list-wrapper {
+    .w-dyn-item {
+        &:has(+.w-dyn-item a:hover) {
+            a {
+                border-color: transparent;
+            }
+        }
+    }
+}
+
+a.categories-link.first {
+    &:has(+.categories-list-wrapper .w-dyn-item:first-child a:hover) {
+        border-color: transparent;
+    }
+}
+
 a {
     color: $half-way-orange;
 
@@ -59,6 +76,43 @@ a {
             color: color-mix(in srgb, var(--color) 65%, white);
         }
     }
+
+    &.categories-link {
+        position: relative;
+        transition: border-color 0.5s cubic-bezier(0.770, 0.000, 0.175, 1.000);
+
+        &:hover {
+            border-color: transparent;
+            color: inherit;
+            &:before {
+                opacity: 1;
+            }
+        }
+
+        /* When the next categories-link is hovered, this one gets transparent border */
+        &:has(+ a.categories-link:hover) {
+            border-color: transparent;
+        }
+
+        &:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #F9F9F9;
+            opacity: 0;
+            border-radius: ptr(8);
+            z-index: -1;
+            transition: opacity 0.5s cubic-bezier(0.770, 0.000, 0.175, 1.000);
+        }
+    }
+}
+
+.membership-context a {
+    color: inherit;
+    text-decoration: underline;
 }
 
 section {
@@ -88,12 +142,22 @@ section {
     justify-self: revert!important;
     min-height: 40px;
 
-    &:hover:before {
-        transform: scale(1.2);
-        @include breakpoint(medium) {
-            transform: scale(1);
-            filter: brightness(1.3);
+    &:hover {
+        &:before {
+            transform: scale(1.05);
+            @include breakpoint(medium) {
+                transform: scale(1);
+                filter: brightness(1.3);
+            }
         }
+
+        img {
+            scale: 1.2;
+        }
+    }
+
+    img {
+        transition: scale 1s cubic-bezier(0.060, 0.770, 0.000, 1.615);
     }
 
     &:before {
@@ -152,10 +216,6 @@ section {
         transform: translate(-50%, -50%);
     }
 
-    > * {
-        z-index: 1;
-    }
-
     .hex {
         width: max(calc(100% / 6));
         aspect-ratio: 1 / 1;
@@ -194,6 +254,10 @@ section {
         background-size: 100% 100%;
         background-repeat: no-repeat;
         background-position: center;
+    }
+
+    &-text {
+        height: -webkit-fill-available;
     }
 }
 
@@ -269,7 +333,7 @@ section {
             border-radius: 2px;
             place-self: start center;
             margin-top: calc(ptr(4) + 6px);
-            transition: transform 1s cubic-bezier(0.770, 0.000, 0.175, 1.000);
+            transition: transform 0.5s cubic-bezier(0.770, 0.000, 0.0.575, 1.000);
         }
 
         &:after {
@@ -281,13 +345,13 @@ section {
             border-radius: 2px;
             place-self: start center;
             margin-top: ptr(4);
-            transition: transform 1s cubic-bezier(0.770, 0.000, 0.175, 1.000);
+            transition: transform 0.5s cubic-bezier(0.770, 0.000, 0.175, 1.000);
         }
 
         &-a {
             // interpolate keywords
             interpolate-size: allow-keywords;
-            transition: height 1s cubic-bezier(0.770, 0.000, 0.175, 1.000), padding 1s cubic-bezier(0.770, 0.000, 0.175, 1.000);
+            transition: height 0.5s cubic-bezier(0.770, 0.000, 0.175, 1.000), padding 0.5s cubic-bezier(0.770, 0.000, 0.175, 1.000);
             
         }
 
@@ -393,7 +457,7 @@ section {
             &.active {
                 &:after {
                     opacity: 1;
-                    transform: translate(-50%, 1rem) rotate(-45deg);
+                    transform: translate(-50%, -50%) rotate(-45deg);
                 }
             }
             &:after {
@@ -401,17 +465,17 @@ section {
                 opacity: 0;
                 position: absolute;
                 background-color: red;
-                height: ptr(8);
-                width: ptr(8);
+                height: ptr(18);
+                width: ptr(18);
                 border-radius: ptr(2);
                 background-color: #1D1D1D;
-                top: 50%;
+                top: calc(100% + 1px);
                 left: 50%;
                 z-index: 0;
-                transform: translate(-50%, 1.5rem) rotate(-45deg);
+                transform: translate(-50%, calc(-50% + 30px)) rotate(-45deg);
                 // diagonal clip path
-                clip-path: polygon(0 0, 100% 100%, 0 100%);
-                transition: all 1s cubic-bezier(0.060, 0.770, 0.000, 1.615);
+                transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1); // GSAP Power4.out
+                clip-path: polygon(0 0, 100% 0, 100% 100%);
             }
         }
     }
@@ -420,6 +484,7 @@ section {
 [megamenu] .header-megamenu {
     position: relative;
     overflow: hidden;
+    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
 
     .megamenu {
         z-index: 1;
@@ -428,6 +493,7 @@ section {
     .header-megamenu-wrapper {
         overflow: hidden;
         position: relative;
+        background:linear-gradient(56deg, #855D0D -7.24%, #1D1D1D 26.58%);
     }
 
     .megamenu-icon {
@@ -437,22 +503,12 @@ section {
 
         &:hover {
             img {
-                transform: scale(1.2);
+                transform: scale(1.05);
             }
         }
     }
 
     .spotlight {
-        position: absolute;
-        width: 60rem;
-        height: 60rem;
-        top: 0;
-        z-index: 0;
-        left: 0;
-        background-image: radial-gradient(circle at center, #855D0D 0%, transparent 50%, transparent 100%);
-        border-radius: 50%;
-        pointer-events: none;
-        transform: translate(-50%, -50%);
     }
 }
 
@@ -603,3 +659,6 @@ section {
         }
     }
 }
+
+// Utility classes last so they override .button and other component styles
+@import 'scss/classes';

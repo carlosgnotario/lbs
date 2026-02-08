@@ -46,8 +46,8 @@
 .testimonial {
 
     &-text {
-        overflow: visible;
-        font-size: ptr(12);
+        // overflow: visible;
+        font-size: ptr(18);
     }
 }
 
@@ -61,7 +61,8 @@
         justify-content: flex-start;
         overflow-x: auto;
         scroll-snap-type: x mandatory;
-        margin-top: 1rem;
+        padding: 0;
+        margin: 0;
         
         .megamenu {
             flex-shrink: 0;
