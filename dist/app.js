@@ -1935,6 +1935,7 @@
   // js/Megamenu.js
   var Megamenu = class {
     constructor(element) {
+      if (element.getAttribute("data-wf--header--variant") === "signup") return;
       this.element = element;
       this.isShowing = false;
       this.currentTarget = null;
@@ -2255,10 +2256,25 @@
       this.currentTab = null;
       this.elements();
       this.bind();
-      this.showTab(0);
+      if (window.location.hash) {
+        const tabName = window.location.hash.substring(1);
+        const index = this.togglerLinks.findIndex((link) => link.textContent.toLowerCase() === tabName);
+        if (index !== -1) {
+          this.showTab(index);
+        }
+      } else {
+        this.showTab(0);
+      }
+      window.addEventListener("hashchange", () => {
+        const tabName = window.location.hash.substring(1);
+        const index = this.togglerLinks.findIndex((link) => link.textContent.toLowerCase() === tabName);
+        if (index !== -1) {
+          this.showTab(index);
+        }
+      });
     }
     elements() {
-      this.togglerLinks = this.element.querySelectorAll(".memberships-toggler div:not(.memberships-indicator");
+      this.togglerLinks = Array.from(this.element.querySelectorAll(".memberships-toggler div:not(.memberships-indicator)"));
       this.tabs = this.element.querySelectorAll(".memberships-tab");
       this.indicator = this.element.querySelector(".memberships-indicator");
       this.tabs.forEach((tab) => {
@@ -2283,6 +2299,8 @@
       const left = index > this.currentTab ? true : false;
       const bgcolors = ["#FFDF10", "#72BEE0"];
       const textcolors = ["#404040", "#FFFFFF", "#A9A9A9"];
+      const currentTabName = this.togglerLinks[index].textContent.toLowerCase();
+      window.location.hash = currentTabName;
       if (this.currentTab !== null) {
         const previousTab = this.tabs[this.currentTab];
         gsap.to(previousTab.items, {
@@ -3169,6 +3187,7 @@
       this.element = element;
       this.elements();
       this.init();
+      console.log("annotations");
     }
     elements() {
     }

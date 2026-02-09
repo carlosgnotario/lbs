@@ -7,6 +7,8 @@ export class Annotations {
         
         this.elements();
         this.init();
+        console.log("annotations");
+        
     }
     
     elements() {

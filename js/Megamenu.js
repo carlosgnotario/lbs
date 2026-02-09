@@ -1,10 +1,13 @@
 // Megamenu class
 export class Megamenu {
     constructor(element) {
-        this.element = element;
+        if (element.getAttribute("data-wf--header--variant") === "signup") return;
+        this.element = element;        
         this.isShowing = false;
         this.currentTarget = null;
         this.isMobileMenuOpen = false;
+
+
 
         this.elements();
         this.binds();

@@ -672,6 +672,7 @@ html:not(.wf-design-mode) .team-member-image .team-member-illustration {
 }
 html:not(.wf-design-mode) .memberships {
   display: grid;
+  justify-content: center;
 }
 html:not(.wf-design-mode) .memberships-toggler {
   grid-area: 1/1;
@@ -689,7 +690,7 @@ html:not(.wf-design-mode) .memberships-tab {
 html:not(.wf-design-mode) .memberships-tab > * {
   height: 100%;
 }
-html:not(.wf-design-mode) [data-animation=diction] .anim-diction, html:not(.wf-design-mode) [data-animation=headingWave] .heading {
+html:not(.wf-design-mode) [data-animation=diction] .anim-diction {
   display: inline-block;
   background: none;
   webkit-background-clip: unset;
@@ -718,6 +719,12 @@ form:not(.search) .w-input {
 }
 form:not(.search) .w-input:focus {
   border-color: var(--_colors---orange);
+}
+form:not(.search) .w-input.code-input {
+  text-align: center;
+  height: 3.0625rem;
+  font-family: "Sf Pro Rounded", Arial, sans-serif;
+  font-size: 1.625rem;
 }
 form:not(.search) textarea.w-input {
   line-height: 1.35;
@@ -1492,6 +1499,12 @@ section > img {
 }
 *.text-left {
   text-align: left;
+}
+*.text-FF548D {
+  color: #FF548D;
+}
+*.text-6B6B6B {
+  color: #6B6B6B;
 }
 
 @media (max-width: 767px) {

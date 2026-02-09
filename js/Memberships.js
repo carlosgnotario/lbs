@@ -6,11 +6,28 @@ export class Memberships {
         
         this.elements();
         this.bind();
-        this.showTab(0);
+        if (window.location.hash) {
+            const tabName = window.location.hash.substring(1);
+            const index = this.togglerLinks.findIndex(link => link.textContent.toLowerCase() === tabName);
+            if (index !== -1) {
+                this.showTab(index);
+            }
+        } else {
+            this.showTab(0);
+        }
+
+        // Detect hash change and show the corresponding tab
+        window.addEventListener("hashchange", () => {
+            const tabName = window.location.hash.substring(1);
+            const index = this.togglerLinks.findIndex(link => link.textContent.toLowerCase() === tabName);
+            if (index !== -1) {
+                this.showTab(index);
+            }
+        });
     }
 
     elements() {
-        this.togglerLinks = this.element.querySelectorAll(".memberships-toggler div:not(.memberships-indicator");
+        this.togglerLinks = Array.from(this.element.querySelectorAll(".memberships-toggler div:not(.memberships-indicator)"));
         this.tabs = this.element.querySelectorAll(".memberships-tab");
         this.indicator = this.element.querySelector(".memberships-indicator");
         this.tabs.forEach(tab => {
@@ -38,6 +55,11 @@ export class Memberships {
         const left = index > this.currentTab ? true : false;
         const bgcolors = ["#FFDF10", "#72BEE0"];
         const textcolors = ["#404040", "#FFFFFF", "#A9A9A9"];
+        const currentTabName = this.togglerLinks[index].textContent.toLowerCase();
+        
+        // add hash url to current tab name
+        window.location.hash = currentTabName;
+        
 
         if (this.currentTab !== null) {
             const previousTab = this.tabs[this.currentTab];
