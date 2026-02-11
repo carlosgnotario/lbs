@@ -257,8 +257,9 @@ section {
     }
 
     &-text {
-        @include breakpoint(large) {
-            height: -webkit-fill-available;
+        height: -webkit-fill-available;
+        @include breakpoint(medium) {
+            height: auto;
         }
     }
 }
