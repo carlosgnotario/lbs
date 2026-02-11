@@ -3,6 +3,7 @@ import { splitTextGradient } from "./modules.js";
 
 export class Diction {
     constructor(element) {
+        return;
         gsap.registerPlugin(CustomEase, CustomBounce);
         this.element = element;
         // get the [diction] value
