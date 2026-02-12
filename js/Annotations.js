@@ -22,6 +22,7 @@ export class Annotations {
         const annotationPadding = this.element.dataset.annotation_padding ? parseFloat(this.element.dataset.annotation_padding) : 5;
         const bracketsDirections = this.element.dataset.brackets_directions ? this.element.dataset.brackets_directions.split(",").map(item => item.trim()) : ["top"];
         this.repeat = this.element.dataset.annotation_repeat === "" ? true : false;
+        this.element.style.zIndex = 1;
         
         let annotationConfig = {
             color: annotationColor,
@@ -57,9 +58,10 @@ export class Annotations {
         // Set up IntersectionObserver
         this.observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
+                
+                entry.target._annotationInstance.annotation.show();
                 if (entry.isIntersecting) {
-                    entry.target._annotationInstance.annotation.show();
-
+                    
                     if (!entry.target._annotationInstance.repeat) {
                         this.observer.unobserve(entry.target);
                     }

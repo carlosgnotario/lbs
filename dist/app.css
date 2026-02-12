@@ -1019,6 +1019,11 @@ section > img {
 .testimonial-text {
   height: -webkit-fill-available;
 }
+@media (max-width: 991px) {
+  .testimonial-text {
+    height: auto;
+  }
+}
 
 .testimonials-bullet {
   position: relative;
@@ -1232,10 +1237,10 @@ section > img {
   transition: transform 1s cubic-bezier(0.06, 0.77, 0, 1.615);
 }
 .video:hover .video-icon:before {
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
 .video:hover .video-icon img {
-  transform: scale(0.9);
+  transform: scale(1.05);
 }
 
 .faded-end {
@@ -1264,10 +1269,6 @@ section > img {
 }
 .extra-margin + * .slot {
   margin-top: -13.125rem;
-}
-
-.rough-annotation {
-  z-index: -1;
 }
 
 .footer .footer-newsletter .ml-embedded #mlb2-32455705.ml-form-embedContainer .ml-form-embedWrapper {
