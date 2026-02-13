@@ -1378,13 +1378,13 @@
               duration: duration - 1,
               ease: "elastic.out(1, 0.9)",
               repeat: -1,
-              scale: 0,
+              scale: 0.5,
               repeatDelay: duration - 2
             });
           }
           if (index % 4 === 1) {
             gsap.to(hex, {
-              scale: 0.7,
+              scale: 0.8,
               duration,
               ease: "none",
               repeat: -1
@@ -1392,24 +1392,24 @@
           }
           if (index % 4 === 2) {
             gsap.fromTo(hex, {
-              scale: 0.7
+              scale: 0.8
             }, {
               duration,
               ease: "none",
               repeat: -1,
-              scale: 0.3
+              scale: 0.6
             });
           }
           if (index % 4 === 3) {
             gsap.fromTo(hex, {
               autoAlpha: 1,
-              scale: 0.3
+              scale: 0.6
             }, {
               autoAlpha: 0,
               duration,
               ease: "none",
               repeat: -1,
-              scale: 0,
+              scale: 0.5,
               rotate: 180
             });
           }

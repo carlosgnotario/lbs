@@ -76,14 +76,14 @@ export class MovingHex {
                         duration: duration - 1,
                         ease: "elastic.out(1, 0.9)",
                         repeat: -1,
-                        scale: 0,
+                        scale: 0.5,
                         repeatDelay: duration - 2
                     });
                 }
                 // target 4 1
                 if (index % 4 === 1) {
                     gsap.to(hex, {
-                        scale: 0.7,
+                        scale: 0.8,
                         duration: duration,
                         ease: "none",
                         repeat: -1,
@@ -92,25 +92,25 @@ export class MovingHex {
                 // target 4 3
                 if (index % 4 === 2) {
                     gsap.fromTo(hex, {
-                        scale: 0.7,
+                        scale: 0.8,
                     }, {
                         duration: duration,
                         ease: "none",
                         repeat: -1,
-                        scale: 0.3,
+                        scale: 0.6,
                     });
                 }
                 // target 4 4
                 if (index % 4 === 3) {
                     gsap.fromTo(hex, {
                         autoAlpha: 1,
-                        scale: 0.3
+                        scale: 0.6
                     }, {
                         autoAlpha: 0,
                         duration: duration,
                         ease: "none",
                         repeat: -1,
-                        scale: 0,
+                        scale: 0.5,
                         rotate: 180
                     });
                 }
