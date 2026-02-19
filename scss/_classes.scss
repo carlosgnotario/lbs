@@ -389,7 +389,7 @@
     overflow: hidden;
 }
 
-@for $i from 1 through 120 {
+@for $i from 0 through 120 {
     .mw-#{$i} { max-width: #{$i}rem; }
     .mr-#{$i} { margin-right: ptr($i); }
     .ml-#{$i} { margin-left: ptr($i); }
@@ -406,6 +406,11 @@
     .ml-sm-#{$i} { @include breakpoint(small) { margin-left: #{$i}rem!important; } }
     .mb-sm-#{$i} { @include breakpoint(small) { margin-bottom: #{$i}rem!important; } }
     .mt-sm-#{$i} { @include breakpoint(small) { margin-top: #{$i}rem!important; } }
+    .ph-sm-#{$i} { @include breakpoint(small) { padding-left: #{$i}rem!important; padding-right: #{$i}rem!important; } }
+    .pv-sm-#{$i} { @include breakpoint(small) { padding-top: #{$i}rem!important; padding-bottom: #{$i}rem!important; } }
+    .pb-sm-#{$i} { @include breakpoint(small) { padding-bottom: #{$i}rem!important; } }
+    .pt-sm-#{$i} { @include breakpoint(small) { padding-top: #{$i}rem!important; } }
+    .height-sm-#{$i} { @include breakpoint(small) { height: #{$i}rem!important; } }
 }
 
 $weights: 400, 500, 600, 700, 800;

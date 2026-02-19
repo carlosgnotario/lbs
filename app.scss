@@ -4,14 +4,18 @@
 @use 'scss/components' as *;
 
 html {
-    --fontSize: min(16px, calc(100vw / 1290 * 16));    
+    --fontSize: clamp(14px, calc(100vw / 1290 * 16), 16px);    
+    // let fontSize = 
+    // breakpoint === "small" ?  Math.max(9, document.body.clientWidth / 767 * 16) : 
+    // breakpoint === "medium" ? Math.max(14, document.body.clientWidth / 991 * 16) : 
+    // Math.max(14, Math.min(document.body.clientWidth / 1290 * 16, 16));
     
     @include breakpoint(medium) {
-        --fontSize: min(calc(1680 / 991 * 24px), calc(100vw / 991 * 24));
+        --fontSize:  max(14px, calc(100vw / 991 * 16));
     }
     
     @include breakpoint(small) {
-        --fontSize: max(12px, min(calc(1680 / 767 * 16px), calc(100vw / 767 * 16)));
+        --fontSize: max(9px, calc(100vw / 767 * 16));
     }
 
     font-size: var(--fontSize);
