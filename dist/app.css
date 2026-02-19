@@ -1085,6 +1085,13 @@ section > img {
   margin-top: calc(0.25rem + 6px);
   transition: transform 0.5s cubic-bezier(0.77, 0, 0 0.575, 1);
 }
+@media (max-width: 767px) {
+  .faq-item:before {
+    width: 12px;
+    height: 2px;
+    margin-top: 7px;
+  }
+}
 .faq-item:after {
   content: "";
   grid-area: 1/2;
@@ -1095,6 +1102,13 @@ section > img {
   place-self: start center;
   margin-top: 0.25rem;
   transition: transform 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+}
+@media (max-width: 767px) {
+  .faq-item:after {
+    height: 12px;
+    width: 2px;
+    margin-top: 2px;
+  }
 }
 .faq-item-a {
   interpolate-size: allow-keywords;
@@ -4042,6 +4056,14 @@ section > img {
 
 .full-w {
   width: 100%;
+}
+@media (max-width: 991px) {
+  .full-w-sm-auto {
+    width: auto;
+  }
+  .full-w-sm-auto.button {
+    padding: 0.9375rem 2.375rem !important;
+  }
 }
 
 .sm-auto {

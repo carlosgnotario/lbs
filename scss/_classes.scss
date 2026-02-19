@@ -321,6 +321,15 @@
 
 .full-w {
     width: 100%;
+
+    &-sm-auto {
+        @include breakpoint(medium) {
+            width: auto;
+            &.button {
+                padding: 0.9375rem 2.375rem!important;
+            }
+        }
+    }
 }
 
 .sm-auto {
