@@ -269,9 +269,17 @@ section {
 }
 
 .testimonials {    
+
+    &[data-wf--testimonials--variant="purple"] {
+        .testimonials-bullet {
+            background-color: #76599d;
+        }
+    }
+    
     &-bullet {
         position: relative;
         overflow: hidden;
+        cursor: pointer;
 
         &:after {
             content: '';

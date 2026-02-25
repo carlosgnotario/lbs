@@ -2436,6 +2436,7 @@
       this.next = this.element.querySelector(".testimonials-controls-next");
       this.prev = this.element.querySelector(".testimonials-controls-prev");
       this.indicators = this.element.querySelector(".testimonials-bullets");
+      this.indicatorsBullets = this.indicators.querySelectorAll(".testimonials-bullet");
     }
     sizing() {
       this.breakpoint = window.innerWidth < 768 ? "mobile" : window.innerWidth < 992 ? "tablet" : "desktop";
@@ -2453,6 +2454,11 @@
         }
         this.indicatorsBullets = this.indicators.querySelectorAll(".testimonials-bullet");
         this.indicatorsBullets[0].classList.add("active", "from-left");
+        this.indicatorsBullets.forEach((bullet, index) => {
+          bullet.addEventListener("click", (e2) => {
+            this.update(index);
+          });
+        });
       };
       if (this.breakpoint !== this.currentBreakpoint) {
         this.currentBreakpoint = this.breakpoint;

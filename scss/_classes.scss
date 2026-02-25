@@ -316,6 +316,28 @@
         width: 100%;
         grid-template-columns: 1fr 1fr;
         gap: 0 $gap-s-24;
+        
+        &_sm-single {
+            display: grid;
+            width: 100%;
+            grid-template-columns: 1fr 1fr;
+            gap: 0 $gap-s-24;
+
+            @include breakpoint(small) {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        &_md-single {
+            display: grid;
+            width: 100%;
+            grid-template-columns: 1fr 1fr;
+            gap: 0 $gap-s-24;
+
+            @include breakpoint(medium) {
+                grid-template-columns: 1fr;
+            }
+        }
     }
 }
 
