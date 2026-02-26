@@ -4089,6 +4089,9 @@ section > img {
 .full-w {
   width: 100%;
 }
+.full-w-sm-auto {
+  width: 100%;
+}
 @media (max-width: 991px) {
   .full-w-sm-auto {
     width: auto;

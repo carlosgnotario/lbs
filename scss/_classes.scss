@@ -345,6 +345,7 @@
     width: 100%;
 
     &-sm-auto {
+        width: 100%;
         @include breakpoint(medium) {
             width: auto;
             &.button {
