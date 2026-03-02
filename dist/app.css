@@ -850,14 +850,6 @@ form:not(.search):has(#terms-checkbox input:checked) input[type=submit] {
   cursor: pointer;
 }
 
-.categories-list-wrapper .w-dyn-item:has(+ .w-dyn-item a:hover) a {
-  border-color: transparent;
-}
-
-a.categories-link.first:has(+ .categories-list-wrapper .w-dyn-item:first-child a:hover) {
-  border-color: transparent;
-}
-
 a {
   color: var(--_colors---half-way-orange);
 }
@@ -874,19 +866,9 @@ a.categories-link {
   transition: border-color 0.5s cubic-bezier(0.77, 0, 0.175, 1);
 }
 a.categories-link:hover {
-  border-color: transparent;
-  color: inherit;
+  color: #FF6200;
 }
-a.categories-link:hover:before {
-  opacity: 1;
-}
-a.categories-link {
-  /* When the next categories-link is hovered, this one gets transparent border */
-}
-a.categories-link:has(+ a.categories-link:hover) {
-  border-color: transparent;
-}
-a.categories-link:before {
+a.categories-link.first:before {
   content: "";
   position: absolute;
   top: 0;
@@ -894,7 +876,6 @@ a.categories-link:before {
   width: 100%;
   height: 100%;
   background-color: #F9F9F9;
-  opacity: 0;
   border-radius: 0.5rem;
   z-index: -1;
   transition: opacity 0.5s cubic-bezier(0.77, 0, 0.175, 1);

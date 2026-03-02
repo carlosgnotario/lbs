@@ -51,24 +51,6 @@ form:not(.search) {
     }
 }
 
-
-
-.categories-list-wrapper {
-    .w-dyn-item {
-        &:has(+.w-dyn-item a:hover) {
-            a {
-                border-color: transparent;
-            }
-        }
-    }
-}
-
-a.categories-link.first {
-    &:has(+.categories-list-wrapper .w-dyn-item:first-child a:hover) {
-        border-color: transparent;
-    }
-}
-
 a {
     color: $half-way-orange;
 
@@ -86,19 +68,10 @@ a {
         transition: border-color 0.5s cubic-bezier(0.770, 0.000, 0.175, 1.000);
 
         &:hover {
-            border-color: transparent;
-            color: inherit;
-            &:before {
-                opacity: 1;
-            }
+            color: #FF6200;
         }
 
-        /* When the next categories-link is hovered, this one gets transparent border */
-        &:has(+ a.categories-link:hover) {
-            border-color: transparent;
-        }
-
-        &:before {
+        &.first:before {
             content: '';
             position: absolute;
             top: 0;
@@ -106,7 +79,6 @@ a {
             width: 100%;
             height: 100%;
             background-color: #F9F9F9;
-            opacity: 0;
             border-radius: ptr(8);
             z-index: -1;
             transition: opacity 0.5s cubic-bezier(0.770, 0.000, 0.175, 1.000);
