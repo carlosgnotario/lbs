@@ -24,7 +24,6 @@ export class Roller {
             if (logosLoaded === logosToLoad) {
                 this.sizing();
                 this.update();   
-                console.log("execute update");
             }
         }
         this.logos.forEach(logo => {
@@ -33,19 +32,13 @@ export class Roller {
                 // Image already loaded
                 this.loaded = true;
                 logosLoaded++;
-                console.log("logos loaded", logosLoaded, logosToLoad);
-                console.log(logosLoaded === logosToLoad);
                 checkIfAllLoaded();
             } else {
                 // Image not yet loaded, wait for load event
                 logo.addEventListener("load", () => {
                     this.loaded = true;
                     logosLoaded++;
-                    console.log("logos loaded", logosLoaded, logosToLoad);
-                    console.log(logosLoaded === logosToLoad);
                     checkIfAllLoaded();
-                    
-                    // console.log("logos loaded", logosLoaded, logosToLoad);
                 });
             }
         });

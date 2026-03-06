@@ -19,7 +19,6 @@ export class Hex {
         this.bgWrapper = document.createElement("div");
         this.bgWrapper.classList.add("bg-wrapper");
         this.bg.classList.add("bg");
-        console.log(this.element.querySelector(".trial-bg"));
         this.element.appendChild(this.bgWrapper);
         
         this.bgWrapper.appendChild(this.bg);

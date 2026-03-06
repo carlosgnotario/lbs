@@ -37,8 +37,6 @@ export class Memberships {
                 item.originalNumber = item.numeral.textContent;
             });
         });
-        console.log(this.togglerLinks);
-        
     }
 
     bind() {

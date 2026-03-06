@@ -16,7 +16,6 @@ export class FaqElements {
 
             item.addEventListener("click", () => {
                 this.toggle(item);
-                console.log("clicked", item);        
             });
         });
     }

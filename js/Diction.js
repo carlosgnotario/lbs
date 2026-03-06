@@ -23,7 +23,6 @@ export class Diction {
     
     elements() {
         this.text = this.element.querySelector(".anim-diction");
-        console.log(this.text);
         this.color1 = getComputedStyle(this.text).getPropertyValue("--color1");
         this.color2 = getComputedStyle(this.text).getPropertyValue("--color2");
 

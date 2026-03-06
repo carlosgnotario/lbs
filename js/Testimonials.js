@@ -31,7 +31,6 @@ export class Testimonials {
             this.indicators.innerHTML = "";
             for (let i = 0; i < this.totalPages; i++) {
                 const indicator = document.createElement("div");
-                console.log("happens");
                 
                 indicator.classList.add("testimonials-bullet");
                 this.indicators.appendChild(indicator);
@@ -81,8 +80,6 @@ export class Testimonials {
 
     update(newPage) {
         let page = Math.min(this.testimonials.length - this.itemsPerPage, newPage * this.itemsPerPage);
-        console.log(page);
-        
         this.indicatorsBullets[newPage].classList.add("active", newPage > this.currentPage ? "from-left" : "from-right");
         if (this.currentPage !== null) {
             this.indicatorsBullets[this.currentPage].classList.remove("active", "from-left", "from-right");        

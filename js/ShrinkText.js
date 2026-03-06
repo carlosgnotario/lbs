@@ -7,33 +7,45 @@ export class ShrinkText {
 
     sizing() {
         let newFontSize = 18 / 16;
-        console.log(this.element);
         this.ticking = true;
-        
-        
-        
-        this.ticker = () => {            
-            const containerHeight = this.element.clientHeight;
-            const scrollHeight = this.element.scrollHeight;            
 
-            if (scrollHeight > containerHeight) {                
-                newFontSize = newFontSize - 0.01;
-                this.element.style.fontSize = `${newFontSize}rem`;
-                console.log(scrollHeight, containerHeight);
+        const resizeObserver = new ResizeObserver(() => {
+            this.fitText();
+        });
+        resizeObserver.observe(this.element);
+
+        this.fitText();
+    }
+
+    fitText() {
+        const el = this.element;
+        const containerHeight = el.clientHeight;
+    
+        // Get current size in rem
+        const computedPx = parseFloat(getComputedStyle(el).fontSize);
+        const rootPx = parseFloat(getComputedStyle(document.documentElement).fontSize);
+        const startSize = computedPx / rootPx;
+    
+        // If it already fits, do nothing
+        if (el.scrollHeight <= containerHeight) return;
+    
+        let high = startSize;
+        let low = 0.1; // minimum rem you allow
+        let best = low;
+    
+        while (low <= high) {
+            const mid = (low + high) / 2;
+            el.style.fontSize = `${mid}rem`;
+    
+            if (el.scrollHeight <= containerHeight) {
+                best = mid;
+                low = mid + 0.01; // try slightly larger (but never above startSize)
             } else {
-                console.log("removed");
-                this.ticking = false;
-                gsap.ticker.remove(this.ticker);
+                high = mid - 0.01;
             }
         }
-        gsap.ticker.add(this.ticker);
-
-        window.addEventListener("resize", () => {
-            if (!this.ticking) {
-                this.element.style.fontSize = "1rem";
-                gsap.ticker.add(this.ticker);
-            }
-        });
+    
+        el.style.fontSize = `${best}rem`;
     }
 }
 

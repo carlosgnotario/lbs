@@ -2,7 +2,6 @@
 export class Button {
     constructor(element) {
         this.element = element;
-        console.log("button");
         
         if (document.fonts && document.fonts.ready) {
             document.fonts.ready.then(() => {

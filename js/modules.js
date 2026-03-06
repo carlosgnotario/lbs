@@ -46,18 +46,14 @@ if (typeof document !== "undefined") {
             smoothTouch: false,
             touchMultiplier: 2,
             infinite: false,
-        });
-        console.log("mm?");
-        
+        });        
 
         function raf(time) {
             if (window.innerWidth < 992 && lenis.isStopped) {
                 lenis.stop();
-                console.log("stop lenis");
                 
             } else if (window.innerWidth >= 992 && lenis.isStarted) {
                 lenis.start();
-                console.log("start lenis");
                 
             }
             lenis.raf(time);
@@ -176,8 +172,6 @@ if (typeof document !== "undefined") {
 
         const searchResultsElements = document.querySelectorAll("[search-results]");
         searchResultsElements.forEach(element => {
-            console.log("one");
-            
             new SearchResults(element);
         });
     });

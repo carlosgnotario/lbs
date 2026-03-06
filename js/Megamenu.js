@@ -146,8 +146,6 @@ export class Megamenu {
     }
 
     showMegamenu(show) {
-        console.log("showing");
-        
         gsap.set(this.megamenu, {
             autoAlpha: show ? 0 : 1,
             y: show ? 0 : -30,
