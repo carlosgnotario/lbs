@@ -54,7 +54,7 @@ form:not(.search) {
 a {
     color: $half-way-orange;
 
-    &:not(.w-button, .button, button, .header-menu-link, .no-decoration):hover {
+    &:not(.w-button, .button, button, .header-menu-link, .no-decoration, .pagination-button):hover {
         text-decoration: underline;
     }
 
