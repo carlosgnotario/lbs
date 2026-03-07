@@ -73,7 +73,7 @@ export class Roller {
 
     update() {        
         this.ticker = () => {
-            this.position -= 1;
+            this.position -= 0.5;
             this.logos.forEach((logo, index) => {                
                 if (-this.position > (logo.startingWidth + logo.startingX + logo.loop * this.totalWidth) ) {
                     logo.loop++;

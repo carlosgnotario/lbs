@@ -52,7 +52,7 @@ form:not(.search) {
 }
 
 a {
-    color: $half-way-orange;
+    color: #FF6200;
 
     &:not(.w-button, .button, button, .header-menu-link, .no-decoration, .pagination-button):hover {
         text-decoration: underline;
@@ -116,10 +116,6 @@ section {
     &:hover {
         &:before {
             transform: scale(1.05);
-            @include breakpoint(medium) {
-                transform: scale(1);
-                filter: brightness(1.3);
-            }
         }
 
         img {
