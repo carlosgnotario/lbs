@@ -113,13 +113,19 @@ section {
     justify-self: revert!important;
     min-height: 40px;
 
-    &:hover {
+    &:not(.scalable):hover {
         &:before {
             transform: scale(1.05);
         }
 
         img {
             scale: 1.2;
+        }
+    }
+
+    &.scalable {
+        &:hover {
+            scale: 1.05;
         }
     }
 
