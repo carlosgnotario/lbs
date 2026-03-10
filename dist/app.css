@@ -909,11 +909,17 @@ section > img {
   justify-self: revert !important;
   min-height: 40px;
 }
-.button:hover:before, button.primary:hover:before {
+.button:not(.scalable):hover:before, button.primary:not(.scalable):hover:before {
   transform: scale(1.05);
 }
-.button:hover img, button.primary:hover img {
+.button:not(.scalable):hover img, button.primary:not(.scalable):hover img {
   scale: 1.2;
+}
+.button.scalable, button.primary.scalable {
+  transition: scale 1s cubic-bezier(0.06, 0.77, 0, 1.615);
+}
+.button.scalable:hover, button.primary.scalable:hover {
+  scale: 1.05;
 }
 .button img, button.primary img {
   transition: scale 1s cubic-bezier(0.06, 0.77, 0, 1.615);
@@ -1234,7 +1240,7 @@ section > img {
 }
 
 .faded-end {
-  mask-image: linear-gradient(to bottom, black 0%, black 80%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 0%, black calc(100% - 16rem), transparent calc(100% - 4rem));
 }
 
 .w-richtext:not(:where([data-wf--media-block--variant=list-item])) h1:not(:first-child), .w-richtext:not(:where([data-wf--media-block--variant=list-item])) h2:not(:first-child), .w-richtext:not(:where([data-wf--media-block--variant=list-item])) h3:not(:first-child), .w-richtext:not(:where([data-wf--media-block--variant=list-item])) h4:not(:first-child), .w-richtext:not(:where([data-wf--media-block--variant=list-item])) h5:not(:first-child), .w-richtext:not(:where([data-wf--media-block--variant=list-item])) h6:not(:first-child) {
@@ -3549,6 +3555,12 @@ section > img {
 }
 .bg-D45703:is(.button):before {
   background-color: #D45703;
+}
+.bg-F9F9F9 {
+  background-color: #F9F9F9;
+}
+.bg-F9F9F9:is(.button):before {
+  background-color: #F9F9F9;
 }
 
 .overlay-orange {
