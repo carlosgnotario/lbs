@@ -2509,7 +2509,9 @@
     }
     elements() {
       this.items = this.element.querySelectorAll(".faq-item");
-      this.answer = this.element.querySelector(".faq-item-a");
+      this.items.forEach((item) => {
+        this.answer = item.querySelector(".faq-item-a");
+      });
     }
     bind() {
       this.items.forEach((item) => {
@@ -2521,14 +2523,14 @@
     }
     toggle(item) {
       if (!item.open) {
-        gsap.to(this.answer, {
+        gsap.to(item.answer, {
           height: "auto",
           duration: 1,
           ease: "circ.out"
         });
         item.classList.add("active");
       } else {
-        gsap.to(this.answer, {
+        gsap.to(item.answer, {
           height: 0,
           duration: 1,
           ease: "circ.out"
