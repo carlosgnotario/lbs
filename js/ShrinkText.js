@@ -3,18 +3,20 @@ export class ShrinkText {
     constructor(element) {
         this.element = element;
         this.sizing();
+        console.log("works")
+        // this.fitText();
     }
 
     sizing() {
-        let newFontSize = 18 / 16;
+        let newFontSize = 1;
+        
         this.ticking = true;
 
         const resizeObserver = new ResizeObserver(() => {
-            this.fitText();
+            // this.fitText();
         });
         resizeObserver.observe(this.element);
 
-        this.fitText();
     }
 
     fitText() {

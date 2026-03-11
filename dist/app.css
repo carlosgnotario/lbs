@@ -485,9 +485,6 @@ html.wf-design-mode .testimonials-title:before {
 html.wf-design-mode .testimonials-wrapper {
   flex-wrap: wrap;
 }
-html.wf-design-mode .testimonial-text {
-  font-size: 1.125rem;
-}
 html.wf-design-mode [megamenu] {
   margin-top: -7.5rem;
   padding-bottom: 0;

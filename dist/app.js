@@ -2397,15 +2397,14 @@
     constructor(element) {
       this.element = element;
       this.sizing();
+      console.log("works");
     }
     sizing() {
-      let newFontSize = 18 / 16;
+      let newFontSize = 1;
       this.ticking = true;
       const resizeObserver = new ResizeObserver(() => {
-        this.fitText();
       });
       resizeObserver.observe(this.element);
-      this.fitText();
     }
     fitText() {
       const el = this.element;
