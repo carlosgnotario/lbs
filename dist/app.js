@@ -2396,8 +2396,6 @@
   var ShrinkText = class {
     constructor(element) {
       this.element = element;
-      this.sizing();
-      console.log("works");
     }
     sizing() {
       let newFontSize = 1;

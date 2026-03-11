@@ -3573,6 +3573,12 @@ section > img {
 .bg-F9F9F9:is(.button):before {
   background-color: #F9F9F9;
 }
+.bg-414141 {
+  background-color: #414141;
+}
+.bg-414141:is(.button):before {
+  background-color: #414141;
+}
 
 .overlay-orange {
   position: relative;

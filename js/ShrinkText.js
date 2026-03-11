@@ -2,8 +2,7 @@
 export class ShrinkText {
     constructor(element) {
         this.element = element;
-        this.sizing();
-        console.log("works")
+        // this.sizing();
         // this.fitText();
     }
 
