@@ -583,14 +583,11 @@ section {
         margin-bottom: 0;
 
         &:after {
-            content: "›";
-            color: #FFB000;
-            font-size: ptr(18);
-            font-weight: 800;
-            margin: 0;
-            line-height: ptr(24);
-            margin-left: ptr(4);
-            white-space: nowrap;
+            content: "";
+            background: url('data:image/svg+xml,<svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M10.8558 6.4991C11.4416 5.91331 12.3914 5.91331 12.9772 6.4991C13.563 7.08488 13.563 8.03463 12.9772 8.62042L8.25979 13.3378C7.674 13.9236 6.72426 13.9236 6.13847 13.3378C5.55268 12.752 5.55268 11.8023 6.13847 11.2165L10.8558 6.4991Z" fill="%23FFAC00"/><rect x="14.0381" y="6.83883" width="3" height="9.67137" rx="1.5" transform="rotate(135 14.0381 6.83883)" fill="%23FFAC00"/></svg>');
+            height: 15px;
+            width: 15px;
+            align-self: center;
         }
     }
     
