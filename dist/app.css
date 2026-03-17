@@ -269,6 +269,10 @@
   color: #8A8A8A;
 }
 
+#mission {
+  scroll-padding-top: 100px;
+}
+
 html {
   --fontSize: clamp(14px, calc(100vw / 1290 * 16), 16px);
 }
