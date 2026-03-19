@@ -1353,6 +1353,10 @@ section > img {
   text-align: center !important;
 }
 
+.single-post .w-richtext p:has(+ p) {
+  margin-bottom: 1.375rem;
+}
+
 *.text-1 {
   color: var(--_colors---text-1);
 }

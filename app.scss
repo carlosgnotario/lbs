@@ -661,5 +661,11 @@ section {
     }
 }
 
+.single-post .w-richtext {
+    p:has(+ p) {
+        margin-bottom: ptr(22);
+    }
+}
+
 // Utility classes last so they override .button and other component styles
 @import 'scss/classes';
