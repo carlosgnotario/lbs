@@ -645,5 +645,21 @@ section {
     }
 }
 
+.ml-form-successContent {
+    h4 {
+        text-align: center !important;
+        font-size: ptr(20)!important;
+        font-weight: 800!important;
+        line-height: ptr(36)!important;
+    }
+
+    p {
+        font-size: ptr(16)!important;
+        font-weight: 500!important;
+        line-height: ptr(22)!important;
+        text-align: center!important;
+    }
+}
+
 // Utility classes last so they override .button and other component styles
 @import 'scss/classes';
