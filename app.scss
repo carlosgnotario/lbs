@@ -15,7 +15,7 @@ html {
     }
     
     @include breakpoint(small) {
-        --fontSize: max(9px, calc(100vw / 767 * 16));
+        --fontSize: min(16px, calc(100vw / 402 * 16));
     }
 
     font-size: var(--fontSize);

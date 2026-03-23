@@ -283,7 +283,7 @@ html {
 }
 @media (max-width: 767px) {
   html {
-    --fontSize: max(9px, calc(100vw / 767 * 16));
+    --fontSize: min(16px, calc(100vw / 402 * 16));
   }
 }
 html {
