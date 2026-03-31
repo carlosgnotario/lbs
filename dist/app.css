@@ -830,6 +830,11 @@ form:not(.search) .w-select {
   min-height: 2.875rem;
   color: var(--_colors---text-2);
   margin-bottom: 0;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='none' stroke='black' stroke-width='2' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'><path d='M6 9l6 6 6-6'/></svg>");
+  appearance: none;
+  background-repeat: no-repeat;
+  background-position: right 0.625rem center;
+  background-size: 1rem 1rem;
 }
 form:not(.search) .w-select:focus {
   border-color: var(--_colors---orange);

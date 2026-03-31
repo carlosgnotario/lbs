@@ -14,7 +14,7 @@ const ROOT = path.join(__dirname, "..", "dist");
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET, OPTIONS",
-  "Access-Control-Allow-Headers": "ngrok-skip-browser-warning",
+  "Access-Control-Allow-Headers": "*",
   "Access-Control-Max-Age": "86400",
 };
 

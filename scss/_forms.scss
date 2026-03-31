@@ -90,6 +90,11 @@ textarea.w-input {
     min-height: ptr(46);
     color: $text-2;
     margin-bottom: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg fill='none' stroke='black' stroke-width='2' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'><path d='M6 9l6 6 6-6'/></svg>");
+    appearance: none;
+    background-repeat: no-repeat;
+    background-position: right ptr(10) center;
+    background-size: ptr(16) ptr(16);
 
     &:focus {
         border-color: $orange;

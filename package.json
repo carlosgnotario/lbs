@@ -4,9 +4,8 @@
   "description": "LBS Project",
   "main": "app.js",
   "scripts": {
-    "start": "npm-run-all --parallel sass:watch js:watch serve tunnel",
+    "start": "npm-run-all --parallel sass:watch js:watch serve",
     "serve": "node scripts/serve-with-cors.js",
-    "tunnel": "npx ngrok http 3000",
     "sass:compile": "sass app.scss dist/app.css",
     "sass:watch": "sass --watch app.scss:dist/app.css",
     "js:compile": "esbuild app.js --bundle --outfile=dist/app.js --format=iife",
@@ -28,7 +27,6 @@
   },
   "devDependencies": {
     "autoprefixer": "^10.4.22",
-    "ngrok": "^5.0.0-beta.2",
     "serve": "^14.2.4",
     "esbuild": "^0.24.0",
     "gh-pages": "^6.1.1",
