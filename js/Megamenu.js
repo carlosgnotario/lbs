@@ -86,7 +86,9 @@ export class Megamenu {
             });
         });
 
-        this.productsMobileLink.addEventListener("click", () => {
+        this.productsMobileLink.addEventListener("click", (e) => {
+            e.preventDefault();
+            e.stopPropagation();
             this.productsMobile.classList.toggle("active");
             const open = this.productsMobile.classList.contains("active");
             gsap.to(this.productsMobileLink.querySelector("div"), {
@@ -116,7 +118,7 @@ export class Megamenu {
         this.top = this.megamenu.getBoundingClientRect().top;
     }
 
-    showMenu(newIndex) {
+    showMenu(newIndex) {        
         const targetElement = this.menuTargets[newIndex];
         const previousTarget = this.menuTargets[this.currentTarget];
         
@@ -181,6 +183,8 @@ export class Megamenu {
     }
 
     openMobileMenu(open) {
+        console.log("opening mobile menu");
+        
         gsap.set(this.mobileClose, {
             autoAlpha: open ? 0 : 1,
             scale: open ? 0 : 1,

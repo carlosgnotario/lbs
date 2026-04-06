@@ -2002,7 +2002,9 @@
           }
         });
       });
-      this.productsMobileLink.addEventListener("click", () => {
+      this.productsMobileLink.addEventListener("click", (e2) => {
+        e2.preventDefault();
+        e2.stopPropagation();
         this.productsMobile.classList.toggle("active");
         const open = this.productsMobile.classList.contains("active");
         gsap.to(this.productsMobileLink.querySelector("div"), {
@@ -2082,6 +2084,7 @@
       gsap.ticker.add(this.ticker);
     }
     openMobileMenu(open) {
+      console.log("opening mobile menu");
       gsap.set(this.mobileClose, {
         autoAlpha: open ? 0 : 1,
         scale: open ? 0 : 1,
