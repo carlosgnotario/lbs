@@ -125,14 +125,14 @@ body {
 }
 
 .testimonials {
-    &:after {
-        content: '';
-        position: absolute;
-        height: 100%;
-        width: 1px;
-        background-color: cyan;
-        left: 2.8125rem;
-    }
+    // &:after {
+    //     content: '';
+    //     position: absolute;
+    //     height: 100%;
+    //     width: 1px;
+    //     background-color: cyan;
+    //     left: 2.8125rem;
+    // }
 
     .testimonials-controls {
         @include breakpoint('medium') {
