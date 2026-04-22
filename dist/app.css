@@ -724,14 +724,6 @@ html:not(.wf-design-mode) [data-animation=diction] .anim-diction {
   mix-blend-mode: unset;
   -webkit-text-fill-color: unset;
 }
-html:not(.wf-design-mode) .testimonials:after {
-  content: "";
-  position: absolute;
-  height: 100%;
-  width: 1px;
-  background-color: cyan;
-  left: 2.8125rem;
-}
 @media (max-width: 991px) {
   html:not(.wf-design-mode) .testimonials .testimonials-controls {
     display: none;

@@ -31,7 +31,8 @@ export class TestimonialsNext {
                 bullet.classList.add("testimonials-bullet");
                 this.bullets.appendChild(bullet);
             }
-            this.lastPageItemsQuantity = this.items.length % this.itemsPerPage;
+            const remainder = this.items.length % this.itemsPerPage;
+            this.lastPageItemsQuantity = remainder === 0 ? this.itemsPerPage : remainder;
             this.indicatorsBullets = this.bullets.querySelectorAll(".testimonials-bullet");
             this.indicatorsBullets[0].classList.add("active", "from-left");            
         }
