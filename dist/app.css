@@ -18136,6 +18136,16 @@ section > img {
   }
 }
 
+.fw-900 {
+  font-weight: 900;
+}
+
+@media (max-width: 767px) {
+  .fw-sm-900 {
+    font-weight: 900;
+  }
+}
+
 .pull-slot {
   margin-top: -13.125rem;
 }

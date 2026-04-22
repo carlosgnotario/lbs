@@ -468,7 +468,7 @@ section:has(.mobile-fullw) {
     .height-sm-#{$i} { @include breakpoint(small) { height: ptr($i)!important; } }
 }
 
-$weights: 400, 500, 600, 700, 800;
+$weights: 400, 500, 600, 700, 800, 900;
 @each $weight in $weights {
     .fw-#{$weight} {
         font-weight: $weight;
